@@ -1,27 +1,27 @@
 #include "playermodel.h"
 
 PlayerModel::PlayerModel()
-    :itsHitBox(QRect(playerWidth,playerHeight,0,0))
+    :itsDirection(Right), itsHitBox(QRect(playerWidth,playerHeight,0,0))
 {}
 
 void PlayerModel::update()
 {
     if(isMovingLeft){
         itsHitBox.translate(-itsSpeed,0);
-        itsFacingLeft = true;
+        itsDirection = Left;
     }
     else if(isMovingRight) {
         itsHitBox.translate(itsSpeed,0);
-        itsFacingRight = true;
+        itsDirection = Right;
     }
 
     if(isMovingDown){
         itsHitBox.translate(0,-itsSpeed);
-        itsFacingDown = true;
+        itsDirection = Down;
     }
     else if(isMovingUp) {
         itsHitBox.translate(0,itsSpeed);
-        itsFacingUp = true;
+        itsDirection = Up;
     }
 }
 

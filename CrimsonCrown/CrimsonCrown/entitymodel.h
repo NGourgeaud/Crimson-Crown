@@ -3,10 +3,10 @@
 #include <QRect>
 
 enum Direction{
-    FacingLeft,
-    FacingRight,
-    FacingUp,
-    FacingDown
+    Left,
+    Right,
+    Up,
+    Down
 };
 
 class EntityModel

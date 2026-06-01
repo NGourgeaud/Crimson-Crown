@@ -12,11 +12,7 @@ protected:
     bool isMovingLeft;
     bool isMovingRight;
 
-    bool itsFacingRight;
-    bool itsFacingLeft;
-    bool itsFacingUp;
-    bool itsFacingDown;
-
+    Direction itsDirection;
     QRect itsHitBox;
 
 public:
