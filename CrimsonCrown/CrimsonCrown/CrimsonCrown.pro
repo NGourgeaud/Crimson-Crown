@@ -14,6 +14,11 @@ SOURCES += \
     mainwindow.cpp \
     menucontroller.cpp \
     menuview.cpp
+    enemymodel.cpp \
+    entitymodel.cpp \
+    main.cpp \
+    mainwindow.cpp \
+    playermodel.cpp
 
 HEADERS += \
     appcontroller.h \
@@ -21,6 +26,10 @@ HEADERS += \
     mainwindow.h \
     menucontroller.h \
     menuview.h
+    enemymodel.h \
+    entitymodel.h \
+    mainwindow.h \
+    playermodel.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -23,4 +23,7 @@ const QString LABEL_QUIT = "QUITTER";
 
 }
 
+int playerWidth = 0;
+int playerHeight = 0;
+
 #endif // CONFIG_H
