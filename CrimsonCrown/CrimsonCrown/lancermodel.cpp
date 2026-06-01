@@ -43,5 +43,5 @@ void LancerModel::move(int axisX, int axisY)
 
 QRect LancerModel::getHitBox()
 {
-
+    return itsHitBox;
 }
