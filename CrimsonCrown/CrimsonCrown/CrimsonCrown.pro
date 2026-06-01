@@ -12,12 +12,15 @@ SOURCES += \
     enemymodel.cpp \
     entitymodel.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    playermodel.cpp
 
 HEADERS += \
+    config.h \
     enemymodel.h \
     entitymodel.h \
-    mainwindow.h
+    mainwindow.h \
+    playermodel.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

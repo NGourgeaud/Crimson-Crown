@@ -2,14 +2,19 @@
 #define ENTITYMODEL_H
 #include <QRect>
 
+enum Direction{
+    Left,
+    Right,
+    Up,
+    Down
+};
+
 class EntityModel
 {
 protected:
     int itsHP;
     int itsMaxHP;
     int itsSpeed;
-    int itsX;
-    int itsY;
     QRect itsHitBox;
 
 public:
