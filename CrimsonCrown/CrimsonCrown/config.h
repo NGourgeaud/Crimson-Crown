@@ -3,8 +3,6 @@
 
 #include <QString>
 
-namespace AppConfig {
-
 const QString WINDOW_TITLE = "Crimson Crown";
 const int WINDOW_WIDTH = 1200;
 const int WINDOW_HEIGHT = 800;
@@ -21,6 +19,5 @@ const QString LABEL_LEADERBOARD = "LEADERBOARD";
 const QString LABEL_SETTINGS = "REGLAGES";
 const QString LABEL_QUIT = "QUITTER";
 
-}
 
 #endif // CONFIG_H

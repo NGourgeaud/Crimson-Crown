@@ -10,8 +10,8 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowTitle(AppConfig::WINDOW_TITLE);
-    resize(AppConfig::WINDOW_WIDTH, AppConfig::WINDOW_HEIGHT);
+    setWindowTitle(WINDOW_TITLE);
+    resize(WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
 MainWindow::~MainWindow() {}

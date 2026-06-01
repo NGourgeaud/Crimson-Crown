@@ -12,8 +12,8 @@ MenuView::MenuView(QWidget *parent)
     : QWidget(parent) {
 
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
-    mainLayout->setContentsMargins(AppConfig::LAYOUT_MARGIN, AppConfig::LAYOUT_MARGIN,
-                                   AppConfig::LAYOUT_MARGIN, AppConfig::LAYOUT_MARGIN);
+    mainLayout->setContentsMargins(LAYOUT_MARGIN, LAYOUT_MARGIN,
+                                   LAYOUT_MARGIN, LAYOUT_MARGIN);
     mainLayout->setSpacing(50);
 
 
@@ -22,15 +22,15 @@ MenuView::MenuView(QWidget *parent)
     leftLayout->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     leftLayout->addStretch(4);
 
-    QLabel *title = new QLabel(AppConfig::MENU_TITLE);
+    QLabel *title = new QLabel(MENU_TITLE);
     QFont titleFont("Alagard");
-    titleFont.setPointSize(AppConfig::MENU_TITLE_FONT_SIZE);
+    titleFont.setPointSize(MENU_TITLE_FONT_SIZE);
     titleFont.setBold(true);
     title->setFont(titleFont);
     title->setStyleSheet("color: white; background: transparent;");
 
     leftLayout->addWidget(title, 0, Qt::AlignHCenter);
-    leftLayout->addSpacing(AppConfig::LAYOUT_SPACING * 2);
+    leftLayout->addSpacing(LAYOUT_SPACING * 2);
 
     QString buttonStyle =
         "QPushButton {"
@@ -46,32 +46,32 @@ MenuView::MenuView(QWidget *parent)
         "   border-color: white;"
         "}";
 
-    QPushButton *playBtn = new QPushButton(AppConfig::LABEL_PLAY);
-    playBtn->setFixedSize(220, AppConfig::BUTTON_HEIGHT);
+    QPushButton *playBtn = new QPushButton(LABEL_PLAY);
+    playBtn->setFixedSize(220, BUTTON_HEIGHT);
     playBtn->setStyleSheet(buttonStyle);
     connect(playBtn, &QPushButton::clicked, this, &MenuView::playRequested);
     leftLayout->addWidget(playBtn, 0, Qt::AlignHCenter);
 
     leftLayout->addSpacing(10);
 
-    QPushButton *leaderboardBtn = new QPushButton(AppConfig::LABEL_LEADERBOARD);
-    leaderboardBtn->setFixedSize(220, AppConfig::BUTTON_HEIGHT);
+    QPushButton *leaderboardBtn = new QPushButton(LABEL_LEADERBOARD);
+    leaderboardBtn->setFixedSize(220, BUTTON_HEIGHT);
     leaderboardBtn->setStyleSheet(buttonStyle);
     connect(leaderboardBtn, &QPushButton::clicked, this, &MenuView::leaderboardRequested);
     leftLayout->addWidget(leaderboardBtn, 0, Qt::AlignHCenter);
 
     leftLayout->addSpacing(10);
 
-    QPushButton *settingsBtn = new QPushButton(AppConfig::LABEL_SETTINGS);
-    settingsBtn->setFixedSize(220, AppConfig::BUTTON_HEIGHT);
+    QPushButton *settingsBtn = new QPushButton(LABEL_SETTINGS);
+    settingsBtn->setFixedSize(220, BUTTON_HEIGHT);
     settingsBtn->setStyleSheet(buttonStyle);
     connect(settingsBtn, &QPushButton::clicked, this, &MenuView::settingsRequested);
     leftLayout->addWidget(settingsBtn, 0, Qt::AlignHCenter);
 
     leftLayout->addSpacing(10);
 
-    QPushButton *quitBtn = new QPushButton(AppConfig::LABEL_QUIT);
-    quitBtn->setFixedSize(220, AppConfig::BUTTON_HEIGHT);
+    QPushButton *quitBtn = new QPushButton(LABEL_QUIT);
+    quitBtn->setFixedSize(220, BUTTON_HEIGHT);
     quitBtn->setStyleSheet(buttonStyle);
     connect(quitBtn, &QPushButton::clicked, this, &MenuView::quitRequested);
     leftLayout->addWidget(quitBtn, 0, Qt::AlignHCenter);
