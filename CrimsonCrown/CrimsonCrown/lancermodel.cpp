@@ -18,8 +18,8 @@ LancerModel::LancerModel(int maxHp, int speed, int x, int y, float attackCooldow
 
 void LancerModel::update(int heroX, int heroY)
 {
-    handleAI(heroX, heroY);
-    attack(heroX, heroY);
+    if(handleAI(heroX, heroY))
+        attack(heroX, heroY);
 }
 
 void LancerModel::attack(int heroX, int heroY)
@@ -41,11 +41,11 @@ void LancerModel::attack(int heroX, int heroY)
 }
 
 ///
-/// \brief Takes the hero position and processes the AI logic depending on it's position
+/// \brief Takes the hero position and processes the AI logic depending on it's position, also returns true if the ennemy can attack
 /// \param heroX: x position of the center
 /// \param heroY: y position of the center
 ///
-void LancerModel::handleAI(int heroX, int heroY)
+bool LancerModel::handleAI(int heroX, int heroY)
 {
     // Goes towards the player if it's too far
     if (QLineF(QPoint(heroX, heroY), itsHitBox.center()).length() > LancerAttackHitboxWidth-20){
@@ -64,6 +64,10 @@ void LancerModel::handleAI(int heroX, int heroY)
                 itsHitBox.translate(QPoint(itsHitBox.topLeft().x(), itsHitBox.topLeft().y() + 1));
             }
         }
+        return false;
+    }
+    else{
+        return true;
     }
 }
 

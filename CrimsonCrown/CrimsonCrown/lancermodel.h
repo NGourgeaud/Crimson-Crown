@@ -18,7 +18,7 @@ public:
     QRect getHitBox() const;
 
 private:
-    void handleAI(int heroX, int heroY);
+    bool handleAI(int heroX, int heroY);
 
 signals:
     void death();
