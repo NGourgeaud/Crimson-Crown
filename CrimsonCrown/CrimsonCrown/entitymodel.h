@@ -8,8 +8,6 @@ protected:
     int itsHP;
     int itsMaxHP;
     int itsSpeed;
-    int itsX;
-    int itsY;
     QRect itsHitBox;
 
 public:
