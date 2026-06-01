@@ -22,7 +22,7 @@ private:
 
 signals:
     void death();
-    void attacking(QPolygon);
+    void attacking(QPolygon hitbox);
 };
 
 #endif // LANCERMODEL_H
