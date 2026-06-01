@@ -13,11 +13,9 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     menucontroller.cpp \
-    menuview.cpp
+    menuview.cpp \
     enemymodel.cpp \
     entitymodel.cpp \
-    main.cpp \
-    mainwindow.cpp \
     playermodel.cpp
 
 HEADERS += \
@@ -25,10 +23,9 @@ HEADERS += \
     config.h \
     mainwindow.h \
     menucontroller.h \
-    menuview.h
+    menuview.h \
     enemymodel.h \
     entitymodel.h \
-    mainwindow.h \
     playermodel.h
 
 # Default rules for deployment.
