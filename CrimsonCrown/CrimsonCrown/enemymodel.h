@@ -11,7 +11,7 @@ protected:
     int itsAttackDamage;
 public:
     EnemyModel();
-    virtual void attack() = 0;
+    virtual void attack(int heroX, int heroY) = 0;
     virtual void handleAI(int heroX, int heroY) =0;
 };
 

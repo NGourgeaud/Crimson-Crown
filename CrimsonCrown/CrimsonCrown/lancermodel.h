@@ -2,17 +2,27 @@
 #define LANCERMODEL_H
 
 #include "enemymodel.h"
+#include "qobject.h"
+#include <QPolygon>
 
-class LancerModel : public EnemyModel
+class LancerModel : public QObject, public EnemyModel
 {
+    Q_OBJECT
+
 public:
     LancerModel(int maxHp, int speed, int x, int y, float attackCooldown, int maxAttackDistance, int attackDamage);
-    void update();
-    void attack();
-    void handleAI(int heroX, int heroY);
+    void update(int heroX, int heroY);
+    void attack(int heroX, int heroY);
     void takeDamage(int amount);
     void move(int axisX,int axisY);
-    QRect getHitBox();
+    QRect getHitBox() const;
+
+private:
+    void handleAI(int heroX, int heroY);
+
+signals:
+    void death();
+    void attacking(QPolygon);
 };
 
 #endif // LANCERMODEL_H
