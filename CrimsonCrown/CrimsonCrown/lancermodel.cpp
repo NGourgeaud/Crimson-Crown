@@ -15,13 +15,22 @@ LancerModel::LancerModel(int maxHp, int speed, int x, int y, float attackCooldow
     itsMaxAttackDistance = maxAttackDistance;
     itsAttackDamage = attackDamage;
 }
-
+///
+/// \brief Updates the Lancer
+/// \param heroX: x position of the center
+/// \param heroY: y position of the center
+///
 void LancerModel::update(int heroX, int heroY)
 {
     if(handleAI(heroX, heroY))
         attack(heroX, heroY);
 }
 
+///
+/// \brief Makes the Lancer attack the ennemy (sends a hitbox to GameModel to check for hits)
+/// \param heroX: x position of the center
+/// \param heroY: y position of the center
+///
 void LancerModel::attack(int heroX, int heroY)
 {
     // 1. Find the angle between the lancer and the hero
