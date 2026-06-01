@@ -29,7 +29,7 @@ void LancerModel::attack(int heroX, int heroY)
     qreal angle = aimLine.angle(); // Returns the angle in degrees (0 is right, 90 is up)
 
     // 2. Create the base attack rectangle (centered at 0,0 to make rotation easy)
-    QRect baseAttackRect(itsHitBox.center().x(),itsHitBox.center().y(), LancerAttackHitboxWidth, LancerHeight);
+    QRect baseAttackRect(itsHitBox.center().x(),itsHitBox.center().y(), LancerAttackHitboxWidth, LancerAttackHitboxHeight);
 
     // 3. Set up a QTransform to move and rotate the rectangle
     QTransform transform;
