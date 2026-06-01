@@ -10,10 +10,18 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    obstaclemodel.cpp \
+    obstacleview.cpp \
+    roommodel.cpp \
+    roomview.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    obstaclemodel.h \
+    obstacleview.h \
+    roommodel.h \
+    roomview.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
