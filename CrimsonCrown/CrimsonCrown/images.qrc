@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>fondjeu.png</file>
+        <file>alagard.ttf</file>
+    </qresource>
+</RCC>
