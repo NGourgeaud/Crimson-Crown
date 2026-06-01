@@ -1,5 +1,4 @@
 #include "playermodel.h"
-#include "config.h"
 
 PlayerModel::PlayerModel()
     :itsHitBox(QRect(playerWidth,playerHeight,0,0))

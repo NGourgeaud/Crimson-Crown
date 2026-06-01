@@ -2,6 +2,13 @@
 #define ENTITYMODEL_H
 #include <QRect>
 
+enum Direction{
+    FacingLeft,
+    FacingRight,
+    FacingUp,
+    FacingDown
+};
+
 class EntityModel
 {
 protected:

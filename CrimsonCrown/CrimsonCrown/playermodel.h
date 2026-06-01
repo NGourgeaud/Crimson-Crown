@@ -2,6 +2,7 @@
 #define PLAYERMODEL_H
 
 #include "entitymodel.h"
+#include "config.h"
 
 class PlayerModel : public EntityModel
 {
