@@ -6,9 +6,9 @@
 class EnemyModel : public EntityModel
 {
 protected:
-    float attackCooldown;
-    int maxAttackDistance;
-    int attackDamage;
+    float itsAttackCooldown;
+    int itsMaxAttackDistance;
+    int itsAttackDamage;
 public:
     EnemyModel();
     virtual void attack() = 0;
