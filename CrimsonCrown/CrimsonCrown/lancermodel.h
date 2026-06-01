@@ -10,6 +10,9 @@ public:
     void update();
     void attack();
     void handleAI(int heroX, int heroY);
+    void takeDamage(int amount);
+    void move(int axisX,int axisY);
+    QRect getHitBox();
 };
 
 #endif // LANCERMODEL_H

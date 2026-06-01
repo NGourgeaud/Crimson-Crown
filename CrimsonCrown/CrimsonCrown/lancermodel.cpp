@@ -30,3 +30,18 @@ void LancerModel::handleAI(int heroX, int heroY)
 {
 
 }
+
+void LancerModel::takeDamage(int amount)
+{
+
+}
+
+void LancerModel::move(int axisX, int axisY)
+{
+
+}
+
+QRect LancerModel::getHitBox()
+{
+
+}
