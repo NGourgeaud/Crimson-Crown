@@ -14,7 +14,9 @@ AppController::AppController(QObject *parent)
     mainWindow(new MainWindow()),
     menuController(new MenuController(mainWindow, this)),
     currentView(nullptr),
-    currentState(AppState::Menu) {
+    currentState(AppState::Menu),
+    charSelectController(new CharSelectController(mainWindow, this))
+{
 
     // Loading the medieval pixel art font
     int fontId = QFontDatabase::addApplicationFont(":/alagard.ttf");
@@ -29,6 +31,9 @@ AppController::AppController(QObject *parent)
     connect(menuController, &MenuController::leaderboardRequested, this, &AppController::onLeaderboardRequested);
     connect(menuController, &MenuController::settingsRequested, this, &AppController::onSettingsRequested);
     connect(menuController, &MenuController::quitRequested, this, &AppController::onQuitRequested);
+
+    connect(charSelectController, &CharSelectController::backToMenuRequested, this, &AppController::onMenuRequested);
+    connect(charSelectController, &CharSelectController::characterSelected, this, &AppController::onGameRequested);
 
     start();
 }
@@ -55,7 +60,7 @@ void AppController::onMenuRequested() {
 /// \details Slot triggered when the 'PLAY' button is clicked.
 ///
 void AppController::onCharSelectRequested() {
-    // Next step: navigateTo(AppState::CharSelect);
+    navigateTo(AppState::CharSelect);
 }
 
 ///
@@ -116,6 +121,9 @@ void AppController::navigateTo(AppState state) {
     case AppState::Menu:
         currentView = menuController->createView();
         break;
+    case AppState::CharSelect:
+        currentView = charSelectController->createView();
+        break;
     default:
         return;
     }
@@ -130,6 +138,12 @@ void AppController::navigateTo(AppState state) {
 ///
 void AppController::cleanupCurrentView() {
     if (currentView == nullptr) return;
-    menuController->destroyView();
+
+    if (currentState == AppState::Menu) {
+        menuController->destroyView();
+    } else if (currentState == AppState::CharSelect) {
+        charSelectController->destroyView();
+    }
+
     currentView = nullptr;
 }

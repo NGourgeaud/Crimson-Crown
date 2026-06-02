@@ -10,6 +10,8 @@ CONFIG += c++17
 
 SOURCES += \
     appcontroller.cpp \
+    charselectcontroller.cpp \
+    charselectview.cpp \
     gamemodel.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -18,10 +20,12 @@ SOURCES += \
     enemymodel.cpp \
     entitymodel.cpp \
     playermodel.cpp \
-    lancermodel.cpp 
+    lancermodel.cpp
 
 HEADERS += \
     appcontroller.h \
+    charselectcontroller.h \
+    charselectview.h \
     config.h \
     gamemodel.h \
     mainwindow.h \
@@ -30,7 +34,7 @@ HEADERS += \
     enemymodel.h \
     entitymodel.h \
     playermodel.h \
-    lancermodel.h 
+    lancermodel.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
