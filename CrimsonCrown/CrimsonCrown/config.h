@@ -36,4 +36,7 @@ const int LancerAttackHitboxHeight = 0;
 const int LordWidth = 0;
 const int LordHeight = 0;
 
+const int LordAttack1HitBoxLenght = 100;
+const int LordAttack1HitBoxWidth = 100;
+
 #endif // CONFIG_H

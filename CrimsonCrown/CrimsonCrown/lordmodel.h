@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "bossmodel.h"
+#include <QPolygon>
 #include "qtimer.h"
 
 class LordModel : public QObject, public BossModel
@@ -25,7 +26,7 @@ private:
     bool handleAI(int heroX, int heroY);
 
 signals:
-    void death(BossModel);
+    void death(BossModel*);
     void attacking(QPolygon hitbox, int damage);
 
 private slots:
