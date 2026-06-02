@@ -1,7 +1,6 @@
 #ifndef GAMEMODEL_H
 #define GAMEMODEL_H
 
-<<<<<<< CrimsonCrown/CrimsonCrown/gamemodel.h
 #include <QObject>
 #include "enemymodel.h"
 #include "roommodel.h"
