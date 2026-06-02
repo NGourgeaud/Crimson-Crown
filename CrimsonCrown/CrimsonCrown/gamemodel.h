@@ -14,6 +14,7 @@ private:
     // BlackSmithModel* itsPlayer;
     int itsScore;
 
+
 public:
     GameModel();
     ~GameModel();
@@ -25,6 +26,8 @@ public:
 
     void updateLogic(); // Méthode appelée à chaque "tick" du jeu
     void goToNextRoom(); // Nouvelle méthode pour gérer la transition
+
+    void spawnEnemiesForCurrentRoom(int count);
 
 signals:
     void roomCleared();

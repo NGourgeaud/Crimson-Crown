@@ -50,6 +50,24 @@ const RoomModel* GameModel::getCurrentRoom() const
     return currentRoom;
 }
 
+
+void GameModel::spawnEnemiesForCurrentRoom(int count)
+{
+    // On indique à la salle combien d'ennemis elle contient
+    currentRoom->spawnEnemies(count);
+
+    // On nettoie les anciens ennemis s'il y en avait
+    qDeleteAll(itsEnemies);
+    itsEnemies.clear();
+
+    // On crée les nouveaux ennemis
+    for(int i = 0; i < count; i++) {
+        // C'est ici que tu instancieras tes vrais ennemis plus tard
+        // Par exemple : itsEnemies.append(new LancerModel(...));
+    }
+}
+
+
 void GameModel::updateLogic()
 {
     if (!currentRoom) return;

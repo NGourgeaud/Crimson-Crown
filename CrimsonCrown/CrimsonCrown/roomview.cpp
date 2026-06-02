@@ -31,10 +31,14 @@ void RoomView::draw(QPainter &painter, const RoomModel *roomModel, ObstacleView 
         painter.setPen(Qt::NoPen);
 
         // Exemple : Position des portes sur la maquette (gauche et bas)
-        QRect porteGauche(80, 325, 20, 100);
-        QRect porteBas(450, 600, 100, 20);
+        QRect porteGauche(80, 325, 20, 100); // a modifier pour les bon emplacement
+        QRect porteBas(450, 600, 100, 20);  // a modifier pour les bon emplacement
+        QRect porteDroite(80, 325, 20, 100);  // a modifier pour les bon emplacement
+        QRect porteHaut(450, 600, 100, 20);  // a modifier pour les bon emplacement
 
         painter.drawRect(porteGauche);
         painter.drawRect(porteBas);
+        painter.drawRect(porteDroite);
+        painter.drawRect(porteHaut);
     }
 }
