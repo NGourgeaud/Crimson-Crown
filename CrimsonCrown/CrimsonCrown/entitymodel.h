@@ -6,7 +6,11 @@ enum Direction{
     Left,
     Right,
     Up,
-    Down
+    Down,
+    LeftDown,
+    LeftUp,
+    RightDown,
+    RightUp
 };
 
 class EntityModel

@@ -3,27 +3,53 @@
 
 #include "entitymodel.h"
 #include "config.h"
+#include <QObject>
+#include <QTimer>
 
-class PlayerModel : public EntityModel
+class PlayerModel : public QObject, public EntityModel
 {
+
+    Q_OBJECT
+
 protected:
     bool isMovingUp;
     bool isMovingDown;
     bool isMovingLeft;
     bool isMovingRight;
 
+    bool isAttack1;
+    bool isAttack2;
+    QTimer * itsCooldown1;
+    QTimer * itsCooldown2;
+    bool canAttack1;
+    bool canAttack2;
+    int itsAttack1Damage;
+    int itsAttack2Damage;
+
     Direction itsDirection;
     QRect itsHitBox;
 
 public:
-    PlayerModel();
+    PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, int aAttack2Damage);
     virtual void attack1() = 0;
     virtual void attack2() = 0;
-    virtual void update();
-    virtual void setMovementLeft(bool enabled);
-    virtual void setMovementRight(bool enabled);
-    virtual void setMovementUp(bool enabled);
-    virtual void setMovementDown(bool enabled);
+    void update();
+    void setMovementLeft(bool enabled);
+    void setMovementRight(bool enabled);
+    void setMovementUp(bool enabled);
+    void setMovementDown(bool enabled);
+    void setAttack1(bool enabled);
+    void setAttack2(bool enabled);
+    void take_damage(int amont);
+    void move(int axisX, int axisY);
+    QRect getItsHitBox() const;
+
+signals:
+    void death();
+
+private slots:
+    void resetAttackCooldown1();
+    void resetAttackCooldown2();
 };
 
 #endif // PLAYERMODEL_H
