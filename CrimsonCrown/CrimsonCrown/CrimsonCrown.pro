@@ -14,6 +14,7 @@ SOURCES += \
     charselectcontroller.cpp \
     charselectview.cpp \
     gamemodel.cpp \
+    lordmodel.cpp \
     main.cpp \
     mainwindow.cpp \
     menucontroller.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     charselectview.h \
     config.h \
     gamemodel.h \
+    lordmodel.h \
     mainwindow.h \
     menucontroller.h \
     menuview.h \
