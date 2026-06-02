@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     appcontroller.cpp \
+    bossmodel.cpp \
     charselectcontroller.cpp \
     charselectview.cpp \
     gamemodel.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
 
 HEADERS += \
     appcontroller.h \
+    bossmodel.h \
     charselectcontroller.h \
     charselectview.h \
     config.h \
