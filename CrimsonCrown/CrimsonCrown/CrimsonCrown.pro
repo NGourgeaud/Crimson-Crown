@@ -27,6 +27,7 @@ SOURCES += \
     lancermodel.cpp \
     obstaclemodel.cpp \
     obstacleview.cpp \
+    playerview.cpp \
     roommodel.cpp \
     roomview.cpp
 
@@ -49,6 +50,7 @@ HEADERS += \
     lancermodel.h \
     obstaclemodel.h \
     obstacleview.h \
+    playerview.h \
     roommodel.h \
     roomview.h
 
