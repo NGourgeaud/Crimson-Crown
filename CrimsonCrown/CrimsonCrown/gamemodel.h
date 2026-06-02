@@ -23,6 +23,13 @@ public:
     const RoomModel* getCurrentRoom() const;
     // const BlackSmithModel* getItsPlayer() const;
 
+    void updateLogic(); // Méthode appelée à chaque "tick" du jeu
+    void goToNextRoom(); // Nouvelle méthode pour gérer la transition
+
+signals:
+    void roomCleared();
+    // void gameOver(int score);
+
     //  autres méthodes
 };
 
