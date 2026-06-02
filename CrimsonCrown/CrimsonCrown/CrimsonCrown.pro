@@ -12,25 +12,29 @@ SOURCES += \
     appcontroller.cpp \
     charselectcontroller.cpp \
     charselectview.cpp \
+    gamemodel.cpp \
     main.cpp \
     mainwindow.cpp \
     menucontroller.cpp \
     menuview.cpp \
     enemymodel.cpp \
     entitymodel.cpp \
-    playermodel.cpp
+    playermodel.cpp \
+    lancermodel.cpp
 
 HEADERS += \
     appcontroller.h \
     charselectcontroller.h \
     charselectview.h \
     config.h \
+    gamemodel.h \
     mainwindow.h \
     menucontroller.h \
     menuview.h \
     enemymodel.h \
     entitymodel.h \
-    playermodel.h
+    playermodel.h \
+    lancermodel.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -19,7 +19,6 @@ protected:
 
 public:
     EntityModel();
-    virtual void update() = 0;
     virtual void takeDamage(int amount) = 0;
     virtual void move(int axisX,int axisY) = 0;
     virtual QRect getHitBox() const = 0;

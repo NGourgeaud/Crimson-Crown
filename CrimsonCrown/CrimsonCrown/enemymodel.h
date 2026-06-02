@@ -6,13 +6,13 @@
 class EnemyModel : public EntityModel
 {
 protected:
-    float attackCooldown;
-    int maxAttackDistance;
-    int attackDamage;
+    float itsAttackCooldown;
+    int itsMaxAttackDistance;
+    int itsAttackDamage;
 public:
     EnemyModel();
-    virtual void attack() = 0;
-    virtual void handleAI(int heroX, int heroY) =0;
+    virtual void attack(int heroX, int heroY) = 0;
+    virtual bool handleAI(int heroX, int heroY) =0;
 };
 
 #endif // ENEMYMODEL_H
