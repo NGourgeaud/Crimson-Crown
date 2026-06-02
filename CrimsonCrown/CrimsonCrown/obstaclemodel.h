@@ -11,9 +11,7 @@ private:
 public:
     ObstacleModel(int x, int y, int width, int height);
 
-    // Getters
-    int getX() const;
-    int getY() const;
+    // Getter
     QRect getHitBox() const;
 };
 

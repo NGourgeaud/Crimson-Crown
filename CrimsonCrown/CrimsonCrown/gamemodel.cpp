@@ -50,7 +50,7 @@ const RoomModel* GameModel::getCurrentRoom() const
     return currentRoom;
 }
 
-
+/*
 void GameModel::spawnEnemiesForCurrentRoom(int count)
 {
     // On indique à la salle combien d'ennemis elle contient
@@ -66,7 +66,7 @@ void GameModel::spawnEnemiesForCurrentRoom(int count)
         // Par exemple : itsEnemies.append(new LancerModel(...));
     }
 }
-
+*/
 
 void GameModel::updateLogic()
 {
