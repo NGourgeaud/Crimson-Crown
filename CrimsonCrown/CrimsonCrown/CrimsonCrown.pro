@@ -10,6 +10,8 @@ CONFIG += c++17
 
 SOURCES += \
     appcontroller.cpp \
+    charselectcontroller.cpp \
+    charselectview.cpp \
     main.cpp \
     mainwindow.cpp \
     menucontroller.cpp \
@@ -20,6 +22,8 @@ SOURCES += \
 
 HEADERS += \
     appcontroller.h \
+    charselectcontroller.h \
+    charselectview.h \
     config.h \
     mainwindow.h \
     menucontroller.h \

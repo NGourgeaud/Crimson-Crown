@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>fondjeu.png</file>
         <file>alagard.ttf</file>
+        <file>ecran_selection_personnages.png</file>
     </qresource>
 </RCC>

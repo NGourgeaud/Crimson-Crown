@@ -19,7 +19,12 @@ const QString LABEL_LEADERBOARD = "LEADERBOARD";
 const QString LABEL_SETTINGS = "REGLAGES";
 const QString LABEL_QUIT = "QUITTER";
 
+const QString LABEL_CHARSELECT_TITLE = "SELECTIONNEZ UN PERSONNAGE";
+const QString LABEL_CONTINUE = "CONTINUER";
+const QString LABEL_BACK = "RETOUR AU MENU";
+
 const int playerWidth = 0;
 const int playerHeight = 0;
+
 
 #endif // CONFIG_H
