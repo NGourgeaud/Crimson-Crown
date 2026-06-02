@@ -21,7 +21,11 @@ SOURCES += \
     enemymodel.cpp \
     entitymodel.cpp \
     playermodel.cpp \
-    lancermodel.cpp
+    lancermodel.cpp \
+    obstaclemodel.cpp \
+    obstacleview.cpp \
+    roommodel.cpp \
+    roomview.cpp
 
 HEADERS += \
     appcontroller.h \
@@ -36,7 +40,11 @@ HEADERS += \
     enemymodel.h \
     entitymodel.h \
     playermodel.h \
-    lancermodel.h
+    lancermodel.h \
+    obstaclemodel.h \
+    obstacleview.h \
+    roommodel.h \
+    roomview.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -45,5 +53,3 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     images.qrc
-
-DISTFILES +=
