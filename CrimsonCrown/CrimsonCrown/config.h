@@ -26,11 +26,20 @@ const QString LABEL_BACK = "RETOUR AU MENU";
 const int playerWidth = 0;
 const int playerHeight = 0;
 
+const int BlacksmithAttack1HitboxWidth = 50;
+const int BlacksmithAttack1HitboxHeight = 20;
+
+const int BlacksmithAttack2HitboxRadius = 40;
+
+const int BlacksmithAttack1Cooldown = 1;
+const int BlacksmithAttack2Cooldown = 5;
+
 // / a définir
 const int LancerWidth = 0;
 const int LancerHeight = 0;
 
 const int LancerAttackHitboxWidth = 0;
 const int LancerAttackHitboxHeight = 0;
+>>>>>>> CrimsonCrown/CrimsonCrown/config.h
 
 #endif // CONFIG_H

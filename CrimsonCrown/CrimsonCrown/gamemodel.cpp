@@ -10,7 +10,7 @@ GameModel::GameModel()
 GameModel::~GameModel()
 {
     delete currentRoom;
-    // delete itsPlayer;
+    delete itsPlayer;
 }
 
 void GameModel::resetGame()
@@ -98,4 +98,9 @@ void GameModel::goToNextRoom()
 
     // On replace le joueur à l'entrée de cette nouvelle salle
     // itsPlayer->setPosition(400, 100); // Coordonnées de l'entrée en haut par exemple a adapter en fonction de la salle
+}
+
+PlayerModel *GameModel::getItsPlayer() const
+{
+    return itsPlayer;
 }
