@@ -40,7 +40,7 @@ HEADERS += \
     enemymodel.h \
     entitymodel.h \
     playermodel.h \
-    lancermodel.h
+    lancermodel.h \
     obstaclemodel.h \
     obstacleview.h \
     roommodel.h \
