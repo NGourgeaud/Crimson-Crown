@@ -68,31 +68,6 @@ void GameModel::spawnEnemiesForCurrentRoom(int count)
 }
 */
 
-void GameModel::updateLogic()
-{
-    if (!currentRoom) return;
-
-    // 1. OPENING OF THE PREVIOUS ROOM
-    // Si la salle est verrouillée mais qu'il n'y a plus d'ennemis
-    if (currentRoom->getIsLocked() && currentRoom->getRemainingEnemyCount() <= 0) {
-
-        currentRoom->unlockDoors(); // On ouvre les portes
-    }
-
-    // ==========================================
-    // 2. TO RUN THE GAUNTLET (Déclenchement de la transition)
-    // ==========================================
-    // Ici, il faut vérifier si le joueur (quand il sera implémenté) touche la porte de sortie.
-    // Exemple : ( ia )
-    /*
-    if (!currentRoom->getIsLocked()) {
-        QRect zoneSortie(450, 600, 100, 20); // La zone de la porte
-        if (itsPlayer->getHitBox().intersects(zoneSortie)) {
-            goToNextRoom();
-        }
-    }
-    */
-}
 
 // Méthode dédiée pour générer et passer à la salle suivante
 void GameModel::goToNextRoom()
