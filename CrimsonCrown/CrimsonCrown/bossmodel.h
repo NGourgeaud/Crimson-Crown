@@ -6,10 +6,10 @@
 class BossModel : public EntityModel
 {
 protected:
-    float attack1Cooldown;
-    float attack2Cooldown;
-    int attack1Damage;
-    int attack2Damage;
+    float itsAttack1Cooldown;
+    float itsAttack2Cooldown;
+    int itsAttack1Damage;
+    int itsAttack2Damage;
 public:
     BossModel();
     virtual void attack1(int heroX, int heroY) = 0;

@@ -5,7 +5,7 @@
 #include "bossmodel.h"
 #include "qtimer.h"
 
-class LordModel : public BossModel
+class LordModel : public QObject, public BossModel
 {
     Q_OBJECT
 public:
