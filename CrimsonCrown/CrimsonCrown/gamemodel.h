@@ -31,7 +31,7 @@ public:
 
 signals:
     void roomCleared();
-    // void gameOver(int score);
+    void gameOver(int score);
 
     //  autres méthodes
 };

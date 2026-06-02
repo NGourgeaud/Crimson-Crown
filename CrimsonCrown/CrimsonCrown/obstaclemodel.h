@@ -6,8 +6,6 @@
 class ObstacleModel
 {
 private:
-    int positionX;
-    int positionY;
     QRect itsHitBox;
 
 public:
