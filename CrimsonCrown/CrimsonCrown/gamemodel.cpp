@@ -68,6 +68,10 @@ void GameModel::spawnEnemiesForCurrentRoom(int count)
 }
 */
 
+void GameModel::updateLogic()
+{
+    // a implémenter
+}
 
 // Méthode dédiée pour générer et passer à la salle suivante
 void GameModel::goToNextRoom()
