@@ -4,6 +4,7 @@
 #include "enemymodel.h"
 #include "qobject.h"
 #include <QPolygon>
+#include <QTimer>
 
 class LancerModel : public QObject, public EnemyModel
 {
@@ -18,11 +19,16 @@ public:
     QRect getHitBox() const;
 
 private:
+    QTimer * itsCoolDownTimer;
+    bool canAttack;
     bool handleAI(int heroX, int heroY);
 
 signals:
     void death();
     void attacking(QPolygon hitbox);
+
+private slots:
+    void resetAttackCooldown();
 };
 
 #endif // LANCERMODEL_H

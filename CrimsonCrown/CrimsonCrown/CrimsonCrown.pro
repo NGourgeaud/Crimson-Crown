@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     appcontroller.cpp \
+    gamemodel.cpp \
     main.cpp \
     mainwindow.cpp \
     menucontroller.cpp \
@@ -22,6 +23,7 @@ SOURCES += \
 HEADERS += \
     appcontroller.h \
     config.h \
+    gamemodel.h \
     mainwindow.h \
     menucontroller.h \
     menuview.h \

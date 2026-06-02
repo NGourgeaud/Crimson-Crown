@@ -14,7 +14,12 @@ LancerModel::LancerModel(int maxHp, int speed, int x, int y, float attackCooldow
     itsAttackCooldown = attackCooldown;
     itsMaxAttackDistance = maxAttackDistance;
     itsAttackDamage = attackDamage;
+    canAttack = true;
+    itsCoolDownTimer = new QTimer();
+
+    connect(itsCoolDownTimer, &QTimer::timeout, this, &LancerModel::resetAttackCooldown);
 }
+
 ///
 /// \brief Updates the Lancer
 /// \param heroX: x position of the center
@@ -47,6 +52,8 @@ void LancerModel::attack(int heroX, int heroY)
     // 4. Map the rectangle through the transform to get a rotated polygon
     QPolygon attackHitbox = transform.mapToPolygon(baseAttackRect);
     emit attacking(attackHitbox);
+    canAttack = false;
+    itsCoolDownTimer->start(itsAttackCooldown*1000);
 }
 
 ///
@@ -78,6 +85,15 @@ bool LancerModel::handleAI(int heroX, int heroY)
     else{
         return true;
     }
+}
+
+///
+/// \brief Called to reset the atack cooldown
+///
+void LancerModel::resetAttackCooldown()
+{
+    canAttack = true;
+    itsCoolDownTimer->stop();
 }
 
 ///
