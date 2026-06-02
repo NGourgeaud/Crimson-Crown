@@ -15,7 +15,8 @@ AppController::AppController(QObject *parent)
     menuController(new MenuController(mainWindow, this)),
     currentView(nullptr),
     currentState(AppState::Menu),
-    charSelectController(new CharSelectController(mainWindow, this))
+    charSelectController(new CharSelectController(mainWindow, this)),
+    gameController(new GameController(mainWindow, this))
 {
 
     // Loading the medieval pixel art font
@@ -34,6 +35,9 @@ AppController::AppController(QObject *parent)
 
     connect(charSelectController, &CharSelectController::backToMenuRequested, this, &AppController::onMenuRequested);
     connect(charSelectController, &CharSelectController::characterSelected, this, &AppController::onGameRequested);
+
+    connect(gameController, &GameController::menuRequested, this, &AppController::onMenuRequested);
+    connect(gameController, &GameController::gameOver, this, &AppController::onGameOver);
 
     start();
 }
@@ -84,7 +88,7 @@ void AppController::onSettingsRequested() {
 /// \details Slot triggered to launch the main gameplay loop.
 ///
 void AppController::onGameRequested() {
-    // navigateTo(AppState::Game);
+    navigateTo(AppState::Game);
 }
 
 ///
@@ -124,6 +128,9 @@ void AppController::navigateTo(AppState state) {
     case AppState::CharSelect:
         currentView = charSelectController->createView();
         break;
+    case AppState::Game:
+        currentView = gameController->createView();
+        break;
     default:
         return;
     }
@@ -143,6 +150,8 @@ void AppController::cleanupCurrentView() {
         menuController->destroyView();
     } else if (currentState == AppState::CharSelect) {
         charSelectController->destroyView();
+    } else if (currentState == AppState::Game) {
+        gameController->destroyView();
     }
 
     currentView = nullptr;

@@ -1,17 +1,80 @@
 #include "gamecontroller.h"
 
-GameController::GameController() {
-    // Créer le modèle et la vue
-    itsModel = new GameModel();
-    itsView  = new GameView(itsModel);
-
-    // Relayer les événements clavier de la vue vers ce contrôleur
-    connect(itsView, &GameView::keyPressed,  this, &GameController::onKeyPressed);
-    connect(itsView, &GameView::keyReleased, this, &GameController::onKeyReleased);
+///
+/// \brief GameController::GameController
+///
+GameController::GameController(QWidget *parentWidget, QObject *parent)
+    : QObject(parent),
+    itsModel(new GameModel()),
+    itsView(nullptr),
+    parentWidget(parentWidget)
+{
+    // High-precision clock driving game frames at roughly 60 FPS (16ms)
+    itsTimer = new QTimer(this);
+    connect(itsTimer, &QTimer::timeout, this, &GameController::onTick);
 }
 
+///
+/// \brief GameController::~GameController
+///
+GameController::~GameController()
+{
+    delete itsModel;
+}
+
+///
+/// \brief GameController::createView
+/// \details Instantiates the hardware-focused viewport, routes device listeners, and spins up physics processing.
+///
+QWidget* GameController::createView()
+{
+    itsView = new GameView(itsModel, parentWidget);
+
+    // Wire physical keyboard abstractions down to functional coordinate mutations
+    connect(itsView, &GameView::keyPressed, this, &GameController::onKeyPressed);
+    connect(itsView, &GameView::keyReleased, this, &GameController::onKeyReleased);
+
+    // Boot game simulation ticking
+    itsTimer->start(16);
+
+    return itsView;
+}
+
+///
+/// \brief GameController::destroyView
+/// \details Suspends execution loops and clears graphical handles from volatile layers.
+///
+void GameController::destroyView()
+{
+    if (itsView == nullptr) return;
+
+    itsTimer->stop();
+    disconnect(itsView);
+    itsView->deleteLater();
+    itsView = nullptr;
+}
+
+///
+/// \brief GameController::onTick
+///
+void GameController::onTick()
+{
+    // Advance simulation frames (Uncomment when update loops are deployed in GameModel)
+    // itsModel->updateLogic();
+
+    if (itsView != nullptr) {
+        itsView->update();
+    }
+}
+
+///
+/// \brief GameController::onKeyPressed
+///
 void GameController::onKeyPressed(int key)
 {
+    // Safe guard model verification passes
+    if (!itsModel || !itsModel->getItsPlayer()) return;
+
     switch (key) {
     case Qt::Key_Left:
     case Qt::Key_Q:
@@ -34,8 +97,13 @@ void GameController::onKeyPressed(int key)
     }
 }
 
+///
+/// \brief GameController::onKeyReleased
+///
 void GameController::onKeyReleased(int key)
 {
+    if (!itsModel || !itsModel->getItsPlayer()) return;
+
     switch (key) {
     case Qt::Key_Left:
     case Qt::Key_Q:
