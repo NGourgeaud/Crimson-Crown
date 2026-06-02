@@ -9,6 +9,7 @@
 
 class BlacksmithModel : public PlayerModel
 {
+    Q_OBJECT
 public:
     BlacksmithModel();
     void attack1();

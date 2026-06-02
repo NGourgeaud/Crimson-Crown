@@ -40,6 +40,5 @@ const int LancerHeight = 0;
 
 const int LancerAttackHitboxWidth = 0;
 const int LancerAttackHitboxHeight = 0;
->>>>>>> CrimsonCrown/CrimsonCrown/config.h
 
 #endif // CONFIG_H

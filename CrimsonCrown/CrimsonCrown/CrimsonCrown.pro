@@ -9,17 +9,16 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    appcontroller.cpp \
     blacksmithmodel.cpp \
+    bossmodel.cpp \
+    charselectcontroller.cpp \
+    charselectview.cpp \
     enemymodel.cpp \
     entitymodel.cpp \
     gamecontroller.cpp \
     gamemodel.cpp \
     gameview.cpp \
-    appcontroller.cpp \
-    bossmodel.cpp \
-    charselectcontroller.cpp \
-    charselectview.cpp \
-    gamemodel.cpp \
     main.cpp \
     mainwindow.cpp \
     menucontroller.cpp \
@@ -32,21 +31,21 @@ SOURCES += \
     roomview.cpp
 
 HEADERS += \
-    blacksmithmodel.h \
     appcontroller.h \
+    blacksmithmodel.h \
     bossmodel.h \
     charselectcontroller.h \
     charselectview.h \
     config.h \
-    gamemodel.h \
-    mainwindow.h \
-    menucontroller.h \
-    menuview.h \
     enemymodel.h \
     entitymodel.h \
     gamecontroller.h \
+    gamemodel.h \
     gameview.h \
-    playermodel.h
+    mainwindow.h \
+    menucontroller.h \
+    menuview.h \
+    playermodel.h \
     lancermodel.h \
     obstaclemodel.h \
     obstacleview.h \
