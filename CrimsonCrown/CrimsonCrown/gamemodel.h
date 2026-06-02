@@ -1,7 +1,9 @@
 #ifndef GAMEMODEL_H
 #define GAMEMODEL_H
 
+<<<<<<< CrimsonCrown/CrimsonCrown/gamemodel.h
 #include <QObject>
+#include "enemymodel.h"
 #include "roommodel.h"
 // #include "blacksmithmodel.h"
 
@@ -11,6 +13,7 @@ class GameModel : public QObject
 
 private:
     RoomModel* currentRoom;
+    QList<EnemyModel*> itsEnemies;
     // BlackSmithModel* itsPlayer;
     int itsScore;
 

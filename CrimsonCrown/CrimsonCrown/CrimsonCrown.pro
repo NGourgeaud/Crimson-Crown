@@ -9,17 +9,38 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    appcontroller.cpp \
+    bossmodel.cpp \
+    charselectcontroller.cpp \
+    charselectview.cpp \
     gamemodel.cpp \
     main.cpp \
     mainwindow.cpp \
+    menucontroller.cpp \
+    menuview.cpp \
+    enemymodel.cpp \
+    entitymodel.cpp \
+    playermodel.cpp \
+    lancermodel.cpp \
     obstaclemodel.cpp \
     obstacleview.cpp \
     roommodel.cpp \
     roomview.cpp
 
 HEADERS += \
+    appcontroller.h \
+    bossmodel.h \
+    charselectcontroller.h \
+    charselectview.h \
+    config.h \
     gamemodel.h \
     mainwindow.h \
+    menucontroller.h \
+    menuview.h \
+    enemymodel.h \
+    entitymodel.h \
+    playermodel.h \
+    lancermodel.h
     obstaclemodel.h \
     obstacleview.h \
     roommodel.h \
@@ -30,6 +51,5 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-
-macx: QMAKE_CXXFLAGS += -Wno-implicit-function-declaration
-macx: QMAKE_CXXFLAGS += -Wno-error=implicit-function-declaration
+RESOURCES += \
+    images.qrc
