@@ -174,7 +174,7 @@ void LordModel::dashStep()
     transform.rotate(-angle);
 
     QPolygon attackHitbox = transform.mapToPolygon(baseAttackRect);
-    emit dashing(attackHitbox);
+    emit dashing(&attackHitbox, itsAttack2Damage);
 
     // On passe à l'étape suivante pour le prochain "tic" du timer
     currentDashStep++;

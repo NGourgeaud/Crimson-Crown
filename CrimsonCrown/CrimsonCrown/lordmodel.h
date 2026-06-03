@@ -35,7 +35,7 @@ private:
 signals:
     void death(BossModel * Boss);
     void attacking(QPainterPath * hitbox, int damage);
-    void dashing(QPolygon);
+    void dashing(QPolygon * hitbox, int damage);
 
 private slots:
     void resetAttack1Cooldown();
