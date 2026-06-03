@@ -77,11 +77,12 @@ void GameModel::spawnEnemies(bool isBoss)
         std::uniform_int_distribution<int> RoomY(roomBoundaries.topLeft().ry(),roomBoundaries.bottomLeft().ry());
 
         int nbEnemies = EnemiesNb(eng);
-        for (int i = 0; i<=nbEnemies; i++){
+        for (int i = 0; i < nbEnemies; i++){
             LancerModel * newEnnemy = new LancerModel(LancerDefaultMaxHp, LancerDefaultSpeed, RoomX(eng), RoomY(eng), LancerDefaultAttackCoolDown, LancerDefaultAttackDamage);
             itsEnemies.append(newEnnemy);
 
-           connect(newEnnemy, &LancerModel::death, this, &GameModel::onEnemyDeath);
+            // Utilisation d'une lambda pour sécuriser le passage de paramètre
+            connect(newEnnemy, &LancerModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
         }
     }
     else{
@@ -149,13 +150,18 @@ PlayerModel *GameModel::getItsPlayer() const
 
 void GameModel::onEnemyDeath(EnemyModel * model)
 {
-    QObject * qobjEnemy = dynamic_cast<QObject*>(model);
-    disconnect(qobjEnemy);
-    itsEnemies.remove(itsEnemies.indexOf(model));
-    delete model;
+    itsEnemies.removeOne(model);
 
     if (itsEnemies.empty()){
         currentRoom->unlockDoors();
+    }
+
+    QObject * qobjEnemy = dynamic_cast<QObject*>(model);
+    if (qobjEnemy) {
+        qobjEnemy->deleteLater();
+    }
+    else {
+        delete model;
     }
 }
 
