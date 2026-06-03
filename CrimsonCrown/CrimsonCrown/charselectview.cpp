@@ -3,62 +3,88 @@
 
 ///
 /// \brief CharSelectView::CharSelectView
-/// \details Constructor for the character selection view.
-/// Coordinates a centered layout system, applies a dark retro arcade stylesheet
-/// onto UI buttons, and binds interaction signals to enforce the MVC pattern.
-/// \param parent Pointer to the parent QWidget container (the MainWindow).
+/// \details Builds the character selection screen layout using nested layouts
+/// to position the hero on the bridge and the return button at the bottom right.
 ///
 CharSelectView::CharSelectView(QWidget *parent)
     : QWidget(parent) {
 
-    QHBoxLayout *mainLayout = new QHBoxLayout(this);
-
+    // Layout Principal Vertical
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN);
+    mainLayout->setAlignment(Qt::AlignTop);
 
-    QVBoxLayout *centerLayout = new QVBoxLayout();
-    centerLayout->setAlignment(Qt::AlignCenter);
-
+    // Titre de l'écran
     itsTitle = new QLabel(LABEL_CHARSELECT_TITLE);
     QFont titleFont("Alagard");
     titleFont.setPointSize(MENU_TITLE_FONT_SIZE);
     titleFont.setBold(true);
     itsTitle->setFont(titleFont);
     itsTitle->setStyleSheet("color: white; background: transparent;");
-    centerLayout->addWidget(itsTitle, 0, Qt::AlignHCenter);
+    mainLayout->addWidget(itsTitle, 0, Qt::AlignHCenter);
 
-    centerLayout->addStretch(4);
+    mainLayout->addStretch(3);
 
-    QString buttonStyle =
+    itsBlacksmithCardButton = new QPushButton();
+    itsBlacksmithCardButton->setFixedSize(160, 200);
+
+    QIcon blacksmithIcon(":/forgeron.png");
+    itsBlacksmithCardButton->setIcon(blacksmithIcon);
+    itsBlacksmithCardButton->setIconSize(QSize(160, 200));
+
+    QString blacksmithCardStyle =
         "QPushButton {"
-        "   background-color: black;"
+        "   border: none;"
+        "   background-color: transparent;"
+        "   background: none;"
+        "   outline: none;"
+        "}"
+        "QPushButton:hover {"
+        "   border: 3px solid #E30000;"
+        "}";
+    itsBlacksmithCardButton->setStyleSheet(blacksmithCardStyle);
+
+    connect(itsBlacksmithCardButton, &QPushButton::clicked, this, [this]() {
+        emit selectCharacterRequested(HeroType::Blacksmith);
+    });
+    mainLayout->addWidget(itsBlacksmithCardButton, 0, Qt::AlignHCenter);
+
+    mainLayout->addSpacing(5);
+
+    itsBlacksmithStatsLabel = new QLabel();
+    itsBlacksmithStatsLabel->setFixedSize(600, 130);
+    itsBlacksmithStatsLabel->setText(STATS_BLACKSMITH);
+    itsBlacksmithStatsLabel->setAlignment(Qt::AlignCenter);
+    itsBlacksmithStatsLabel->setStyleSheet("background: transparent;");
+    mainLayout->addWidget(itsBlacksmithStatsLabel, 0, Qt::AlignHCenter);
+
+    QHBoxLayout *bottomLayout = new QHBoxLayout();
+
+    bottomLayout->addStretch(1);
+
+    QString backButtonStyle =
+        "QPushButton {"
+        "   background-color: #111111;"
         "   color: white;"
         "   border: 2px solid #555555;"
         "   font-family: 'Alagard';"
-        "   font-size: 14px;"
+        "   font-size: 15px;"
         "   font-weight: bold;"
+        "   border-radius: 3px;"
         "}"
         "QPushButton:hover {"
-        "   background-color: #222222;"
+        "   background-color: #E30000;"
         "   border-color: white;"
         "}";
 
-    itsBlacksmithCardButton = new QPushButton(LABEL_CONTINUE);
-    itsBlacksmithCardButton->setFixedSize(220, BUTTON_HEIGHT);
-    itsBlacksmithCardButton->setStyleSheet(buttonStyle);
-    connect(itsBlacksmithCardButton, &QPushButton::clicked, this, &CharSelectView::selectCharacterRequested);
-    centerLayout->addWidget(itsBlacksmithCardButton, 0, Qt::AlignHCenter);
-
-    centerLayout->addSpacing(LAYOUT_SPACING);
-
     itsBackButton = new QPushButton(LABEL_BACK);
     itsBackButton->setFixedSize(220, BUTTON_HEIGHT);
-    itsBackButton->setStyleSheet(buttonStyle);
+    itsBackButton->setStyleSheet(backButtonStyle);
     connect(itsBackButton, &QPushButton::clicked, this, &CharSelectView::backRequested);
-    centerLayout->addWidget(itsBackButton, 0, Qt::AlignHCenter);
 
-    centerLayout->addStretch(1);
+    bottomLayout->addWidget(itsBackButton);
 
-    mainLayout->addLayout(centerLayout);
+    mainLayout->addLayout(bottomLayout);
 }
 
 ///

@@ -20,7 +20,7 @@ private slots:
     void onCharSelectRequested();
     void onLeaderboardRequested();
     void onSettingsRequested();
-    void onGameRequested();
+    void onGameRequested(HeroType type);
     void onQuitRequested();
     void onGameOver(int score);
 
@@ -34,6 +34,7 @@ private:
     AppState currentState;
     CharSelectController* charSelectController;
     GameController *gameController;
+    HeroType selectedHero = HeroType::None;
 };
 
 #endif // APPCONTROLLER_H

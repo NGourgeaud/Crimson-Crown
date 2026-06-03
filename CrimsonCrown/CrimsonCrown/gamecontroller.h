@@ -13,7 +13,7 @@ public:
     explicit GameController(QWidget *parentWidget = nullptr, QObject *parent = nullptr);
     ~GameController();
 
-    QWidget *createView();
+    QWidget *createView(HeroType hero);
     void destroyView();
 
 signals:

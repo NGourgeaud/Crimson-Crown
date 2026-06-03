@@ -22,7 +22,7 @@ public:
     GameModel();
     ~GameModel();
 
-    void resetGame(); // Méthode pour (re)lancer une partie
+    void resetGame(HeroType hero); // Méthode pour (re)lancer une partie
 
     const RoomModel* getCurrentRoom() const;
 

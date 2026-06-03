@@ -100,7 +100,7 @@ void PlayerModel::setAttack2(bool enabled)
     isAttack2 = enabled;
 }
 
-void PlayerModel::take_damage(int amont)
+void PlayerModel::takeDamage(int amont)
 {
     itsHP -= amont;
     if (itsHP<=0)
@@ -124,7 +124,7 @@ void PlayerModel::resetAttackCooldown2()
     itsCooldown2->stop();
 }
 
-QRectF PlayerModel::getItsHitBox() const
+QRect PlayerModel::getHitBox() const
 {
     return itsHitBox;
 }

@@ -6,6 +6,7 @@
 GameView::GameView(GameModel *model, QWidget *parent)
     : QWidget(parent), itsModel(model)
 {
+    setFocusPolicy(Qt::StrongFocus);
 }
 
 ///
