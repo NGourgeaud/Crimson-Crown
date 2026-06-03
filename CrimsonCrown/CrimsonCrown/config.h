@@ -46,6 +46,11 @@ enum HeroType {
     Blacksmith
 };
 
+enum EnemyType{
+    NOTDEF,
+    LANCER
+};
+
 // --- STATISTIQUES ET DESCRIPTION DU FORGERON (HTML STYLISÉ) ---
 const QString STATS_BLACKSMITH =
     "<p style='font-family: Alagard; font-size: 24px; color: #FFD700; margin: 0 0 4px 0;'><b>LE FORGERON</b></p>"

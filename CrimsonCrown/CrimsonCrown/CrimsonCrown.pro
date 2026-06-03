@@ -16,6 +16,7 @@ SOURCES += \
     charselectcontroller.cpp \
     charselectview.cpp \
     enemymodel.cpp \
+    enemyview.cpp \
     entitymodel.cpp \
     gamecontroller.cpp \
     gamemodel.cpp \
@@ -42,6 +43,7 @@ HEADERS += \
     charselectview.h \
     config.h \
     enemymodel.h \
+    enemyview.h \
     entitymodel.h \
     gamecontroller.h \
     gamemodel.h \
