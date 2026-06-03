@@ -29,7 +29,10 @@ LordModel::LordModel(int maxHp, int speed, int x, int y, float attack1Cooldown, 
     connect(itsDashTimer, &QTimer::timeout, this, &LordModel::dashStep);
 }
 
-
+///
+/// \brief Called to update the Lord
+/// \param heroPos: QPointF of the hero's position
+///
 void LordModel::update(QPointF heroPos)
 {
     if(handleAI(heroPos))
@@ -44,6 +47,10 @@ void LordModel::update(QPointF heroPos)
 
 }
 
+///
+/// \brief First attack of the Lors (spin)
+/// \param heroPos: QPointF of the hero's position
+///
 void LordModel::attack1(QPointF heroPos)
 {
     QPainterPath * hitboxCercle = nullptr;
@@ -53,6 +60,10 @@ void LordModel::attack1(QPointF heroPos)
     emit attacking(hitboxCercle, itsAttack1Damage);
 }
 
+///
+/// \brief Secondary attack of the Lord (dash)
+/// \param heroPos: QPointF of the hero's position
+///
 void LordModel::attack2(QPointF heroPos)
 {
 
@@ -68,6 +79,10 @@ void LordModel::attack2(QPointF heroPos)
     isDashing = true;
 }
 
+///
+/// \brief Damages the Lord of the ammount
+/// \param amount: amout of the damage the Lord will take
+///
 void LordModel::takeDamage(int amount)
 {
     itsHP-= amount;
@@ -75,21 +90,39 @@ void LordModel::takeDamage(int amount)
         emit death(this);
 }
 
-void LordModel::move(int axisX, int axisY)
+///
+/// \brief Moves the Lord on pos
+/// \param pos: QPointF of the position
+///
+void LordModel::move(QPointF pos)
 {
-    itsHitBox.setTopLeft(QPoint(axisX,axisY));
+    itsHitBox.moveCenter(pos);
 }
 
+///
+/// \brief Returns the Lord's Hitbox
+/// \return
+///
 QRectF LordModel::getHitBox() const
 {
     return itsHitBox;
 }
 
+///
+/// \brief Handles the Lord's AI movement
+/// \param heroPos: QPointF of the hero's position
+/// \return
+///
 bool LordModel::handleAI(QPointF heroPos)
 {
     if (QLineF(heroPos, itsHitBox.center()).length() > LordAttack1HitBoxWidth/2 and !isDashing){
         for (int i = 0; i<itsSpeed; i++){
-            QLineF();
+            QLineF aimLine = QLineF(itsHitBox.center(), heroPos);
+            qreal angle = aimLine.angle();
+
+            QLineF movementVector = QLineF::fromPolar(1, angle);
+
+            itsHitBox.translate(movementVector.dx(), movementVector.dy());
         }
         return false;
     }
@@ -98,18 +131,27 @@ bool LordModel::handleAI(QPointF heroPos)
     }
 }
 
+///
+/// \brief Resets Attack1 cooldown
+///
 void LordModel::resetAttack1Cooldown()
 {
     canAttack1 = true;
     itsCoolDownTimer1->stop();
 }
 
+///
+/// \brief Resets Attack2 cooldown
+///
 void LordModel::resetAttack2Cooldown()
 {
     canAttack2 = true;
     itsCoolDownTimer2->stop();
 }
 
+///
+/// \brief Called to process each dash step
+///
 void LordModel::dashStep()
 {
     if (currentDashStep >= maxDashSteps) {

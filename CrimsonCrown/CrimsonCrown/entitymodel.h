@@ -20,7 +20,7 @@ protected:
 public:
     EntityModel();
     virtual void takeDamage(int amount) = 0;
-    virtual void move(QPointF heroPos) = 0;
+    virtual void move(QPointF pos) = 0;
     virtual QRectF getHitBox() const = 0;
 };
 

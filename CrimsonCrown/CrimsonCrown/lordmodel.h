@@ -14,7 +14,7 @@ public:
     LordModel(int maxHp, int speed, int x, int y, float attack1Cooldown,float attack2Cooldown, int attack1Damage, int attack2Damage);
     void update(QPointF heroPos);
     void takeDamage(int amount);
-    void move(int axisX,int axisY);
+    void move(QPointF pos);
     QRectF getHitBox() const;
 
 private:
