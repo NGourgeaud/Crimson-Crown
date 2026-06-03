@@ -11,6 +11,7 @@ protected:
     int itsAttackDamage;
 public:
     EnemyModel();
+    virtual ~EnemyModel() = default;
     virtual void attack(QPointF heroPos) = 0;
     virtual bool handleAI(QPointF heroPos) =0;
 };

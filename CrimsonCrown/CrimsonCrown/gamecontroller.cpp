@@ -90,6 +90,10 @@ void GameController::onKeyPressed(int key)
     case Qt::Key_S:
         itsModel->getItsPlayer()->setMovementDown(true);
         break;
+    case Qt::Key_K:
+        itsModel->getItsPlayer()->setAttack1(true);
+    case Qt::Key_L:
+        itsModel->getItsPlayer()->setAttack2(true);
     default:
         break;
     }
@@ -119,6 +123,10 @@ void GameController::onKeyReleased(int key)
     case Qt::Key_S:
         itsModel->getItsPlayer()->setMovementDown(false);
         break;
+    case Qt::Key_K:
+        itsModel->getItsPlayer()->setAttack1(false);
+    case Qt::Key_L:
+        itsModel->getItsPlayer()->setAttack2(false);
     default:
         break;
     }
