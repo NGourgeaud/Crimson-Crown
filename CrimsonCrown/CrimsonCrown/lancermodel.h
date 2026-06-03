@@ -24,7 +24,7 @@ private:
     bool handleAI(QPointF heroPos);
 
 signals:
-    void death();
+    void death(LancerModel * model);
     void attacking(QPolygon hitbox, int damage);
 
 private slots:

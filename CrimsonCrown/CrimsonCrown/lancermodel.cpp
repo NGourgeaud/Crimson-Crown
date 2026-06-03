@@ -97,7 +97,7 @@ void LancerModel::takeDamage(int amount)
 {
     itsHP-= amount;
     if (itsHP<=0)
-        emit death();
+        emit death(this);
 }
 
 ///
