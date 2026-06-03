@@ -30,21 +30,21 @@ LordModel::LordModel(int maxHp, int speed, int x, int y, float attack1Cooldown, 
 }
 
 
-void LordModel::update(int heroX, int heroY)
+void LordModel::update(QPointF heroPos)
 {
-    if(handleAI(heroX, heroY))
+    if(handleAI(heroPos))
     {
-        if(QLineF(QPoint(heroX, heroY), itsHitBox.center()).length() < LordAttack1HitBoxWidth-25 and canAttack1){
-            attack1(heroX, heroY);
+        if(QLineF(heroPos, itsHitBox.center()).length() < LordAttack1HitBoxWidth-25 and canAttack1){
+            attack1(heroPos);
         }
     }
-    if (QLineF(QPoint(heroX, heroY), itsHitBox.center()).length() > LordAttack1HitBoxWidth+100 and canAttack2){
-        attack2(heroX, heroY);
+    if (QLineF(heroPos, itsHitBox.center()).length() > LordAttack1HitBoxWidth+100 and canAttack2){
+        attack2(heroPos);
     }
 
 }
 
-void LordModel::attack1(int heroX, int heroY)
+void LordModel::attack1(QPointF heroPos)
 {
     QPainterPath * hitboxCercle = nullptr;
     hitboxCercle->addEllipse(itsHitBox.center().x(), itsHitBox.center().y(), LordAttack1HitBoxWidth, LordAttack1HitBoxHeight);
@@ -53,10 +53,10 @@ void LordModel::attack1(int heroX, int heroY)
     emit attacking(hitboxCercle, itsAttack1Damage);
 }
 
-void LordModel::attack2(int heroX, int heroY)
+void LordModel::attack2(QPointF heroPos)
 {
 
-    QLineF aimLine(itsHitBox.center(), QPoint(heroX, heroY));
+    QLineF aimLine(itsHitBox.center(), heroPos);
 
     currentAimLine = aimLine;
     currentDashStep = 0;
@@ -80,14 +80,22 @@ void LordModel::move(int axisX, int axisY)
     itsHitBox.setTopLeft(QPoint(axisX,axisY));
 }
 
-QRect LordModel::getHitBox() const
+QRectF LordModel::getHitBox() const
 {
     return itsHitBox;
 }
 
 bool LordModel::handleAI(int heroX, int heroY)
 {
-
+    if (QLineF(QPoint(heroX, heroY), itsHitBox.center()).length() > LordAttack1HitBoxWidth/2 and !isDashing){
+        for (int i = 0; i<itsSpeed; i++){
+            QLineF();
+        }
+        return false;
+    }
+    else{
+        return true;
+    }
 }
 
 void LordModel::resetAttack1Cooldown()

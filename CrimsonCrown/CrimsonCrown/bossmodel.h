@@ -12,9 +12,9 @@ protected:
     int itsAttack2Damage;
 public:
     BossModel();
-    virtual void attack1(int heroX, int heroY) = 0;
-    virtual void attack2(int heroX, int heroY) = 0;
-    virtual bool handleAI(int heroX, int heroY) = 0;
+    virtual void attack1(QPointF heroPos) = 0;
+    virtual void attack2(QPointF heroPos) = 0;
+    virtual bool handleAI(QPointF heroPos) = 0;
 };
 
 #endif // BOSSMODEL_H
