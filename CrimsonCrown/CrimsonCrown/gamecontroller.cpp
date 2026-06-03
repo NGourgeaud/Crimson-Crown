@@ -12,6 +12,8 @@ GameController::GameController(QWidget *parentWidget, QObject *parent)
     // High-precision clock driving game frames at roughly 60 FPS (16ms)
     itsTimer = new QTimer(this);
     connect(itsTimer, &QTimer::timeout, this, &GameController::onTick);
+
+    connect(itsModel->getItsPlayer(), &PlayerModel::death, this, &GameController::onPlayerDeath);
 }
 
 ///

@@ -131,7 +131,7 @@ void GameModel::goToNextRoom()
 
 PlayerModel *GameModel::getItsPlayer() const
 {
-    return itsPlayer; //
+    return itsPlayer;
 }
 
 int GameModel::getItsScore() const

@@ -37,8 +37,6 @@ public:
 
 signals:
     void roomCleared();
-    void gameOver(int score);
-    void gameWon(int finalScore);
 };
 
 #endif // GAMEMODEL_H
