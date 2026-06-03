@@ -16,7 +16,9 @@ AppController::AppController(QObject *parent)
     currentView(nullptr),
     currentState(AppState::Menu),
     charSelectController(new CharSelectController(mainWindow, this)),
-    gameController(new GameController(mainWindow, this))
+    gameController(new GameController(mainWindow, this)),
+    itsGameOverController(new GameOverController()),
+    itsGameWonController(new GameWonController())
 {
     // Police
     int fontId = QFontDatabase::addApplicationFont(":/alagard.ttf");
@@ -90,16 +92,6 @@ void AppController::onGameRequested(HeroType type) {
 }
 
 ///
-/// \brief AppController::onGameOver
-/// \details Slot triggered upon reaching a Game Over state.
-/// \param score The final score achieved by the player during the session.
-///
-void AppController::onGameOver(int score) {
-    Q_UNUSED(score);
-    navigateTo(AppState::Menu);
-}
-
-///
 /// \brief AppController::onQuitRequested
 /// \details Slot triggered when the 'QUIT' button is clicked.
 ///
@@ -153,4 +145,17 @@ void AppController::cleanupCurrentView() {
     }
 
     currentView = nullptr;
+}
+
+void AppController::onGameOver(int score)
+{
+    // Logique quand la partie est perdue
+    gameController->destroyView();
+    mainWindow->setCentralWidget(itsGameOverControler->makeView(score));
+}
+
+void AppController::onGameWon(int score)
+{
+    gameController->destroyView();
+    mainWindow->setCentralWidget(itsGameWonControler->makeView(score));
 }
