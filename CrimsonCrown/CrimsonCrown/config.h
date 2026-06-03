@@ -82,6 +82,4 @@ namespace keyBind {
 }
 
 
-
-
 #endif // CONFIG_H
