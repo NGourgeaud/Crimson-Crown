@@ -22,7 +22,7 @@ void EnemyView::setItsTexture(EnemyType type)
 {
     switch (itsType) {
     case LANCER:
-        // itsTexTure = QPixmap(":/forgeron.png");
+        itsTexTure = QPixmap(":/lancier.png");
         break;
     default:
         break;
