@@ -1,19 +1,13 @@
 #include "gameview.h"
 
-///
-/// \brief GameView::GameView
-///
 GameView::GameView(GameModel *model, QWidget *parent)
-    : QWidget(parent), itsModel(model)
+    : QWidget(parent), itsModel(model), isCameraInitialized(false)
 {
     setFocusPolicy(Qt::StrongFocus);
-    isCameraInitialized = false;
 
-    // 1. Instanciation des vues statiques
     itsRoomView = new RoomView();
     itsObstacleView = new ObstacleView();
 
-    // 2. Instanciation de la vue du joueur
     if (itsModel->getItsPlayer() != nullptr) {
         itsPlayerView = new PlayerView(nullptr, itsModel->getItsPlayer());
         itsPlayerView->setItsTexture(HeroType::Blacksmith);
@@ -22,9 +16,6 @@ GameView::GameView(GameModel *model, QWidget *parent)
     }
 }
 
-///
-/// \brief GameView::~GameView
-///
 GameView::~GameView()
 {
     delete itsRoomView;
@@ -34,34 +25,19 @@ GameView::~GameView()
     }
 }
 
-void GameView::keyPressEvent(QKeyEvent *event)
-{
-    if (!event->isAutoRepeat()) {
-        emit keyPressed(event->key());
-    }
-}
+void GameView::keyPressEvent(QKeyEvent *event) { if (!event->isAutoRepeat()) emit keyPressed(event->key()); }
+void GameView::keyReleaseEvent(QKeyEvent *event) { if (!event->isAutoRepeat()) emit keyReleased(event->key()); }
 
-void GameView::keyReleaseEvent(QKeyEvent *event)
-{
-    if (!event->isAutoRepeat()) {
-        emit keyReleased(event->key());
-    }
-}
-
-///
-/// \brief GameView::paintEvent
-///
 void GameView::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     QPainter painter(this);
 
-    // --- OPTIMISATION FLUIDITÉ ---
-    // Force Qt à lisser les pixels lors des déplacements
+    // Lissage des textures (Anti-Aliasing)
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
 
-    // 1. FOND D'ÉCRAN GLOBAL
+    // Fond global (Ténèbres)
     QPixmap background(":/fondjeu.png");
     painter.drawPixmap(0, 0, this->width(), this->height(), background);
     painter.fillRect(this->rect(), QColor(0, 0, 0, 150));
@@ -69,12 +45,12 @@ void GameView::paintEvent(QPaintEvent *event)
     if (itsModel->getItsPlayer() == nullptr) return;
 
     // ==========================================
-    // 2. LA CAMÉRA FLUIDE (LERP) FAÇON SOUL KNIGHT
+    // CAMÉRA DYNAMIQUE LERP
     // ==========================================
     QPointF playerCenter = itsModel->getItsPlayer()->getHitBox().center();
-    QPointF cameraTarget = playerCenter; // C'est là que la caméra VEUT aller
+    QPointF cameraTarget = playerCenter;
 
-    // On calcule la cible (Le confinement contre les murs)
+    // Cherche dans quelle salle on est pour faire le confinement (Clamping)
     for (RoomModel* room : itsModel->getAllRooms()) {
         QRectF roomRect(room->getOffsetX(), room->getOffsetY(), room->getWidth(), room->getHeight());
 
@@ -94,27 +70,23 @@ void GameView::paintEvent(QPaintEvent *event)
         }
     }
 
-    // -- LA MAGIE DU LISSAGE (L'ÉLASTIQUE) --
-
-    // Si le jeu vient de se lancer, on téléporte la caméra direct sur le joueur
     if (!isCameraInitialized) {
         currentCameraCenter = cameraTarget;
         isCameraInitialized = true;
     }
 
-    // Le Lerp : La caméra fait 15% du chemin vers sa cible à chaque frame (60 fois par seconde)
-    qreal smoothing = 0.25; // Modifie cette valeur ! 0.05 = Caméra très lente, 0.5 = Très rapide
+    // Le fameux "élastique"
+    qreal smoothing = 0.15;
     currentCameraCenter.setX(currentCameraCenter.x() + (cameraTarget.x() - currentCameraCenter.x()) * smoothing);
     currentCameraCenter.setY(currentCameraCenter.y() + (cameraTarget.y() - currentCameraCenter.y()) * smoothing);
 
-    // Calcul du décalage final pour dessiner
     QPointF cameraOffset(this->width() / 2.0 - currentCameraCenter.x(),
                          this->height() / 2.0 - currentCameraCenter.y());
 
     painter.save();
     painter.translate(cameraOffset);
 
-    // 3. DESSIN DE LA CARTE COMPLÈTE
+    // DESSIN DU DONJON (Avec ses bordures bien nettes)
     for (RoomModel* room : itsModel->getAllRooms()) {
         painter.save();
         painter.translate(room->getOffsetX(), room->getOffsetY());
@@ -122,7 +94,7 @@ void GameView::paintEvent(QPaintEvent *event)
         painter.restore();
     }
 
-    // 4. DESSIN DU JOUEUR
+    // DESSIN DU JOUEUR
     if (itsPlayerView != nullptr) {
         itsPlayerView->draw(&painter);
     }

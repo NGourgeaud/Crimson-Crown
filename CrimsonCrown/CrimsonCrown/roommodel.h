@@ -2,15 +2,11 @@
 #define ROOMMODEL_H
 
 #include <QList>
+#include <QRectF>
 #include "obstaclemodel.h"
 
-enum RoomType {
-    Spawn,
-    Combat,
-    Boss,
-    CorridorHorizontal,
-    CorridorVertical
-};
+// 1. Définition du type de salle
+enum RoomType { Spawn, CorridorHorizontal, CorridorVertical, Combat, Boss };
 
 class RoomModel
 {
@@ -18,36 +14,39 @@ private:
     bool isLocked;
     int remainingEnemyCount;
     QList<ObstacleModel*> itsObstacles;
+    bool isCorridor;
+    bool isBossRoom;
 
+    // Ajout des attributs manquants
     RoomType itsType;
-    int offsetX;
-    int offsetY;
-
-    // --- NOUVEAUTÉ : La salle connait sa taille ! ---
-    int itsWidth;
-    int itsHeight;
+    QRectF itsBounds;
 
 public:
-    // On met des tailles par défaut très grandes
-    RoomModel(RoomType type, int x = 0, int y = 0, int width = 1200, int height = 800);
+    // Mise à jour du constructeur pour inclure le type et la géométrie
+    RoomModel(RoomType type, int x, int y, int w, int h);
     ~RoomModel();
 
     void lockDoors();
     void unlockDoors();
     void spawnEnemies(int count);
 
+    // Getters
     const QList<ObstacleModel*>& getItsObstacles() const;
     bool getIsLocked() const;
-    RoomType getType() const;
+    bool getIsCorridor() const;
+    bool getIsBossRoom() const;
     int getRemainingEnemyCount() const;
-    int getOffsetX() const;
-    int getOffsetY() const;
+    QRectF getBounds() const;
 
-    // Nouveaux getters
-    int getWidth() const;
-    int getHeight() const;
+    RoomType getType() const { return itsType; }
+    int getOffsetX() const { return itsBounds.x(); }
+    int getOffsetY() const { return itsBounds.y(); }
+    int getWidth() const { return itsBounds.width(); }
+    int getHeight() const { return itsBounds.height(); }
+    // Dans roommodel.cpp
+
 
     void addObstacle(int x, int y, int width, int height);
 };
 
-#endif // ROOMMODEL_H
+#endif

@@ -1,8 +1,6 @@
 #include "enemymodel.h"
 
+EnemyModel::EnemyModel() {}
 
-
-EnemyModel::EnemyModel()
-{
-
-}
+// FIX
+EnemyModel::~EnemyModel() {}

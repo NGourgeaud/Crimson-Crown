@@ -1,6 +1,7 @@
 #ifndef ENTITYMODEL_H
 #define ENTITYMODEL_H
 #include <QRect>
+#include <QPointF>
 
 enum Direction{
     Left,
@@ -23,6 +24,8 @@ protected:
 
 public:
     EntityModel();
+    virtual ~EntityModel(); // FIX : On ajoute le destructeur virtuel !
+
     virtual void takeDamage(int amount) = 0;
     virtual void move(QPointF pos) = 0;
     virtual QRectF getHitBox() const = 0;

@@ -67,5 +67,7 @@ const int LordAttack1HitBoxHeight = 100;
 const int LordAttack2HitBoxWidth = 40;
 const int LordAttack2HitBoxHeight = 30;
 
+const float CAMERA_LERP_SPEED = 0.07f;  // Vitesse de lissage (0.05 = très fluide, 0.2 = très rapide)
+const float CAMERA_MAX_OFFSET = 100.0f; // Distance max d'anticipation en pixels s'il court
 
 #endif // CONFIG_H
