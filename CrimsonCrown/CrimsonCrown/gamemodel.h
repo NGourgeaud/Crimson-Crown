@@ -33,12 +33,12 @@ public:
 
     PlayerModel * getItsPlayer() const;
 
+    int getItsScore() const;
+
 signals:
     void roomCleared();
-
     void gameOver(int score);
-
-    //  autres méthodes
+    void gameWon(int finalScore);
 };
 
 #endif // GAMEMODEL_H

@@ -21,6 +21,7 @@ signals:
     void gameOver(int score);
 
 private slots:
+    void onPlayerDeath();
     void onTick();
     void onKeyPressed(int key);
     void onKeyReleased(int key);

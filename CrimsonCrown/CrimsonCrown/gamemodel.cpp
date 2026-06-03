@@ -133,3 +133,8 @@ PlayerModel *GameModel::getItsPlayer() const
 {
     return itsPlayer; //
 }
+
+int GameModel::getItsScore() const
+{
+    return itsScore;
+}

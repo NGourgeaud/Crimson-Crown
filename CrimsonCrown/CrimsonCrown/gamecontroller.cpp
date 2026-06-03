@@ -52,6 +52,11 @@ void GameController::destroyView()
     itsView = nullptr;
 }
 
+void GameController::onPlayerDeath()
+{
+    emit gameOver(itsModel->getItsScore());
+}
+
 ///
 /// \brief GameController::onTick
 ///
