@@ -53,6 +53,7 @@ void LordModel::update(QPointF heroPos)
 ///
 void LordModel::attack1(QPointF heroPos)
 {
+    Q_UNUSED(heroPos);
     QPainterPath * hitboxCercle = nullptr;
     hitboxCercle->addEllipse(itsHitBox.center().x(), itsHitBox.center().y(), LordAttack1HitBoxWidth, LordAttack1HitBoxHeight);
     canAttack1 = false;
