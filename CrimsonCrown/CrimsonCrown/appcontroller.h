@@ -2,6 +2,8 @@
 #define APPCONTROLLER_H
 
 #include <QObject>
+#include "gameovercontroller.h"
+#include "gamewoncontroller.h"
 #include "mainwindow.h"
 #include "menucontroller.h"
 #include "charselectcontroller.h"
@@ -23,6 +25,7 @@ private slots:
     void onGameRequested(HeroType type);
     void onQuitRequested();
     void onGameOver(int score);
+    void onGameWon(int score);
 
 private:
     void navigateTo(AppState state);
@@ -35,6 +38,8 @@ private:
     CharSelectController* charSelectController;
     GameController *gameController;
     HeroType selectedHero = HeroType::None;
+    GameOverController * itsGameOverController;
+    GameWonController * itsGameWonController;
 };
 
 #endif // APPCONTROLLER_H
