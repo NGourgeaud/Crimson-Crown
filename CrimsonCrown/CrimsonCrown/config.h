@@ -67,5 +67,16 @@ const int LordAttack1HitBoxHeight = 100;
 const int LordAttack2HitBoxWidth = 40;
 const int LordAttack2HitBoxHeight = 30;
 
+namespace keyBind {
+    const Qt::Key keyUp = Qt::Key_Z;
+    const Qt::Key keyDown = Qt::Key_S;
+    const Qt::Key keyLeft = Qt::Key_Q;
+    const Qt::Key keyRight = Qt::Key_D;
+    const Qt::Key keyAttaque1 = Qt::Key_K;
+    const Qt::Key keyAttaque2 = Qt::Key_L;
+}
+
+
+
 
 #endif // CONFIG_H

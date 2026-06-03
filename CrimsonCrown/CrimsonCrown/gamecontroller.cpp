@@ -74,25 +74,21 @@ void GameController::onKeyPressed(int key)
     if (!itsModel || !itsModel->getItsPlayer()) return;
 
     switch (key) {
-    case Qt::Key_Left:
-    case Qt::Key_Q:
+    case keyBind::keyLeft:
         itsModel->getItsPlayer()->setMovementLeft(true);
         break;
-    case Qt::Key_Right:
-    case Qt::Key_D:
+    case keyBind::keyRight:
         itsModel->getItsPlayer()->setMovementRight(true);
         break;
-    case Qt::Key_Up:
-    case Qt::Key_Z:
+    case keyBind::keyUp:
         itsModel->getItsPlayer()->setMovementUp(true);
         break;
-    case Qt::Key_Down:
-    case Qt::Key_S:
+    case keyBind::keyDown:
         itsModel->getItsPlayer()->setMovementDown(true);
         break;
-    case Qt::Key_K:
+    case keyBind::keyAttaque1:
         itsModel->getItsPlayer()->setAttack1(true);
-    case Qt::Key_L:
+    case keyBind::keyAttaque2:
         itsModel->getItsPlayer()->setAttack2(true);
     default:
         break;
@@ -107,25 +103,21 @@ void GameController::onKeyReleased(int key)
     if (!itsModel || !itsModel->getItsPlayer()) return;
 
     switch (key) {
-    case Qt::Key_Left:
-    case Qt::Key_Q:
+    case keyBind::keyLeft:
         itsModel->getItsPlayer()->setMovementLeft(false);
         break;
-    case Qt::Key_Right:
-    case Qt::Key_D:
+    case keyBind::keyRight:
         itsModel->getItsPlayer()->setMovementRight(false);
         break;
-    case Qt::Key_Up:
-    case Qt::Key_Z:
+    case keyBind::keyUp:
         itsModel->getItsPlayer()->setMovementUp(false);
         break;
-    case Qt::Key_Down:
-    case Qt::Key_S:
+    case keyBind::keyDown:
         itsModel->getItsPlayer()->setMovementDown(false);
         break;
-    case Qt::Key_K:
+    case keyBind::keyAttaque1:
         itsModel->getItsPlayer()->setAttack1(false);
-    case Qt::Key_L:
+    case keyBind::keyAttaque2:
         itsModel->getItsPlayer()->setAttack2(false);
     default:
         break;
