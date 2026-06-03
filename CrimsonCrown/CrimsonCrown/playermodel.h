@@ -29,10 +29,10 @@ protected:
     Direction itsDirection;
     QRectF itsHitBox;
 
-    //HeroType itsName;
+    HeroType itsName;
 
 public:
-    PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, int aAttack2Damage, std::string aName);
+    PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, int aAttack2Damage, HeroType aName);
     virtual void attack1() = 0;
     virtual void attack2() = 0;
     void update();
@@ -43,8 +43,8 @@ public:
     void setAttack1(bool enabled);
     void setAttack2(bool enabled);
     void takeDamage(int amont);
-    void move(int axisX, int axisY);
-    QRect getHitBox() const;
+    void move(QPointF pos) ;
+    QRectF getHitBox() const;
     void setCenter(QPoint centre);
 
 signals:

@@ -107,9 +107,9 @@ void PlayerModel::takeDamage(int amont)
         emit death();
 }
 
-void PlayerModel::move(int axisX, int axisY)
+void PlayerModel::move(QPointF pos)
 {
-    itsHitBox.moveTopLeft(QPoint(axisX,axisY));
+    itsHitBox.moveTopLeft(pos);
 }
 
 void PlayerModel::resetAttackCooldown1()
@@ -124,7 +124,7 @@ void PlayerModel::resetAttackCooldown2()
     itsCooldown2->stop();
 }
 
-QRect PlayerModel::getHitBox() const
+QRectF PlayerModel::getHitBox() const
 {
     return itsHitBox;
 }

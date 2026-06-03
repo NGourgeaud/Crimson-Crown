@@ -113,9 +113,9 @@ void LancerModel::takeDamage(int amount)
 /// \param axisX: x center
 /// \param axisY: y center
 ///
-void LancerModel::move(int axisX, int axisY)
+void LancerModel::move(QPointF pos)
 {
-    itsHitBox.setTopLeft(QPoint(axisX,axisY));
+    itsHitBox.setTopLeft(pos);
 }
 
 ///

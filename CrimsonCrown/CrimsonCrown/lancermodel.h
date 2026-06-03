@@ -15,7 +15,7 @@ public:
     void update(QPointF heroPos);
     void attack(QPointF heroPos);
     void takeDamage(int amount);
-    void move(int axisX,int axisY);
+    void move(QPointF pos);
     QRectF getHitBox() const;
 
 private:
