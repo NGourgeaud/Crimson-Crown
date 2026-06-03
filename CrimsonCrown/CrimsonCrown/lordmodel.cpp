@@ -85,9 +85,9 @@ QRectF LordModel::getHitBox() const
     return itsHitBox;
 }
 
-bool LordModel::handleAI(int heroX, int heroY)
+bool LordModel::handleAI(QPointF heroPos)
 {
-    if (QLineF(QPoint(heroX, heroY), itsHitBox.center()).length() > LordAttack1HitBoxWidth/2 and !isDashing){
+    if (QLineF(heroPos, itsHitBox.center()).length() > LordAttack1HitBoxWidth/2 and !isDashing){
         for (int i = 0; i<itsSpeed; i++){
             QLineF();
         }
