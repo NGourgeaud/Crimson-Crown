@@ -72,7 +72,7 @@ void GameModel::spawnEnemies(bool isBoss)
     if (!isBoss){
         std::random_device rd;
         std::default_random_engine eng(rd());
-        std::uniform_int_distribution<int> EnemiesNb(3,5);
+        std::uniform_int_distribution<int> EnemiesNb(4,6);
         std::uniform_int_distribution<int> RoomX(roomBoundaries.topLeft().rx(),roomBoundaries.topRight().rx());
         std::uniform_int_distribution<int> RoomY(roomBoundaries.topLeft().ry(),roomBoundaries.bottomLeft().ry());
 
@@ -88,6 +88,8 @@ void GameModel::spawnEnemies(bool isBoss)
         LordModel * newLord = new LordModel(LordDefaultMaxHp, LordDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
                                             LordDefaultAttack1CoolDown, LordDefaultAttack2CoolDown, LordDefaultAttack1Damage, LordDefaultAttack2Damage);
         itsBoss = newLord;
+
+        connect(newLord, &LordModel::death, this, &GameModel::onBossDeath);
     }
 }
 
@@ -155,4 +157,16 @@ void GameModel::onEnemyDeath(EnemyModel * model)
     if (itsEnemies.empty()){
         currentRoom->unlockDoors();
     }
+}
+
+void GameModel::onBossDeath(BossModel * model)
+{
+    QObject * qobjBoss = dynamic_cast<QObject*>(model);
+    disconnect(qobjBoss);
+    itsBoss = nullptr;
+    delete model;
+
+    itsScore += 150;
+    // V2
+    // currentRoom->unlockDoors();
 }

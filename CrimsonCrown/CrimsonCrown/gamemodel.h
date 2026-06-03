@@ -1,6 +1,7 @@
 #ifndef GAMEMODEL_H
 #define GAMEMODEL_H
 #include <QObject>
+#include "bossmodel.h"
 #include "enemymodel.h"
 #include "roommodel.h"
 #include "playermodel.h"
@@ -14,6 +15,7 @@ private:
     QList<EnemyModel*> itsEnemies;
     int itsScore;
     PlayerModel * itsPlayer;
+    BossModel * itsBoss;
 
     int roomCount;
     bool nextisCorridor;
@@ -40,6 +42,7 @@ signals:
 
 private slots:
     void onEnemyDeath(EnemyModel * model);
+    void onBossDeath(BossModel * model);
 };
 
 #endif // GAMEMODEL_H
