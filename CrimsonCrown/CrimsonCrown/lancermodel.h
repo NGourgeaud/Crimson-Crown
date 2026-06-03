@@ -25,7 +25,7 @@ private:
 
 signals:
     void death();
-    void attacking(QPolygon hitbox);
+    void attacking(QPolygon hitbox, int damage);
 
 private slots:
     void resetAttackCooldown();

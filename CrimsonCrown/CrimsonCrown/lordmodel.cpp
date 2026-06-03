@@ -10,7 +10,7 @@ LordModel::LordModel(int maxHp, int speed, int x, int y, float attack1Cooldown, 
     itsHP = maxHp;
     itsMaxHP = maxHp;
     itsSpeed = speed;
-    itsHitBox = QRect(x,y, LordWidth, LordHeight);
+    itsHitBox = QRectF(x,y, LordWidth, LordHeight);
     itsAttack1Cooldown = attack1Cooldown;
     itsAttack2Cooldown = attack2Cooldown;
     itsAttack1Damage = attack1Damage;
