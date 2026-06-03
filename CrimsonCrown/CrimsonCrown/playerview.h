@@ -13,7 +13,7 @@ private:
 public:
     explicit PlayerView(QWidget * parent, PlayerModel * aModel);
     void draw(QPainter *painter);
-    void setItsTexture(std::string namePlayer);
+    void setItsTexture(HeroType namePlayer);
 };
 
 #endif // PLAYERVIEW_H

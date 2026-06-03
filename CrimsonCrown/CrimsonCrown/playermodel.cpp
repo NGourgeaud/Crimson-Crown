@@ -1,7 +1,7 @@
 #include "playermodel.h"
 
 PlayerModel::PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, int aAttack2Damage, HeroType aName)
-    :itsDirection(Right), itsHitBox(QRect(0, 0, playerWidth, playerHeight))
+    :itsDirection(Right), itsHitBox(QRectF(0, 0, playerWidth, playerHeight))
 {
     isMovingUp = false;
     isMovingDown = false;
@@ -109,22 +109,27 @@ void PlayerModel::take_damage(int amont)
 
 void PlayerModel::move(int axisX, int axisY)
 {
-    itsHitBox.setTopLeft(QPoint(axisX,axisY));
+    itsHitBox.moveTopLeft(QPoint(axisX,axisY));
 }
 
 void PlayerModel::resetAttackCooldown1()
 {
-    isAttack1 = true;
+    canAttack1 = true;
     itsCooldown1->stop();
 }
 
 void PlayerModel::resetAttackCooldown2()
 {
-    isAttack2 = true;
+    canAttack2 = true;
     itsCooldown2->stop();
 }
 
-QRect PlayerModel::getItsHitBox() const
+QRectF PlayerModel::getItsHitBox() const
 {
     return itsHitBox;
+}
+
+void PlayerModel::setCenter(QPoint centre)
+{
+    itsHitBox.moveCenter(centre);
 }

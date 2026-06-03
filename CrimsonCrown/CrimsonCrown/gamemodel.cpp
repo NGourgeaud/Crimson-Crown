@@ -1,7 +1,8 @@
 #include "gamemodel.h"
+#include "blacksmithmodel.h"
 
 GameModel::GameModel()
-    : currentRoom(nullptr) /*, itsPlayer(nullptr)*/, itsScore(0)
+    : currentRoom(nullptr), itsScore(0), itsPlayer(nullptr)
 {
     // On initialise le jeu au démarrage
     resetGame();
@@ -19,11 +20,10 @@ void GameModel::resetGame()
     if (currentRoom != nullptr) {
         delete currentRoom;
     }
-    /*
+
     if (itsPlayer != nullptr) {
         delete itsPlayer;
     }
-    */
 
     // "First hall"
     // On crée la première salle. Par defaut SpawnHall,
@@ -38,9 +38,9 @@ void GameModel::resetGame()
 
     //"Player spawn"
     // On instancie le joueur
-    // itsPlayer = new BlackSmithModel();
+    itsPlayer = new BlacksmithModel();
     // On place le joueur au centre de la salle.
-    // itsPlayer->setPosition(400, 225); // au centre
+    itsPlayer->setCenter(QPoint(400,225)); // au centre
 
     itsScore = 0;
 }
