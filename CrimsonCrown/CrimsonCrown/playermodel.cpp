@@ -1,7 +1,7 @@
 #include "playermodel.h"
 
-PlayerModel::PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, int aAttack2Damage)
-    :itsDirection(Right), itsHitBox(QRect(0, 0, playerWidth, playerHeight))
+PlayerModel::PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, int aAttack2Damage, HeroType aName)
+    :itsDirection(Right), itsHitBox(QRectF(0, 0, playerWidth, playerHeight))
 {
     isMovingUp = false;
     isMovingDown = false;
@@ -19,6 +19,7 @@ PlayerModel::PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, in
     itsSpeed = aSpeed;
     itsAttack1Damage = aAttack1Damage;
     itsAttack2Damage = aAttack2Damage;
+    itsName = aName;
 
     connect(itsCooldown1, &QTimer::timeout, this, &PlayerModel::resetAttackCooldown1);
     connect(itsCooldown2, &QTimer::timeout, this, &PlayerModel::resetAttackCooldown2);
@@ -108,22 +109,27 @@ void PlayerModel::takeDamage(int amont)
 
 void PlayerModel::move(int axisX, int axisY)
 {
-    itsHitBox.setTopLeft(QPoint(axisX,axisY));
+    itsHitBox.moveTopLeft(QPoint(axisX,axisY));
 }
 
 void PlayerModel::resetAttackCooldown1()
 {
-    isAttack1 = true;
+    canAttack1 = true;
     itsCooldown1->stop();
 }
 
 void PlayerModel::resetAttackCooldown2()
 {
-    isAttack2 = true;
+    canAttack2 = true;
     itsCooldown2->stop();
 }
 
 QRect PlayerModel::getHitBox() const
 {
     return itsHitBox;
+}
+
+void PlayerModel::setCenter(QPoint centre)
+{
+    itsHitBox.moveCenter(centre);
 }

@@ -23,8 +23,8 @@ const QString LABEL_CHARSELECT_TITLE = "SELECTIONNEZ UN PERSONNAGE";
 const QString LABEL_CONTINUE = "CONTINUER";
 const QString LABEL_BACK = "RETOUR AU MENU";
 
-const int playerWidth = 0;
-const int playerHeight = 0;
+const int playerWidth = 100;
+const int playerHeight = 100;
 
 const int BlacksmithAttack1HitboxWidth = 50;
 const int BlacksmithAttack1HitboxHeight = 20;
@@ -56,5 +56,16 @@ const QString STATS_BLACKSMITH =
     "<span style='color: #BBBBBB;'>Vitesse :</span> <span style='color: #33FF33;'><b>2 px/tick</b></span><br>"
     "<span style='color: #BBBBBB;'>Dégâts :</span> <span style='color: #3333FF;'><b>13 HP</b></span>"
     "</p>";
+
+const int LordWidth = 0;
+const int LordHeight = 0;
+
+const int LordAttack1HitBoxWidth = 100;
+const int LordAttack1HitBoxHeight = 100;
+
+// a changer en fonction de la taille du lord
+const int LordAttack2HitBoxWidth = 40;
+const int LordAttack2HitBoxHeight = 30;
+
 
 #endif // CONFIG_H

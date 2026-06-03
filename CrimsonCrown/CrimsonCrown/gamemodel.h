@@ -15,6 +15,9 @@ private:
     int itsScore;
     PlayerModel * itsPlayer;
 
+    int roomCount;
+    bool nextisCorridor;
+
 public:
     GameModel();
     ~GameModel();
