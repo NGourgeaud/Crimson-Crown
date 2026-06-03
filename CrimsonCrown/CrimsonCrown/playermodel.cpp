@@ -1,6 +1,6 @@
 #include "playermodel.h"
 
-PlayerModel::PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, int aAttack2Damage)
+PlayerModel::PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, int aAttack2Damage, HeroType aName)
     :itsDirection(Right), itsHitBox(QRect(0, 0, playerWidth, playerHeight))
 {
     isMovingUp = false;
@@ -19,6 +19,7 @@ PlayerModel::PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, in
     itsSpeed = aSpeed;
     itsAttack1Damage = aAttack1Damage;
     itsAttack2Damage = aAttack2Damage;
+    itsName = aName;
 
     connect(itsCooldown1, &QTimer::timeout, this, &PlayerModel::resetAttackCooldown1);
     connect(itsCooldown2, &QTimer::timeout, this, &PlayerModel::resetAttackCooldown2);

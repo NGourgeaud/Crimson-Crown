@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     appcontroller.cpp \
     blacksmithmodel.cpp \
+    blacksmithview.cpp \
     bossmodel.cpp \
     charselectcontroller.cpp \
     charselectview.cpp \
@@ -34,6 +35,7 @@ SOURCES += \
 HEADERS += \
     appcontroller.h \
     blacksmithmodel.h \
+    blacksmithview.h \
     bossmodel.h \
     charselectcontroller.h \
     charselectview.h \

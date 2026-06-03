@@ -1,10 +1,18 @@
 #ifndef BLACKSMITHVIEW_H
 #define BLACKSMITHVIEW_H
 
-class BlacksmithView
+#include <QWidget>
+
+class BlacksmithView : public QWidget
 {
+    Q_OBJECT
+
+private:
+
 public:
-    BlacksmithView();
+    explicit BlacksmithView(QWidget *parent = nullptr);
+
+signals:
 };
 
 #endif // BLACKSMITHVIEW_H
