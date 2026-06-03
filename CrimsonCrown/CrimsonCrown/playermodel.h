@@ -29,8 +29,10 @@ protected:
     Direction itsDirection;
     QRect itsHitBox;
 
+    HeroType itsName;
+
 public:
-    PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, int aAttack2Damage);
+    PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, int aAttack2Damage, std::string aName);
     virtual void attack1() = 0;
     virtual void attack2() = 0;
     void update();

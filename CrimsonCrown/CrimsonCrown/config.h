@@ -23,8 +23,8 @@ const QString LABEL_CHARSELECT_TITLE = "SELECTIONNEZ UN PERSONNAGE";
 const QString LABEL_CONTINUE = "CONTINUER";
 const QString LABEL_BACK = "RETOUR AU MENU";
 
-const int playerWidth = 0;
-const int playerHeight = 0;
+const int playerWidth = 100;
+const int playerHeight = 100;
 
 const int BlacksmithAttack1HitboxWidth = 50;
 const int BlacksmithAttack1HitboxHeight = 20;

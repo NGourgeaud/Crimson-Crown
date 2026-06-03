@@ -2,7 +2,7 @@
 #include <QPainterPath>
 
 BlacksmithModel::BlacksmithModel()
-    :PlayerModel(40, 100, 4, 13, 10)
+    :PlayerModel(40, 100, 4, 13, 10, "blacksmith")
 {}
 
 void BlacksmithModel::attack1()
