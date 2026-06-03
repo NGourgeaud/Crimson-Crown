@@ -25,10 +25,10 @@ LancerModel::LancerModel(int maxHp, int speed, int x, int y, float attackCooldow
 /// \param heroX: x position of the center
 /// \param heroY: y position of the center
 ///
-void LancerModel::update(int heroX, int heroY)
+void LancerModel::update(QPointF heroPos)
 {
-    if(handleAI(heroX, heroY))
-        attack(heroX, heroY);
+    if(handleAI(heroPos))
+        attack(heroPos);
 }
 
 ///
@@ -36,10 +36,10 @@ void LancerModel::update(int heroX, int heroY)
 /// \param heroX: x position of the center
 /// \param heroY: y position of the center
 ///
-void LancerModel::attack(int heroX, int heroY)
+void LancerModel::attack(QPointF heroPos)
 {
     // 1. Find the angle between the lancer and the hero
-    QLineF aimLine(itsHitBox.center(), QPoint(heroX, heroY));
+    QLineF aimLine(itsHitBox.center(), heroPos);
     qreal angle = aimLine.angle(); // Returns the angle in degrees (0 is right, 90 is up)
 
     // 2. Create the base attack rectangle (centered at 0,0 to make rotation easy)
@@ -61,14 +61,14 @@ void LancerModel::attack(int heroX, int heroY)
 /// \param heroX: x position of the center
 /// \param heroY: y position of the center
 ///
-bool LancerModel::handleAI(int heroX, int heroY)
+bool LancerModel::handleAI(QPointF heroPos)
 {
     // Goes towards the player if it's too far
-    if (QLineF(QPoint(heroX, heroY), itsHitBox.center()).length() > LancerAttackHitboxWidth-20){
+    if (QLineF(heroPos, itsHitBox.center()).length() > LancerAttackHitboxWidth-20){
         for (int i = 0; i<itsSpeed; i++){
             // Goes to fastest towards the player
-            int distX = std::abs(heroX - itsHitBox.center().x());
-            int distY = std::abs(heroY - itsHitBox.center().y());
+            int distX = std::abs(heroPos.x() - itsHitBox.center().x());
+            int distY = std::abs(heroPos.y() - itsHitBox.center().y());
 
             if (distX + 20 >= distY or distX -20 <= distY or distY + 20 >= distX or distY <= distX){
                 itsHitBox.translate(QPoint(itsHitBox.topLeft().x() + 1, itsHitBox.topLeft().y()+1));
@@ -122,7 +122,7 @@ void LancerModel::move(int axisX, int axisY)
 /// \brief Gets the Lancer's hitbox
 /// \return Lancer's QRect
 ///
-QRect LancerModel::getHitBox() const
+QRectF LancerModel::getHitBox() const
 {
     return itsHitBox;
 }

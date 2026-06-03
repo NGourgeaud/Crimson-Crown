@@ -12,16 +12,16 @@ class LancerModel : public QObject, public EnemyModel
 
 public:
     LancerModel(int maxHp, int speed, int x, int y, float attackCooldown, int maxAttackDistance, int attackDamage);
-    void update(int heroX, int heroY);
-    void attack(int heroX, int heroY);
+    void update(QPointF heroPos);
+    void attack(QPointF heroPos);
     void takeDamage(int amount);
     void move(int axisX,int axisY);
-    QRect getHitBox() const;
+    QRectF getHitBox() const;
 
 private:
     QTimer * itsCoolDownTimer;
     bool canAttack;
-    bool handleAI(int heroX, int heroY);
+    bool handleAI(QPointF heroPos);
 
 signals:
     void death();
