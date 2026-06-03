@@ -4,6 +4,7 @@
 #include <QObject>
 #include "bossmodel.h"
 #include <QPolygon>
+#include "qpainterpath.h"
 #include "qtimer.h"
 
 class LordModel : public QObject, public BossModel
@@ -12,8 +13,6 @@ class LordModel : public QObject, public BossModel
 public:
     LordModel(int maxHp, int speed, int x, int y, float attack1Cooldown,float attack2Cooldown, int attack1Damage, int attack2Damage);
     void update(int heroX, int heroY);
-    void attack1(int heroX, int heroY);
-    void attack2(int heroX, int heroY);
     void takeDamage(int amount);
     void move(int axisX,int axisY);
     QRect getHitBox() const;
@@ -24,14 +23,24 @@ private:
     bool canAttack1;
     bool canAttack2;
     bool handleAI(int heroX, int heroY);
+    void attack1(int heroX, int heroY);
+    void attack2(int heroX, int heroY);
+    // variables pour le dash
+    int currentDashStep;
+    int maxDashSteps;
+    bool isDashing;
+    QTimer * itsDashTimer;
+    QLineF currentAimLine;
 
 signals:
-    void death(BossModel*);
-    void attacking(QPolygon hitbox, int damage);
+    void death(BossModel * Boss);
+    void attacking(QPainterPath * hitbox, int damage);
+    void dashing(QPolygon);
 
 private slots:
     void resetAttack1Cooldown();
     void resetAttack2Cooldown();
+    void dashStep();
 };
 
 #endif // LORDMODEL_H
