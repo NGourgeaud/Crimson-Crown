@@ -6,11 +6,16 @@
 #include <QPainter>
 #include "gamemodel.h"
 
+#include "roomview.h"
+#include "obstacleview.h"
+#include "playerview.h"
+
 class GameView : public QWidget
 {
     Q_OBJECT
 public:
     explicit GameView(GameModel *model, QWidget *parent = nullptr);
+    ~GameView();
 
 signals:
     void keyPressed(int key);
@@ -23,6 +28,13 @@ protected:
 
 private:
     GameModel *itsModel;
+    RoomView *itsRoomView;
+    ObstacleView *itsObstacleView;
+    PlayerView *itsPlayerView;
+
+    // --- NOUVEAUTÉ POUR LA CAMÉRA FLUIDE ---
+    QPointF currentCameraCenter;
+    bool isCameraInitialized;
 };
 
 #endif // GAMEVIEW_H

@@ -3,20 +3,17 @@
 #include <QObject>
 #include "enemymodel.h"
 #include "roommodel.h"
-#include "PlayerModel.h"
+#include "playermodel.h"
 
 class GameModel : public QObject
 {
     Q_OBJECT
 
 private:
-    RoomModel* currentRoom;
+    QList<RoomModel*> allRooms; // Remplace "currentRoom". Contient toute la carte.
     QList<EnemyModel*> itsEnemies;
     int itsScore;
     PlayerModel * itsPlayer;
-
-    int roomCount;
-    bool nextisCorridor;
 
 public:
     GameModel();
@@ -24,10 +21,10 @@ public:
 
     void resetGame(HeroType hero); // Méthode pour (re)lancer une partie
 
-    const RoomModel* getCurrentRoom() const;
+    // Getter pour récupérer toute la carte d'un coup
+    const QList<RoomModel*>& getAllRooms() const;
 
     void updateLogic(); // Méthode appelée à chaque "tick" du jeu
-    void goToNextRoom(); // Nouvelle méthode pour gérer la transition
 
     void spawnEnemiesForCurrentRoom(int count);
 
@@ -35,10 +32,7 @@ public:
 
 signals:
     void roomCleared();
-
     void gameOver(int score);
-
-    //  autres méthodes
 };
 
 #endif // GAMEMODEL_H
