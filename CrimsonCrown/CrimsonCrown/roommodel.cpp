@@ -1,9 +1,16 @@
 #include "roommodel.h"
+#include "config.h"
 
 // Constructeur : par défaut, la salle n'est pas verrouillée et ne contient aucun ennemi
-RoomModel::RoomModel(bool corridor, bool bossRoom)
+QRect RoomModel::getItsWalls() const
+{
+    return itsWalls;
+}
+
+RoomModel::RoomModel(bool corridor, bool bossRoom, int width, int height)
     : isLocked(false), remainingEnemyCount(0), isCorridor(corridor), isBossRoom(bossRoom)
 {
+    itsWalls = QRect((WINDOW_WIDTH-width)/2, (WINDOW_HEIGHT-height)/2, width, height);
 }
 
 // Destructeur : nettoyage de la mémoire pour chaque obstacle instancié
@@ -25,12 +32,6 @@ void RoomModel::unlockDoors()
     isLocked = false;
 }
 
-// Démarre une vague d'ennemis
-void RoomModel::spawnEnemies(int count)
-{
-    remainingEnemyCount = count;
-    // plus tard EnemyModel ect
-}
 
 // Retourne la liste des obstacles
 const QList<ObstacleModel*>& RoomModel::getItsObstacles() const

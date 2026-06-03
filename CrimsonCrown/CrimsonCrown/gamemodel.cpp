@@ -1,6 +1,8 @@
 #include "gamemodel.h"
 #include "blacksmithmodel.h"
 #include "lancermodel.h"
+#include "lordmodel.h"
+#include <random>
 
 GameModel::GameModel()
     : currentRoom(nullptr), itsScore(0), itsPlayer(nullptr)
@@ -64,18 +66,28 @@ const RoomModel* GameModel::getCurrentRoom() const
     return currentRoom;
 }
 
-void GameModel::spawnEnemiesForCurrentRoom(int count)
+void GameModel::spawnEnemies(bool isBoss)
 {
-    // On indique à la salle combien d'ennemis elle contient
-    currentRoom->spawnEnemies(count); //
+    QRect roomBoundaries = currentRoom->getItsWalls();
+    if (!isBoss){
+        std::random_device rd;
+        std::default_random_engine eng(rd());
+        std::uniform_int_distribution<int> EnemiesNb(3,5);
+        std::uniform_int_distribution<int> RoomX(roomBoundaries.topLeft().rx(),roomBoundaries.topRight().rx());
+        std::uniform_int_distribution<int> RoomY(roomBoundaries.topLeft().ry(),roomBoundaries.bottomLeft().ry());
 
-    // On nettoie les anciens ennemis
-    qDeleteAll(itsEnemies); //
-    itsEnemies.clear(); //
+        int nbEnemies = EnemiesNb(eng);
+        for (int i = 0; i<=nbEnemies; i++){
+            LancerModel * newEnnemy = new LancerModel(LancerDefaultMaxHp, LancerDefaultSpeed, RoomX(eng), RoomY(eng), LancerDefaultAttackCoolDown, LancerDefaultAttackDamage);
+            itsEnemies.append(newEnnemy);
 
-    // On crée les nouveaux ennemis
-    for(int i = 0; i < count; i++) { //
-        // Instancier les nouveaux ennemis de base si nécessaire ici
+           connect(newEnnemy, &LancerModel::death, this, &GameModel::onEnemyDeath);
+        }
+    }
+    else{
+        LordModel * newLord = new LordModel(LordDefaultMaxHp, LordDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
+                                            LordDefaultAttack1CoolDown, LordDefaultAttack2CoolDown, LordDefaultAttack1Damage, LordDefaultAttack2Damage);
+        itsBoss = newLord;
     }
 }
 
@@ -111,8 +123,7 @@ void GameModel::goToNextRoom()
 
             // CORRECTION CONSTRUCTEUR DU BOSS : Correspond à la signature de lancermodel.h
             // LancerModel(int maxHp, int speed, int x, int y, float attackCooldown, int maxAttackDistance, int attackDamage)
-            itsEnemies.append(new LancerModel(150, 1, 400, 300, 2.0f, 100, 10)); //
-            currentRoom->spawnEnemies(1); // Le Boss compte pour 1 ennemi
+            spawnEnemies(true); // Le Boss compte pour 1 ennemi
 
             // Si le joueur bat le boss, le niveau d'après recommencera à zéro
             roomCount = 0; //
@@ -124,7 +135,7 @@ void GameModel::goToNextRoom()
             currentRoom->addObstacle(300, 200, 50, 50); //
 
             // On utilise ta méthode pour faire spawner les ennemis de base
-            spawnEnemiesForCurrentRoom(5); //
+            spawnEnemies(false); //
         }
     }
 }
@@ -132,4 +143,16 @@ void GameModel::goToNextRoom()
 PlayerModel *GameModel::getItsPlayer() const
 {
     return itsPlayer; //
+}
+
+void GameModel::onEnemyDeath(EnemyModel * model)
+{
+    QObject * qobjEnemy = dynamic_cast<QObject*>(model);
+    disconnect(qobjEnemy);
+    itsEnemies.remove(itsEnemies.indexOf(model));
+    delete model;
+
+    if (itsEnemies.empty()){
+        currentRoom->unlockDoors();
+    }
 }

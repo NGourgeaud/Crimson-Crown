@@ -29,7 +29,7 @@ public:
     void updateLogic(); // Méthode appelée à chaque "tick" du jeu
     void goToNextRoom(); // Nouvelle méthode pour gérer la transition
 
-    void spawnEnemiesForCurrentRoom(int count);
+    void spawnEnemies(bool isBoss);
 
     PlayerModel * getItsPlayer() const;
 
@@ -38,7 +38,8 @@ signals:
 
     void gameOver(int score);
 
-    //  autres méthodes
+private slots:
+    void onEnemyDeath(EnemyModel * model);
 };
 
 #endif // GAMEMODEL_H

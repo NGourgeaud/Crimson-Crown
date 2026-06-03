@@ -11,7 +11,7 @@ class LancerModel : public QObject, public EnemyModel
     Q_OBJECT
 
 public:
-    LancerModel(int maxHp, int speed, int x, int y, float attackCooldown, int maxAttackDistance, int attackDamage);
+    LancerModel(int maxHp, int speed, int x, int y, float attackCooldown, int attackDamage);
     void update(QPointF heroPos);
     void attack(QPointF heroPos);
     void takeDamage(int amount);

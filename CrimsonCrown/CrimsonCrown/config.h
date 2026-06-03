@@ -34,12 +34,40 @@ const int BlacksmithAttack2HitboxRadius = 40;
 const int BlacksmithAttack1Cooldown = 1;
 const int BlacksmithAttack2Cooldown = 5;
 
-// / a définir
+// ===================
+// Ennemies Stats
+// ===================
+
+// Lancer Stats
+const int LancerDefaultMaxHp = 18;
+const int LancerDefaultSpeed = 2;
+const int LancerDefaultAttackDamage = 6;
+const float LancerDefaultAttackCoolDown = 0.5;
+
 const int LancerWidth = 0;
 const int LancerHeight = 0;
 
 const int LancerAttackHitboxWidth = 0;
 const int LancerAttackHitboxHeight = 0;
+
+// Lord Stats
+const int LordDefaultMaxHp = 150;
+const int LordDefaultSpeed = 1;
+const int LordDefaultAttack1Damage = 10;
+const int LordDefaultAttack2Damage = 10;
+const float LordDefaultAttack1CoolDown = 5;
+const float LordDefaultAttack2CoolDown = 5;
+
+
+const int LordWidth = 0;
+const int LordHeight = 0;
+
+const int LordAttack1HitBoxWidth = 100;
+const int LordAttack1HitBoxHeight = 100;
+
+// a changer en fonction de la taille du lord
+const int LordAttack2HitBoxWidth = 40;
+const int LordAttack2HitBoxHeight = 30;
 
 enum HeroType {
     None,
@@ -62,15 +90,7 @@ const QString STATS_BLACKSMITH =
     "<span style='color: #BBBBBB;'>Dégâts :</span> <span style='color: #3333FF;'><b>13 HP</b></span>"
     "</p>";
 
-const int LordWidth = 0;
-const int LordHeight = 0;
 
-const int LordAttack1HitBoxWidth = 100;
-const int LordAttack1HitBoxHeight = 100;
-
-// a changer en fonction de la taille du lord
-const int LordAttack2HitBoxWidth = 40;
-const int LordAttack2HitBoxHeight = 30;
 
 namespace keyBind {
     const Qt::Key keyUp = Qt::Key_Z;
