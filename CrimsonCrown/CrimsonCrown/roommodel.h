@@ -10,9 +10,11 @@ private:
     bool isLocked;
     int remainingEnemyCount;
     QList<ObstacleModel*> itsObstacles; // Liste des obstacles de la salle
+    bool isCorridor;
+    bool isBossRoom;
 
 public:
-    RoomModel();
+    RoomModel(bool corridor = false, bool boosRoom = false);
     ~RoomModel();
 
     void lockDoors();
@@ -22,6 +24,8 @@ public:
     // Getters
     const QList<ObstacleModel*>& getItsObstacles() const;
     bool getIsLocked() const;
+    bool getIsCorridor() const;
+    bool getIsBossRoom() const;
     int getRemainingEnemyCount() const;
 
     // Méthode utilitaire ajoutée pour faciliter la checklist "the placement of obstacles"

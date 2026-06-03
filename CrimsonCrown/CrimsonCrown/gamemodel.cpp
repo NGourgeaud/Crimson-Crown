@@ -1,4 +1,6 @@
 #include "gamemodel.h"
+#include "blacksmithmodel.h"
+#include "lancermodel.h"
 
 GameModel::GameModel()
     : currentRoom(nullptr) /*, itsPlayer(nullptr)*/, itsScore(0)
@@ -19,16 +21,15 @@ void GameModel::resetGame()
     if (currentRoom != nullptr) {
         delete currentRoom;
     }
-    /*
+
     if (itsPlayer != nullptr) {
         delete itsPlayer;
     }
-    */
 
     // "First hall"
     // On crée la première salle. Par defaut SpawnHall,
-    // elle n'est pas verrouillée et n'a pas d'ennemis.
-    currentRoom = new RoomModel();
+    // elle n'est pas verrouillée et n'a pas d'ennemis
+    currentRoom = new RoomModel(false);
 
     // On peut ajouter quelques obstacles purement décoratifs
     // pour que la salle de spawn ne soit pas complètement vide.
@@ -38,11 +39,16 @@ void GameModel::resetGame()
 
     //"Player spawn"
     // On instancie le joueur
-    // itsPlayer = new BlackSmithModel();
+
+    //itsPlayer = new BlacksmithModel();
+
     // On place le joueur au centre de la salle.
-    // itsPlayer->setPosition(400, 225); // au centre
+    itsPlayer->move(400, 225); // au centre a redefinir
 
     itsScore = 0;
+
+    roomCount = 1;
+    nextisCorridor = true; // apres la salle -> veut un couloir
 }
 
 const RoomModel* GameModel::getCurrentRoom() const
@@ -50,54 +56,70 @@ const RoomModel* GameModel::getCurrentRoom() const
     return currentRoom;
 }
 
-/*
+
 void GameModel::spawnEnemiesForCurrentRoom(int count)
 {
     // On indique à la salle combien d'ennemis elle contient
     currentRoom->spawnEnemies(count);
 
-    // On nettoie les anciens ennemis s'il y en avait
+    // On nettoie les anciens ennemis
     qDeleteAll(itsEnemies);
     itsEnemies.clear();
 
     // On crée les nouveaux ennemis
     for(int i = 0; i < count; i++) {
-        // C'est ici que tu instancieras tes vrais ennemis plus tard
-        // Par exemple : itsEnemies.append(new LancerModel(...));
+        // intancier les nouveaus enemies
     }
 }
-*/
+
 
 void GameModel::updateLogic()
 {
     // a implémenter
 }
 
-// Méthode dédiée pour générer et passer à la salle suivante
 void GameModel::goToNextRoom()
 {
-    // On nettoie l'ancienne salle
+    // 1. On nettoie l'ancienne salle et les anciens ennemis
     if (currentRoom != nullptr) {
         delete currentRoom;
     }
+    qDeleteAll(itsEnemies);
+    itsEnemies.clear();
 
-    // On instancie la nouvelle salle
-    currentRoom = new RoomModel();
+    // 2. On choisit ce qu'on génère
+    if (nextisCorridor) {
+        // GÉNÉRATION D'UN COULOIR
+        currentRoom = new RoomModel(true, false); // true pour isCorridor
+        nextisCorridor = false; // La prochaine zone sera une salle
+    }
+    else {
+        // CAS B : GÉNÉRATION D'UNE SALLE (Normale ou Boss)
+        roomCount++; // On incrémente le nombre de salles visitées
+        nextisCorridor = true; // La prochaine zone sera un couloir
 
-    // On peut générer de nouveaux obstacles
-    currentRoom->addObstacle(300, 200, 50, 50);
+        // Est-ce que c'est la N ieme salle ? (Le Boss)
+        if (roomCount == 5) { // 5 pour l'exemple
+            currentRoom = new RoomModel(false, true); // true pour isBossRoom
+            currentRoom->lockDoors();
 
+            // on met un LancerModel
+            itsEnemies.append(new LancerModel(150, 1, 400, 300, 2.0f, 100, 10));
+            currentRoom->spawnEnemies(1); // Le Boss compte pour 1 ennemi
 
-    // 2. CLOSE THE NEXT ROOM
+            // Si le joueur bat le boss, le niveau d'après recommencera à zéro
+            roomCount = 0;
+        }
+        else {
+            // C'est une salle normale
+            currentRoom = new RoomModel(false, false);
+            currentRoom->lockDoors();
+            currentRoom->addObstacle(300, 200, 50, 50);
 
-    currentRoom->lockDoors(); // On enferme le joueur
-
-    // On fait apparaître la nouvelle vague d'ennemis
-    //valeur fixe (ex: 5) pour tester.
-    currentRoom->spawnEnemies(5);
-
-    // On replace le joueur à l'entrée de cette nouvelle salle
-    // itsPlayer->setPosition(400, 100); // Coordonnées de l'entrée en haut par exemple a adapter en fonction de la salle
+            // On utilise ta méthode pour faire spawner les ennemis de base
+            spawnEnemiesForCurrentRoom(5);
+        }
+    }
 }
 
 PlayerModel *GameModel::getItsPlayer() const
