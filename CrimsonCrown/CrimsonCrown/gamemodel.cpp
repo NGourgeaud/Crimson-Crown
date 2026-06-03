@@ -3,7 +3,7 @@
 #include "lancermodel.h"
 
 GameModel::GameModel()
-    : currentRoom(nullptr) /*, itsPlayer(nullptr)*/, itsScore(0)
+    : currentRoom(nullptr), itsScore(0), itsPlayer(nullptr)
 {
     // On initialise le jeu au démarrage
     resetGame();
@@ -39,11 +39,9 @@ void GameModel::resetGame()
 
     //"Player spawn"
     // On instancie le joueur
-
-    //itsPlayer = new BlacksmithModel();
-
+    itsPlayer = new BlacksmithModel();
     // On place le joueur au centre de la salle.
-    itsPlayer->move(400, 225); // au centre a redefinir
+    itsPlayer->move(400, 225); // au centre a redefini
 
     itsScore = 0;
 
