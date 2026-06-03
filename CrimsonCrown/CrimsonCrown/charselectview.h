@@ -8,7 +8,7 @@
 #include <QHBoxLayout>
 #include <QPaintEvent>
 #include <QPainter>
-
+#include "config.h"
 
 class CharSelectView : public QWidget {
     Q_OBJECT
@@ -16,7 +16,7 @@ public:
     explicit CharSelectView(QWidget *parent = nullptr);
 
 signals:
-    void selectCharacterRequested();
+    void selectCharacterRequested(HeroType hero);
     void backRequested();
 
 protected:
@@ -25,6 +25,7 @@ protected:
 private:
     QLabel *itsTitle;
     QPushButton *itsBlacksmithCardButton;
+    QLabel *itsBlacksmithStatsLabel;
     QPushButton *itsBackButton;
 };
 

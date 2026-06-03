@@ -1,10 +1,11 @@
 #include "gamemodel.h"
+#include "blacksmithmodel.h"
 
 GameModel::GameModel()
-    : currentRoom(nullptr) /*, itsPlayer(nullptr)*/, itsScore(0)
+    : currentRoom(nullptr) ,itsPlayer(nullptr), itsScore(0)
 {
     // On initialise le jeu au démarrage
-    resetGame();
+    resetGame(HeroType::None);
 }
 
 GameModel::~GameModel()
@@ -13,7 +14,7 @@ GameModel::~GameModel()
     delete itsPlayer;
 }
 
-void GameModel::resetGame()
+void GameModel::resetGame(HeroType hero)
 {
     // 1. Nettoyage si une partie était déjà en cours
     if (currentRoom != nullptr) {
@@ -35,6 +36,15 @@ void GameModel::resetGame()
     currentRoom->addObstacle(200, 200, 50, 50);
     currentRoom->addObstacle(600, 200, 50, 50);
 
+    switch(hero) {
+    case HeroType::Blacksmith:
+        itsPlayer = new BlacksmithModel();
+        break;
+    case HeroType::None:
+    default:
+        itsPlayer = nullptr;
+        break;
+    }
 
     //"Player spawn"
     // On instancie le joueur

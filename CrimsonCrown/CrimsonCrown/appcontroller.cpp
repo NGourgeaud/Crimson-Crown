@@ -18,8 +18,7 @@ AppController::AppController(QObject *parent)
     charSelectController(new CharSelectController(mainWindow, this)),
     gameController(new GameController(mainWindow, this))
 {
-
-    // Loading the medieval pixel art font
+    // Police
     int fontId = QFontDatabase::addApplicationFont(":/alagard.ttf");
     if (fontId != -1) {
         QString family = QFontDatabase::applicationFontFamilies(fontId).at(0);
@@ -27,10 +26,8 @@ AppController::AppController(QObject *parent)
         qApp->setFont(customFont);
     }
 
-    // Connecting signal relays from MenuController
+    // Connects
     connect(menuController, &MenuController::playRequested, this, &AppController::onCharSelectRequested);
-    connect(menuController, &MenuController::leaderboardRequested, this, &AppController::onLeaderboardRequested);
-    connect(menuController, &MenuController::settingsRequested, this, &AppController::onSettingsRequested);
     connect(menuController, &MenuController::quitRequested, this, &AppController::onQuitRequested);
 
     connect(charSelectController, &CharSelectController::backToMenuRequested, this, &AppController::onMenuRequested);
@@ -87,7 +84,8 @@ void AppController::onSettingsRequested() {
 /// \brief AppController::onGameRequested
 /// \details Slot triggered to launch the main gameplay loop.
 ///
-void AppController::onGameRequested() {
+void AppController::onGameRequested(HeroType type) {
+    selectedHero = type;
     navigateTo(AppState::Game);
 }
 
@@ -129,7 +127,7 @@ void AppController::navigateTo(AppState state) {
         currentView = charSelectController->createView();
         break;
     case AppState::Game:
-        currentView = gameController->createView();
+        currentView = gameController->createView(selectedHero);
         break;
     default:
         return;

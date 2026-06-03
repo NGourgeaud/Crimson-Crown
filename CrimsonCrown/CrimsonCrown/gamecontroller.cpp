@@ -26,17 +26,15 @@ GameController::~GameController()
 /// \brief GameController::createView
 /// \details Instantiates the hardware-focused viewport, routes device listeners, and spins up physics processing.
 ///
-QWidget* GameController::createView()
+QWidget* GameController::createView(HeroType hero)
 {
-    itsView = new GameView(itsModel, parentWidget);
+    itsModel->resetGame(hero);
 
-    // Wire physical keyboard abstractions down to functional coordinate mutations
+    itsView = new GameView(itsModel, parentWidget);
     connect(itsView, &GameView::keyPressed, this, &GameController::onKeyPressed);
     connect(itsView, &GameView::keyReleased, this, &GameController::onKeyReleased);
 
-    // Boot game simulation ticking
     itsTimer->start(16);
-
     return itsView;
 }
 

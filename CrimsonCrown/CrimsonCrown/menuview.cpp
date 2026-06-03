@@ -34,18 +34,18 @@ MenuView::MenuView(QWidget *parent)
 
     QString buttonStyle =
         "QPushButton {"
-        "   background-color: black;"
+        "   background-color: #111111;"
         "   color: white;"
         "   border: 2px solid #555555;"
         "   font-family: 'Alagard';"
-        "   font-size: 14px;"
+        "   font-size: 15px;"
         "   font-weight: bold;"
+        "   border-radius: 3px;"
         "}"
         "QPushButton:hover {"
-        "   background-color: #222222;"
+        "   background-color: #E30000;"
         "   border-color: white;"
         "}";
-
     QPushButton *playBtn = new QPushButton(LABEL_PLAY);
     playBtn->setFixedSize(220, BUTTON_HEIGHT);
     playBtn->setStyleSheet(buttonStyle);

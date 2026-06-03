@@ -41,4 +41,20 @@ const int LancerHeight = 0;
 const int LancerAttackHitboxWidth = 0;
 const int LancerAttackHitboxHeight = 0;
 
+enum HeroType {
+    None,
+    Blacksmith
+};
+
+// --- STATISTIQUES ET DESCRIPTION DU FORGERON (HTML STYLISÉ) ---
+const QString STATS_BLACKSMITH =
+    "<p style='font-family: Alagard; font-size: 24px; color: #FFD700; margin: 0 0 4px 0;'><b>LE FORGERON</b></p>"
+    "<p style='font-family: Alagard; font-size: 14px; color: #DDDDDD; margin: 0 0 12px 0;'>"
+    "Tank lourdement blindé, taillé pour la mêlée. Il encaisse les coups pour le groupe.</p>"
+    "<p style='font-family: Alagard; font-size: 16px; color: white; line-height: 150%; margin: 0;'>"
+    "<span style='color: #BBBBBB;'>Vie :</span> <span style='color: #FF3333;'><b>40 HP</b></span><br>"
+    "<span style='color: #BBBBBB;'>Vitesse :</span> <span style='color: #33FF33;'><b>2 px/tick</b></span><br>"
+    "<span style='color: #BBBBBB;'>Dégâts :</span> <span style='color: #3333FF;'><b>13 HP</b></span>"
+    "</p>";
+
 #endif // CONFIG_H

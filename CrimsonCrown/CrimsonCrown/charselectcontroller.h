@@ -14,7 +14,7 @@ public:
     void destroyView();
 
 signals:
-    void characterSelected();
+    void characterSelected(HeroType type);
     void backToMenuRequested();
 
 private:

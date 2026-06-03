@@ -14,6 +14,7 @@ public:
     BlacksmithModel();
     void attack1();
     void attack2();
+
 signals:
     void attackPlayer(QPolygon attackHitBox, int damage);
 };

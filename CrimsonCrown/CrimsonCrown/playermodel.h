@@ -40,9 +40,9 @@ public:
     void setMovementDown(bool enabled);
     void setAttack1(bool enabled);
     void setAttack2(bool enabled);
-    void take_damage(int amont);
+    void takeDamage(int amont);
     void move(int axisX, int axisY);
-    QRect getItsHitBox() const;
+    QRect getHitBox() const;
 
 signals:
     void death();
