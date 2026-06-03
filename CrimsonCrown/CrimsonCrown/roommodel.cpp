@@ -1,8 +1,8 @@
 #include "roommodel.h"
 
 // Constructeur : par défaut, la salle n'est pas verrouillée et ne contient aucun ennemi
-RoomModel::RoomModel()
-    : isLocked(false), remainingEnemyCount(0)
+RoomModel::RoomModel(bool corridor, bool bossRoom)
+    : isLocked(false), remainingEnemyCount(0), isCorridor(corridor), isBossRoom(bossRoom)
 {
 }
 
@@ -44,6 +44,17 @@ bool RoomModel::getIsLocked() const
     return isLocked;
 }
 
+bool RoomModel::getIsCorridor() const
+{
+    return isCorridor;
+}
+
+bool RoomModel::getIsBossRoom() const
+{
+    return isBossRoom;
+}
+
+
 // Retourne le nombre d'ennemis restants
 int RoomModel::getRemainingEnemyCount() const
 {
@@ -55,3 +66,4 @@ void RoomModel::addObstacle(int x, int y, int width, int height)
 {
     itsObstacles.append(new ObstacleModel(x, y, width, height));
 }
+

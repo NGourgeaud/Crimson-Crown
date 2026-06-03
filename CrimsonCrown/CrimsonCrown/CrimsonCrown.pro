@@ -10,41 +10,51 @@ CONFIG += c++17
 
 SOURCES += \
     appcontroller.cpp \
+    blacksmithmodel.cpp \
+    blacksmithview.cpp \
     bossmodel.cpp \
     charselectcontroller.cpp \
     charselectview.cpp \
+    enemymodel.cpp \
+    entitymodel.cpp \
+    gamecontroller.cpp \
     gamemodel.cpp \
     lordmodel.cpp \
+    gameview.cpp \
     main.cpp \
     mainwindow.cpp \
     menucontroller.cpp \
     menuview.cpp \
-    enemymodel.cpp \
-    entitymodel.cpp \
     playermodel.cpp \
     lancermodel.cpp \
     obstaclemodel.cpp \
     obstacleview.cpp \
+    playerview.cpp \
     roommodel.cpp \
     roomview.cpp
 
 HEADERS += \
     appcontroller.h \
+    blacksmithmodel.h \
+    blacksmithview.h \
     bossmodel.h \
     charselectcontroller.h \
     charselectview.h \
     config.h \
+    enemymodel.h \
+    entitymodel.h \
+    gamecontroller.h \
     gamemodel.h \
     lordmodel.h \
+    gameview.h \
     mainwindow.h \
     menucontroller.h \
     menuview.h \
-    enemymodel.h \
-    entitymodel.h \
     playermodel.h \
     lancermodel.h \
     obstaclemodel.h \
     obstacleview.h \
+    playerview.h \
     roommodel.h \
     roomview.h
 
@@ -55,3 +65,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     images.qrc
+
+macx:QMAKE_CXXFLAGS += -Wno-error=implicit-function-declaration
+macx:QMAKE_CFLAGS += -Wno-error=implicit-function-declaration

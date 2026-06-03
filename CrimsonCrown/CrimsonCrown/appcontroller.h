@@ -5,6 +5,7 @@
 #include "mainwindow.h"
 #include "menucontroller.h"
 #include "charselectcontroller.h"
+#include "gamecontroller.h"
 
 enum class AppState { Menu, CharSelect, Game };
 
@@ -32,6 +33,7 @@ private:
     QWidget *currentView;
     AppState currentState;
     CharSelectController* charSelectController;
+    GameController *gameController;
 };
 
 #endif // APPCONTROLLER_H

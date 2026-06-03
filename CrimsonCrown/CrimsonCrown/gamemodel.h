@@ -1,10 +1,9 @@
 #ifndef GAMEMODEL_H
 #define GAMEMODEL_H
-
 #include <QObject>
 #include "enemymodel.h"
 #include "roommodel.h"
-// #include "blacksmithmodel.h"
+#include "PlayerModel.h"
 
 class GameModel : public QObject
 {
@@ -13,9 +12,11 @@ class GameModel : public QObject
 private:
     RoomModel* currentRoom;
     QList<EnemyModel*> itsEnemies;
-    // BlackSmithModel* itsPlayer;
     int itsScore;
+    PlayerModel * itsPlayer;
 
+    int roomCount;
+    bool nextisCorridor;
 
 public:
     GameModel();
@@ -24,12 +25,13 @@ public:
     void resetGame(); // Méthode pour (re)lancer une partie
 
     const RoomModel* getCurrentRoom() const;
-    // const BlackSmithModel* getItsPlayer() const;
 
     void updateLogic(); // Méthode appelée à chaque "tick" du jeu
     void goToNextRoom(); // Nouvelle méthode pour gérer la transition
 
     void spawnEnemiesForCurrentRoom(int count);
+
+    PlayerModel * getItsPlayer() const;
 
 signals:
     void roomCleared();

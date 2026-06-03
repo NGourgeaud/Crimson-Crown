@@ -13,11 +13,27 @@ void RoomView::draw(QPainter &painter, const RoomModel *roomModel, ObstacleView 
     if (!roomModel) return;
 
     // 1. DESSIN DU SOL (Zone de jeu active)
-    // salle de base
-    QRect roomRect(100, 150, 800, 450); // exemple
+
     painter.setBrush(QBrush(QColor(64, 64, 64))); // Gris foncé
     painter.setPen(QPen(Qt::black, 4)); // Bordures de la salle
-    painter.drawRect(roomRect);
+
+    // Dessin celon le type de salle ( corridor ou salle )
+
+    if (roomModel->getIsCorridor()){
+        // si c'est un couloir
+        QRect corridorRect(400, 50, 200, 650); // valeur a definir
+        painter.drawRect(corridorRect);
+    }
+    else if (roomModel->getIsBossRoom()) {
+        painter.setBrush(QBrush(QColor(80, 20, 20))); // couleur crimson
+        QRect bossRect(50, 50, 800, 450); // taille salle classique
+        painter.drawRect(bossRect);
+    }
+    else {
+        // si c'est une salle classique
+        QRect roomRect(100, 150, 800, 450); // exemple
+        painter.drawRect(roomRect);
+    }
 
     // 2. DESSIN DES OBSTACLES
     for (const ObstacleModel* obstacle : roomModel->getItsObstacles()) {
