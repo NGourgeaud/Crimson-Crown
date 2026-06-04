@@ -34,7 +34,7 @@ private:
 
 signals:
     void death(BossModel * Boss);
-    void attacking(QPolygon * hitbox, int damage);
+    void attacking(QPolygon hitbox, int damage);
 
 private slots:
     void resetAttack1Cooldown();

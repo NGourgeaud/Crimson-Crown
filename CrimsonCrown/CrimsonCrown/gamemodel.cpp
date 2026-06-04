@@ -77,10 +77,12 @@ void GameModel::resetGame(HeroType hero)
 
     // Joueur
     switch(hero) {
-    case HeroType::Blacksmith:
-        itsPlayer = new BlacksmithModel();
-        connect(itsPlayer, &BlacksmithModel::attackPlayer, this, [this](QPolygon *hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
+    case HeroType::Blacksmith: {
+        BlacksmithModel * newPlayer = new BlacksmithModel();
+        itsPlayer = newPlayer;
+        connect(newPlayer, &BlacksmithModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
         break;
+        }
     default:
         itsPlayer = nullptr;
         break;
@@ -114,7 +116,7 @@ void GameModel::spawnEnemies(bool isBoss)
 
             // Utilisation d'une lambda pour sécuriser le passage de paramètre
             connect(newEnnemy, &LancerModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
-            connect(newEnnemy, &LancerModel::attacking, this, [this](QPolygon *hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+            connect(newEnnemy, &LancerModel::attacking, this, [this](QPolygon hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
         }
     }
     else{
@@ -123,7 +125,7 @@ void GameModel::spawnEnemies(bool isBoss)
         itsBoss = newLord;
 
         connect(newLord, &LordModel::death, this, &GameModel::onBossDeath);
-        connect(newLord, &LordModel::attacking, this, [this](QPolygon *hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+        connect(newLord, &LordModel::attacking, this, [this](QPolygon hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
     }
 
 }
@@ -277,24 +279,24 @@ void GameModel::onBossDeath(BossModel * model)
     delete model;
 }
 
-void GameModel::onEnemyAttack(QPolygon * hitbox, int damage)
+void GameModel::onEnemyAttack(QPolygon hitbox, int damage)
 {
-    if (hitbox->intersects(itsPlayer->getHitBox().toRect())){
+    if (hitbox.intersects(itsPlayer->getHitBox().toRect())){
         itsPlayer->takeDamage(damage);
     }
 }
 
-void GameModel::onPlayerAttack(QPolygon *hitbox, int damage)
+void GameModel::onPlayerAttack(QPolygon hitbox, int damage)
 {
     if (!itsEnemies.empty()){
         for (EnemyModel* enemy : itsEnemies){
-            if (hitbox->intersects(enemy->getHitBox().toRect())){
+            if (hitbox.intersects(enemy->getHitBox().toRect())){
                 enemy->takeDamage(damage);
             }
         }
     }
     else if(itsBoss){
-        if (hitbox->intersects(itsBoss->getHitBox().toRect())){
+        if (hitbox.intersects(itsBoss->getHitBox().toRect())){
             itsBoss->takeDamage(damage);
         }
     }

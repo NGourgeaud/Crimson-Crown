@@ -5,6 +5,7 @@
 #include "enemymodel.h"
 #include "roommodel.h"
 #include "playermodel.h"
+#include "QPolygon"
 
 class GameModel : public QObject
 {
@@ -43,8 +44,8 @@ signals:
 private slots:
     void onEnemyDeath(EnemyModel * model);
     void onBossDeath(BossModel * model);
-    void onEnemyAttack(QPolygon * hitbox, int damage);
-    void onPlayerAttack(QPolygon * hitbox, int damage);
+    void onEnemyAttack(QPolygon hitbox, int damage);
+    void onPlayerAttack(QPolygon hitbox, int damage);
 };
 
 #endif // GAMEMODEL_H
