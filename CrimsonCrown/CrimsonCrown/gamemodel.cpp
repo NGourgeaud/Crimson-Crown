@@ -47,11 +47,11 @@ void GameModel::resetGame(HeroType hero)
     // Ennemi de test
     itsEnemies.append(new LancerModel(50, 3, 1900, 300, 2.0f, 100, 10));
 
-    // Couloir Vertical (150x400) centré sur le mur haut de la salle de combat
-    allRooms.append(new RoomModel(RoomType::CorridorVertical, 1825, -400, 150, 400));
+    // Couloir Vertical
+    allRooms.append(new RoomModel(RoomType::CorridorVertical, 1475, -400, 150, 400));
 
-    // Salle 3 : Boss (1000x600)
-    allRooms.append(new RoomModel(RoomType::Boss, 1400, -1000, 1000, 600));
+    // Salle 3 : Boss
+    allRooms.append(new RoomModel(RoomType::Boss, 1050, -1000, 1000, 600));
 
     // Création du Joueur
     switch(hero) {
