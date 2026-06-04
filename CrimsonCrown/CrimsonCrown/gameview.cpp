@@ -37,10 +37,8 @@ void GameView::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
 
-    // Fond global (Ténèbres)
-    QPixmap background(":/fondjeu.png");
-    painter.drawPixmap(0, 0, this->width(), this->height(), background);
-    painter.fillRect(this->rect(), QColor(0, 0, 0, 150));
+    // fond noir
+    painter.fillRect(this->rect(), Qt::black);
 
     if (itsModel->getItsPlayer() == nullptr) return;
 
@@ -86,7 +84,7 @@ void GameView::paintEvent(QPaintEvent *event)
     painter.save();
     painter.translate(cameraOffset);
 
-    // DESSIN DU DONJON (Avec ses bordures bien nettes)
+    // DESSIN DU DONJON
     for (RoomModel* room : itsModel->getAllRooms()) {
         painter.save();
         painter.translate(room->getOffsetX(), room->getOffsetY());

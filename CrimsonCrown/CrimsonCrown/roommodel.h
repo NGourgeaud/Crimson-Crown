@@ -5,19 +5,17 @@
 #include <QRectF>
 #include "obstaclemodel.h"
 
-// 1. Définition du type de salle
 enum RoomType { Spawn, CorridorHorizontal, CorridorVertical, Combat, Boss };
 
 class RoomModel
 {
 private:
-    bool isLocked;
-    int remainingEnemyCount;
+    bool isLocked;// bloquer les portes
+    int remainingEnemyCount; // ennemie restant
     QList<ObstacleModel*> itsObstacles;
-    bool isCorridor;
-    bool isBossRoom;
+    bool isCorridor; // couloir
+    bool isBossRoom; // boss
 
-    // Ajout des attributs manquants
     RoomType itsType;
     QRectF itsBounds;
 

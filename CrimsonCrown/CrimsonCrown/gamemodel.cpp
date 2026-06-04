@@ -30,23 +30,21 @@ void GameModel::resetGame(HeroType hero)
         itsPlayer = nullptr;
     }
 
-    // ==========================================
-    // GÉNÉRATION DE LA CARTE (Version Écran Fixe)
-    // ==========================================
+    // GÉNÉRATION DE LA CARTE
 
-    // Salle 1 : Spawn (1000x600)
-    allRooms.append(new RoomModel(RoomType::Spawn, 0, 0, 1000, 600));
+    // salle spawn : petit carré
+    allRooms.append(new RoomModel(RoomType::Spawn, 0, 0, 600, 600));
 
-    // Couloir Horizontal (400x150) centré sur le mur droit
-    allRooms.append(new RoomModel(RoomType::CorridorHorizontal, 1000, 225, 400, 150));
+    // couloir horizontal centré sur le mur droit
+    allRooms.append(new RoomModel(RoomType::CorridorHorizontal, 600, 225, 400, 150));
 
     // Salle 2 : Combat (1000x600)
-    RoomModel* combatRoom = new RoomModel(RoomType::Combat, 1400, 0, 1000, 600);
+    RoomModel* combatRoom = new RoomModel(RoomType::Combat, 1000, 0, 1125, 675);
     combatRoom->addObstacle(1600, 200, 100, 100);
     combatRoom->addObstacle(2100, 400, 100, 100);
     allRooms.append(combatRoom);
 
-    // Ennemi de test ultra fluide
+    // Ennemi de test
     itsEnemies.append(new LancerModel(50, 3, 1900, 300, 2.0f, 100, 10));
 
     // Couloir Vertical (150x400) centré sur le mur haut de la salle de combat
@@ -76,9 +74,7 @@ const QList<RoomModel*>& GameModel::getAllRooms() const { return allRooms; }
 void GameModel::spawnEnemiesForCurrentRoom(int count) {}
 PlayerModel *GameModel::getItsPlayer() const { return itsPlayer; }
 
-// ==========================================
-// MOTEUR PHYSIQUE ET IA
-// ==========================================
+
 void GameModel::updateLogic()
 {
     // 1. UPDATE DU JOUEUR (Sans blocage sur les murs pour le moment)
