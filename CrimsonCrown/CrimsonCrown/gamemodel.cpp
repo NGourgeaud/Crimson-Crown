@@ -2,6 +2,7 @@
 #include "blacksmithmodel.h"
 #include "lancermodel.h"
 #include "lordmodel.h"
+#include "random"
 
 GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
 {
@@ -72,8 +73,38 @@ void GameModel::resetGame(HeroType hero)
 }
 
 const QList<RoomModel*>& GameModel::getAllRooms() const { return allRooms; }
-void GameModel::spawnEnemiesForCurrentRoom(int count) {}
 PlayerModel *GameModel::getItsPlayer() const { return itsPlayer; }
+
+// Spawn enemies function needing curentRom
+void GameModel::spawnEnemies(bool isBoss)
+{
+    /*QRect roomBoundaries = currentRoom->getItsWalls();
+    if (!isBoss){
+        std::random_device rd;
+        std::default_random_engine eng(rd());
+        std::uniform_int_distribution<int> EnemiesNb(4,6);
+        std::uniform_int_distribution<int> RoomX(roomBoundaries.topLeft().rx(),roomBoundaries.topRight().rx());
+        std::uniform_int_distribution<int> RoomY(roomBoundaries.topLeft().ry(),roomBoundaries.bottomLeft().ry());
+
+        int nbEnemies = EnemiesNb(eng);
+        for (int i = 0; i < nbEnemies; i++){
+            LancerModel * newEnnemy = new LancerModel(LancerDefaultMaxHp, LancerDefaultSpeed, RoomX(eng), RoomY(eng), LancerDefaultAttackCoolDown, LancerDefaultAttackDamage);
+            itsEnemies.append(newEnnemy);
+
+            // Utilisation d'une lambda pour sécuriser le passage de paramètre
+            connect(newEnnemy, &LancerModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
+        }
+    }
+    else{
+        LordModel * newLord = new LordModel(LordDefaultMaxHp, LordDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
+                                           LordDefaultAttack1CoolDown, LordDefaultAttack2CoolDown, LordDefaultAttack1Damage, LordDefaultAttack2Damage);
+        itsBoss = newLord;
+
+        connect(newLord, &LordModel::death, this, &GameModel::onBossDeath);
+    }
+    */
+}
+
 
 
 void GameModel::updateLogic()

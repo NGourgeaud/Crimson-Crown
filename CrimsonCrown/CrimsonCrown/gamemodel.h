@@ -28,7 +28,7 @@ public:
 
     void updateLogic(); // Méthode appelée à chaque "tick" du jeu
 
-    void spawnEnemiesForCurrentRoom(int count);
+    void spawnEnemies(bool isBoss);
 
     PlayerModel * getItsPlayer() const;
 
