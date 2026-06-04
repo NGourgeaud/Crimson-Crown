@@ -77,9 +77,26 @@ PlayerModel *GameModel::getItsPlayer() const { return itsPlayer; }
 
 void GameModel::updateLogic()
 {
-    // 1. UPDATE DE L'IA DES ENNEMIS
+    // 1. UPDATE DE L'IA DES ENNEMIS ET GESTION DU SCORE
     if (itsPlayer != nullptr) {
-        for (EnemyModel* enemy : itsEnemies) {
+        for (int i = itsEnemies.size() - 1; i >= 0; --i) {
+            EnemyModel* enemy = itsEnemies.at(i);
+
+            // SCORE : Si l'ennemi est mort
+            if (enemy->getItsHP() <= 0) {
+                // Si c'est un Boss (LordModel), +150 pts ! Sinon +10 pts.
+                if (dynamic_cast<LordModel*>(enemy)) {
+                    itsScore += 150;
+                } else {
+                    itsScore += 10;
+                }
+
+                itsEnemies.removeAt(i);
+                delete enemy;
+                continue;
+            }
+
+            // IA s'il est vivant
             LancerModel* lancer = dynamic_cast<LancerModel*>(enemy);
             if (lancer) lancer->update(itsPlayer->getHitBox().center());
 
@@ -90,36 +107,28 @@ void GameModel::updateLogic()
 
     // 2. UPDATE DU JOUEUR & COLLISIONS
     if (itsPlayer != nullptr) {
-        // A. On sauvegarde l'ancienne position avant de bouger
         QPointF oldPos = itsPlayer->getHitBox().topLeft();
-
-        // B. Le joueur fait son mouvement
         itsPlayer->update();
 
         bool collision = false;
 
-        // C. VÉRIFICATION DES MURS EXTÉRIEURS
+        // C. VÉRIFICATION DES MURS EXTÉRIEURS (Avec getBounds)
         QPainterPath mapBounds;
         for (RoomModel* room : allRooms) {
-            // On dessine le plan exact de chaque pièce et on les fusionne (simplified)
-            mapBounds.addRect(room->getOffsetX(), room->getOffsetY(),
-                              room->getWidth(), room->getHeight());
+            mapBounds.addRect(room->getBounds());
         }
         mapBounds = mapBounds.simplified();
 
-        // Si la HitBox du joueur n'est plus à 100% à l'intérieur du plan du donjon, il touche un mur !
         if (!mapBounds.contains(itsPlayer->getHitBox())) {
             collision = true;
         }
 
-        // D. VÉRIFICATION DES CAISSES
+        // D. VÉRIFICATION DES CAISSES (Avec getBounds)
         for (RoomModel* room : allRooms) {
             for (ObstacleModel* obs : room->getItsObstacles()) {
-                // On transforme la coordonnée Locale de la caisse en coordonnée Globale
                 QRectF globalObsRect = obs->getHitBox();
-                globalObsRect.translate(room->getOffsetX(), room->getOffsetY());
+                globalObsRect.translate(room->getBounds().x(), room->getBounds().y());
 
-                // Si le joueur rentre dans la caisse
                 if (itsPlayer->getHitBox().intersects(globalObsRect)) {
                     collision = true;
                 }
@@ -127,9 +136,27 @@ void GameModel::updateLogic()
         }
 
         // E. APPLICATION DE LA PHYSIQUE
-        // Si on a touché un mur ou une caisse, on annule le mouvement en remettant l'ancienne position !
         if (collision) {
             itsPlayer->move(oldPos);
         }
+
+        // F. SCORE : DÉCOUVERTE D'UNE NOUVELLE SALLE
+        for (RoomModel* room : allRooms) {
+            // Si la salle n'est pas explorée ET que le joueur marche dedans
+            if (!room->getIsVisited() && itsPlayer->getHitBox().intersects(room->getBounds())) {
+                room->setIsVisited(); // Découverte d'une salle
+
+                // On ne donne pas 100 points pour un couloir, NI POUR LA SALLE DE SPAWN
+                if (!room->getIsCorridor() && room->getType() != RoomType::Spawn) {
+                    itsScore += 100;
+                }
+            }
+        }
     }
 }
+
+int GameModel::getItsScore() const
+{
+    return itsScore;
+}
+

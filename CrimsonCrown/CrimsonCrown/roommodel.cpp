@@ -1,8 +1,9 @@
 #include "roommodel.h"
 
+
 RoomModel::RoomModel(RoomType type, int x, int y, int w, int h)
     : isLocked(false), remainingEnemyCount(0),
-    itsType(type), itsBounds(x, y, w, h)
+    itsType(type), itsBounds(x, y, w, h), isVisited(false)
 {
     isCorridor = (type == CorridorHorizontal || type == CorridorVertical);
     isBossRoom = (type == Boss);
@@ -28,4 +29,14 @@ QRectF RoomModel::getBounds() const { return itsBounds; }
 void RoomModel::addObstacle(int x, int y, int width, int height)
 {
     itsObstacles.append(new ObstacleModel(x, y, width, height));
+}
+
+bool RoomModel::getIsVisited() const
+{
+    return isVisited;
+}
+
+void RoomModel::setIsVisited()
+{
+    isVisited = true;
 }

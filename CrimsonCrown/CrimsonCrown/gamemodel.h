@@ -30,6 +30,8 @@ public:
 
     PlayerModel * getItsPlayer() const;
 
+    int getItsScore() const;
+
 signals:
     void roomCleared();
     void gameOver(int score);

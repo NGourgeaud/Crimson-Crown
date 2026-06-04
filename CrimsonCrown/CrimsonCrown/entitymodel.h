@@ -29,6 +29,7 @@ public:
     virtual void takeDamage(int amount) = 0;
     virtual void move(QPointF pos) = 0;
     virtual QRectF getHitBox() const = 0;
+    int getItsHP() const;
 };
 
 #endif // ENTITYMODEL_H
