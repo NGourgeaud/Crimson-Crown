@@ -84,6 +84,26 @@ void GameView::paintEvent(QPaintEvent *event)
         painter.restore();
     }
 
+    if (!itsModel->areAllCombatRoomsCleared()) {
+        for (RoomModel* room : itsModel->getAllRooms()) {
+            if (room->getType() == RoomType::Boss) {
+                painter.save();
+                painter.translate(room->getBounds().x(), room->getBounds().y());
+
+                // On dessine une grosse poutre marron (couleur bois massif)
+                painter.setBrush(QColor(139, 69, 19));
+                painter.setPen(QPen(Qt::black, 3));
+
+                // On la place pile à l'entrée sud de la salle du Boss
+                int doorX = (room->getWidth() / 2) - 75; // Le couloir fait 150 de large
+                int doorY = room->getHeight() - 20;      // Tout en bas de la salle
+                painter.drawRect(doorX, doorY, 150, 20);
+
+                painter.restore();
+            }
+        }
+    }
+
     // 2. DESSIN DES ENNEMIS (Carrés rouges temporaires)
     painter.setBrush(QColor(220, 20, 60)); // Rouge "monstre"
     painter.setPen(QPen(Qt::black, 3));

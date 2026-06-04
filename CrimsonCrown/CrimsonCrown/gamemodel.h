@@ -24,16 +24,13 @@ public:
     void resetGame(HeroType hero);
     void updateLogic();
     const QList<RoomModel*>& getAllRooms() const;
+    const QList<EnemyModel*>& getItsEnemies() const;
     const RoomModel* getCurrentRoom() const;
     PlayerModel * getItsPlayer() const;
     void spawnEnemies(bool isBoss);
     void spawnEnemiesInRoom(RoomModel* room, int count);
-
-    // --- LA LIGNE À AJOUTER ---
-    const QList<EnemyModel*>& getItsEnemies() const;
-
     void cheatKillEnemies();
-
+    bool areAllCombatRoomsCleared() const;
     int getItsScore() const;
 
 signals:

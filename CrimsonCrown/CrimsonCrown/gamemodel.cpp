@@ -51,9 +51,6 @@ void GameModel::resetGame(HeroType hero)
 
     allRooms.append(new RoomModel(RoomType::CorridorVertical, 1475, 625, 150, 400));
 
-    // Ennemi de test
-    itsEnemies.append(new LancerModel(50, 2, 1900, 300, 2.0f, 10));
-
     // 3. Combat 2 (Carrefour)
     RoomModel* combat2 = new RoomModel(RoomType::Combat, 1000, 1025, 1100, 650);
     combat2->addObstacle(520, 300, 60, 60);
@@ -104,9 +101,7 @@ const QList<EnemyModel*>& GameModel::getItsEnemies() const { return itsEnemies; 
 PlayerModel *GameModel::getItsPlayer() const { return itsPlayer; }
 
 
-// ==========================================
 // FONCTION DE SPAWN ALÉATOIRE SÉCURISÉE
-// ==========================================
 void GameModel::spawnEnemiesInRoom(RoomModel* room, int count)
 {
     if (!room) return;
@@ -152,6 +147,7 @@ void GameModel::updateLogic()
             if (lord) lord->update(itsPlayer->getHitBox().center());
         }
     }
+
 
     // 2. UPDATE DU JOUEUR & COLLISIONS
     if (itsPlayer != nullptr) {
@@ -209,9 +205,14 @@ void GameModel::updateLogic()
 
         // --- C. GESTION DES MURS ---
         bool collision = false;
+        bool bossAccess = areAllCombatRoomsCleared(); // A-t-on le droit d'aller au Boss ?
 
         QPainterPath mapBounds;
         for (RoomModel* room : allRooms) {
+            // Si c'est le boss et qu'on n'a pas accès, on ne dessine pas le sol !
+            if (room->getType() == RoomType::Boss && !bossAccess) {
+                continue;
+            }
             mapBounds.addRect(room->getOffsetX(), room->getOffsetY(),
                               room->getWidth(), room->getHeight());
         }
@@ -315,4 +316,16 @@ void GameModel::onBossDeath(BossModel * model)
     itsScore += 150; // +150 Points pour le boss !
 
     delete model;
+}
+bool GameModel::areAllCombatRoomsCleared() const
+{
+    for (RoomModel* room : allRooms) {
+        if (room->getType() == RoomType::Combat) {
+            // S'il reste des ennemis en attente OU si la salle est verrouillée
+            if (room->getRemainingEnemyCount() > 0 || room->getIsLocked()) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
