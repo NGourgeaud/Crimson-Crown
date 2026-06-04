@@ -18,7 +18,6 @@ RoomModel::~RoomModel()
 
 void RoomModel::lockDoors() { isLocked = true; }
 void RoomModel::unlockDoors() { isLocked = false; }
-void RoomModel::spawnEnemies(int count) { remainingEnemyCount = count; }
 
 const QList<ObstacleModel*>& RoomModel::getItsObstacles() const { return itsObstacles; }
 bool RoomModel::getIsLocked() const { return isLocked; }

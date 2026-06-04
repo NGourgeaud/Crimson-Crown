@@ -2,10 +2,6 @@
 
 EntityModel::EntityModel() {}
 
-EntityModel::~EntityModel()
-{
-
-}
 
 
 

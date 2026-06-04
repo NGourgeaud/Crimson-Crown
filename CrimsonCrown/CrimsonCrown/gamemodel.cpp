@@ -47,7 +47,7 @@ void GameModel::resetGame(HeroType hero)
     allRooms.append(combatRoom);
 
     // Ennemi de test
-    itsEnemies.append(new LancerModel(50, 3, 1900, 300, 2.0f, 100, 10));
+    itsEnemies.append(new LancerModel(LancerDefaultMaxHp, LancerDefaultSpeed, 1900, 300, LancerDefaultAttackCoolDown, LancerDefaultAttackDamage));
 
     // Couloir Vertical
     allRooms.append(new RoomModel(RoomType::CorridorVertical, 1475, -400, 150, 400));

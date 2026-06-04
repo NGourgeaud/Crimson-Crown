@@ -2,8 +2,3 @@
 
 EnemyModel::EnemyModel() {}
 
-EnemyModel::~EnemyModel()
-{
-
-}
-
