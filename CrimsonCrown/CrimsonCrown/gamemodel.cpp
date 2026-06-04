@@ -51,9 +51,6 @@ void GameModel::resetGame(HeroType hero)
 
     allRooms.append(new RoomModel(RoomType::CorridorVertical, 1475, 625, 150, 400));
 
-    // Ennemi de test
-    itsEnemies.append(new LancerModel(50, 2, 1900, 300, 2.0f, 10));
-
     // 3. Combat 2 (Carrefour)
     RoomModel* combat2 = new RoomModel(RoomType::Combat, 1000, 1025, 1100, 650);
     combat2->addObstacle(520, 300, 60, 60);
@@ -264,15 +261,13 @@ void GameModel::cheatKillEnemies()
     // Tue les lanciers
     for (int i = itsEnemies.size() - 1; i >= 0; --i) {
         if (activeRoom->getBounds().intersects(itsEnemies[i]->getHitBox())) {
-            delete itsEnemies[i];
-            itsEnemies.removeAt(i);
+            itsEnemies[i]->takeDamage(999999);
         }
     }
 
     // Tue le boss
     if (itsBoss != nullptr && activeRoom->getBounds().intersects(itsBoss->getHitBox())) {
-        delete itsBoss;
-        itsBoss = nullptr;
+        itsBoss->takeDamage(9999999);
     }
 }
 
