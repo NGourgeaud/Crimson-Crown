@@ -57,8 +57,9 @@ void LordModel::attack1(QPointF heroPos)
     QPainterPath * hitboxCercle = nullptr;
     hitboxCercle->addEllipse(itsHitBox.center().x(), itsHitBox.center().y(), LordAttack1HitBoxWidth, LordAttack1HitBoxHeight);
     canAttack1 = false;
+    QPolygon attackHitbox = hitboxCercle->toFillPolygon().toPolygon();
     itsCoolDownTimer1->start(itsAttack1Cooldown*1000);
-    emit attacking(hitboxCercle, itsAttack1Damage);
+    emit attacking(&attackHitbox, itsAttack1Damage);
 }
 
 ///
@@ -158,6 +159,7 @@ void LordModel::dashStep()
     if (currentDashStep >= maxDashSteps) {
         itsDashTimer->stop();
         itsCoolDownTimer2->start(itsAttack2Cooldown*1000);
+        isDashing = false;
         return;
     }
     // Calcul de la progression (de 0.0 à 1.0)
@@ -175,7 +177,7 @@ void LordModel::dashStep()
     transform.rotate(-angle);
 
     QPolygon attackHitbox = transform.mapToPolygon(baseAttackRect);
-    emit dashing(&attackHitbox, itsAttack2Damage);
+    emit attacking(&attackHitbox, itsAttack2Damage);
 
     // On passe à l'étape suivante pour le prochain "tic" du timer
     currentDashStep++;

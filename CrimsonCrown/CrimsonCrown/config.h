@@ -44,8 +44,8 @@ const int LancerDefaultSpeed = 2;
 const int LancerDefaultAttackDamage = 6;
 const float LancerDefaultAttackCoolDown = 0.5;
 
-const int LancerWidth = 0;
-const int LancerHeight = 0;
+const int LancerWidth = 80;
+const int LancerHeight = 80;
 
 const int LancerAttackHitboxWidth = 0;
 const int LancerAttackHitboxHeight = 0;
@@ -59,8 +59,8 @@ const float LordDefaultAttack1CoolDown = 5;
 const float LordDefaultAttack2CoolDown = 5;
 
 
-const int LordWidth = 0;
-const int LordHeight = 0;
+const int LordWidth = 125;
+const int LordHeight = 125;
 
 const int LordAttack1HitBoxWidth = 100;
 const int LordAttack1HitBoxHeight = 100;
@@ -77,6 +77,11 @@ enum HeroType {
 enum EnemyType{
     NOTDEF,
     LANCER
+};
+
+enum BossType{
+    UNDEF,
+    LORD
 };
 
 // --- STATISTIQUES ET DESCRIPTION DU FORGERON (HTML STYLISÉ) ---
