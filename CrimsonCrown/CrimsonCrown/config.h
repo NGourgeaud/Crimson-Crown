@@ -46,10 +46,6 @@ const float LancerDefaultAttackCoolDown = 0.5;
 
 const int LancerWidth = 80;
 const int LancerHeight = 80;
->>>>>>> CrimsonCrown/CrimsonCrown/config.h
-
-const int LancerWidth = 80;
-const int LancerHeight = 80;
 
 const int LancerAttackHitboxWidth = 100;
 const int LancerAttackHitboxHeight = 100;

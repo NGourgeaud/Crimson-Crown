@@ -4,7 +4,7 @@
 #include "lordmodel.h"
 #include "config.h"
 #include "qpainterpath.h"
-#include "random"
+#include <QRandomGenerator> // Pour le spawn aléatoire
 
 GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
 {
@@ -50,8 +50,9 @@ void GameModel::resetGame(HeroType hero)
     allRooms.append(combat1);
 
     allRooms.append(new RoomModel(RoomType::CorridorVertical, 1475, 625, 150, 400));
+
     // Ennemi de test
-    itsEnemies.append(new LancerModel(LancerDefaultMaxHp, LancerDefaultSpeed, 1900, 300, LancerDefaultAttackCoolDown, LancerDefaultAttackDamage));
+    itsEnemies.append(new LancerModel(50, 2, 1900, 300, 2.0f, 10));
 
     // 3. Combat 2 (Carrefour)
     RoomModel* combat2 = new RoomModel(RoomType::Combat, 1000, 1025, 1100, 650);
@@ -103,49 +104,51 @@ const QList<EnemyModel*>& GameModel::getItsEnemies() const { return itsEnemies; 
 PlayerModel *GameModel::getItsPlayer() const { return itsPlayer; }
 
 
-// Spawn enemies function needing curentRom
-void GameModel::spawnEnemies(bool isBoss)
+// ==========================================
+// FONCTION DE SPAWN ALÉATOIRE SÉCURISÉE
+// ==========================================
+void GameModel::spawnEnemiesInRoom(RoomModel* room, int count)
 {
-    /*QRect roomBoundaries = currentRoom->getItsWalls();
-    if (!isBoss){
-        std::random_device rd;
-        std::default_random_engine eng(rd());
-        std::uniform_int_distribution<int> EnemiesNb(4,6);
-        std::uniform_int_distribution<int> RoomX(roomBoundaries.topLeft().rx(),roomBoundaries.topRight().rx());
-        std::uniform_int_distribution<int> RoomY(roomBoundaries.topLeft().ry(),roomBoundaries.bottomLeft().ry());
+    if (!room) return;
 
-        int nbEnemies = EnemiesNb(eng);
-        for (int i = 0; i < nbEnemies; i++){
-            LancerModel * newEnnemy = new LancerModel(LancerDefaultMaxHp, LancerDefaultSpeed, RoomX(eng), RoomY(eng), LancerDefaultAttackCoolDown, LancerDefaultAttackDamage);
-            itsEnemies.append(newEnnemy);
+    QRectF bounds = room->getBounds();
 
-            // Utilisation d'une lambda pour sécuriser le passage de paramètre
-            connect(newEnnemy, &LancerModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
+    int minX = bounds.left() + 50;
+    int maxX = bounds.right() - 50;
+    int minY = bounds.top() + 50;
+    int maxY = bounds.bottom() - 50;
+
+    for (int i = 0; i < count; ++i) {
+        int randomX = QRandomGenerator::global()->bounded(minX, maxX);
+        int randomY = QRandomGenerator::global()->bounded(minY, maxY);
+
+        if (room->getType() == RoomType::Boss) {
+            LordModel* boss = new LordModel(200, 1, randomX, randomY, 2.0f, 3.0f, 20, 30);
+            itsBoss = boss; // CORRECTION : On range le Boss dans sa propre variable
+            connect(boss, &LordModel::death, this, &GameModel::onBossDeath);
+        } else {
+            LancerModel* lancer = new LancerModel(50, 2, randomX, randomY, 2.0f, 10);
+            itsEnemies.append(lancer); // Les Lanciers vont dans la liste d'ennemis
+            connect(lancer, &LancerModel::death, this, [this, lancer]() { this->onEnemyDeath(lancer); });
         }
     }
-    else{
-        LordModel * newLord = new LordModel(LordDefaultMaxHp, LordDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
-                                           LordDefaultAttack1CoolDown, LordDefaultAttack2CoolDown, LordDefaultAttack1Damage, LordDefaultAttack2Damage);
-        itsBoss = newLord;
-
-        connect(newLord, &LordModel::death, this, &GameModel::onBossDeath);
-    }
-    */
 }
-
 
 
 void GameModel::updateLogic()
 {
     // 1. UPDATE DE L'IA
     if (itsPlayer != nullptr) {
+        // A. Mise à jour des Lanciers
         for (int i = itsEnemies.size() - 1; i >= 0; --i) {
             EnemyModel* enemy = itsEnemies.at(i);
-
             LancerModel* lancer = dynamic_cast<LancerModel*>(enemy);
             if (lancer) lancer->update(itsPlayer->getHitBox().center());
+        }
 
-            LordModel* lord = dynamic_cast<LordModel*>(enemy);
+        // B. Mise à jour du Boss (s'il existe sur la map)
+        if (itsBoss != nullptr) {
+            LordModel* lord = dynamic_cast<LordModel*>(itsBoss);
             if (lord) lord->update(itsPlayer->getHitBox().center());
         }
     }
@@ -172,28 +175,29 @@ void GameModel::updateLogic()
                 // 1) DÉCLENCHEMENT DU PIÈGE (Le joueur entre pour la première fois)
                 if (activeRoom->getRemainingEnemyCount() > 0 && activeRoom->getBounds().contains(itsPlayer->getHitBox())) {
 
-                    // On calcule le centre exact de la salle
-                    int spawnX = activeRoom->getOffsetX() + (activeRoom->getWidth() / 2) - (LancerWidth / 2);
-                    int spawnY = activeRoom->getOffsetY() + (activeRoom->getHeight() / 2) - (LancerHeight / 2);
+                    // Appelle notre fonction aléatoire avec le nombre d'ennemis défini !
+                    spawnEnemiesInRoom(activeRoom, activeRoom->getRemainingEnemyCount());
 
-                    // ASTUCE : On met la vitesse à 0 pour qu'il soit totalement fixe !
-                    itsEnemies.append(new LancerModel(50, 0, spawnX, spawnY, 2.0f, 100, 10));
-
-                    // On indique que la salle est "vide" de sa réserve pour ne pas le spawner en boucle
+                    // On vide la réserve et on ferme à clé
                     activeRoom->spawnEnemies(0);
-
-                    // On verrouille les portes
                     activeRoom->lockDoors();
                 }
 
                 // 2) OUVERTURE DES PORTES (Si tous les ennemis sont morts)
                 if (activeRoom->getIsLocked()) {
                     bool enemiesAliveInRoom = false;
+
+                    // On vérifie les Lanciers
                     for (EnemyModel* enemy : itsEnemies) {
                         if (activeRoom->getBounds().intersects(enemy->getHitBox())) {
                             enemiesAliveInRoom = true;
                             break;
                         }
+                    }
+
+                    // On vérifie aussi le Boss
+                    if (itsBoss != nullptr && activeRoom->getBounds().intersects(itsBoss->getHitBox())) {
+                        enemiesAliveInRoom = true;
                     }
 
                     if (!enemiesAliveInRoom) {
@@ -206,28 +210,25 @@ void GameModel::updateLogic()
         // --- C. GESTION DES MURS ---
         bool collision = false;
 
+        QPainterPath mapBounds;
+        for (RoomModel* room : allRooms) {
+            mapBounds.addRect(room->getOffsetX(), room->getOffsetY(),
+                              room->getWidth(), room->getHeight());
+        }
+        mapBounds = mapBounds.simplified();
+
         if (activeRoom != nullptr && activeRoom->getIsLocked()) {
             if (!activeRoom->getBounds().contains(itsPlayer->getHitBox())) {
                 collision = true;
             }
         }
         else {
-            QPainterPath mapBounds;
-            for (RoomModel* room : allRooms) {
-                mapBounds.addRect(room->getOffsetX(), room->getOffsetY(),
-                                  room->getWidth(), room->getHeight());
-            }
-            mapBounds = mapBounds.simplified();
-
             if (!mapBounds.contains(itsPlayer->getHitBox())) {
                 collision = true;
             }
         }
 
         // --- D. COLLISIONS CAISSES ---
-        if (!mapBounds.contains(itsPlayer->getHitBox())) {
-            collision = true;
-        }
         for (RoomModel* room : allRooms) {
             for (ObstacleModel* obs : room->getItsObstacles()) {
                 QRectF globalObsRect = obs->getHitBox();
@@ -271,17 +272,19 @@ void GameModel::cheatKillEnemies()
     }
     if (!activeRoom) return;
 
+    // Tue les lanciers
     for (int i = itsEnemies.size() - 1; i >= 0; --i) {
         if (activeRoom->getBounds().intersects(itsEnemies[i]->getHitBox())) {
             delete itsEnemies[i];
             itsEnemies.removeAt(i);
         }
     }
-}
 
-PlayerModel *GameModel::getItsPlayer() const
-{
-    return itsPlayer;
+    // Tue le boss
+    if (itsBoss != nullptr && activeRoom->getBounds().intersects(itsBoss->getHitBox())) {
+        delete itsBoss;
+        itsBoss = nullptr;
+    }
 }
 
 int GameModel::getItsScore() const
@@ -292,10 +295,7 @@ int GameModel::getItsScore() const
 void GameModel::onEnemyDeath(EnemyModel * model)
 {
     itsEnemies.removeOne(model);
-
-    //if (itsEnemies.empty()){
-    //    currentRoom->unlockDoors();
-    //}
+    itsScore += 10; // +10 Points pour le lancier
 
     QObject * qobjEnemy = dynamic_cast<QObject*>(model);
     if (qobjEnemy) {
@@ -309,11 +309,10 @@ void GameModel::onEnemyDeath(EnemyModel * model)
 void GameModel::onBossDeath(BossModel * model)
 {
     QObject * qobjBoss = dynamic_cast<QObject*>(model);
-    disconnect(qobjBoss);
-    itsBoss = nullptr;
-    delete model;
+    if (qobjBoss) disconnect(qobjBoss);
 
-    itsScore += 150;
-    // V2
-    // currentRoom->unlockDoors();
+    itsBoss = nullptr;
+    itsScore += 150; // +150 Points pour le boss !
+
+    delete model;
 }

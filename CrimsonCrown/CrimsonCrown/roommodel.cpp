@@ -62,3 +62,8 @@ void RoomModel::setIsVisited()
 {
     isVisited = true;
 }
+
+void RoomModel::spawnEnemies(int count)
+{
+    remainingEnemyCount = count;
+}

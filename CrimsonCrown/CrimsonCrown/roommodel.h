@@ -28,6 +28,7 @@ public:
 
     void lockDoors();
     void unlockDoors();
+    void spawnEnemies(int count);
 
     // Getters
     const QList<ObstacleModel*>& getItsObstacles() const;
