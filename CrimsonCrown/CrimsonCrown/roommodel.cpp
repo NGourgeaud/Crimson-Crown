@@ -3,8 +3,7 @@
 
 
 RoomModel::RoomModel(RoomType type, int x, int y, int w, int h)
-    : isLocked(false), remainingEnemyCount(0),
-    itsType(type), itsBounds(x, y, w, h), isVisited(false)
+    : isLocked(false),itsType(type), itsBounds(x, y, w, h), isVisited(false)
 {
     isCorridor = (type == CorridorHorizontal || type == CorridorVertical);
     isBossRoom = (type == Boss);
@@ -38,11 +37,6 @@ bool RoomModel::getIsBossRoom() const
     return isBossRoom;
 }
 
-int RoomModel::getRemainingEnemyCount() const
-{
-    return remainingEnemyCount;
-}
-
 QRectF RoomModel::getBounds() const
 {
     return itsBounds;
@@ -63,7 +57,3 @@ void RoomModel::setIsVisited()
     isVisited = true;
 }
 
-void RoomModel::spawnEnemies(int count)
-{
-    remainingEnemyCount = count;
-}
