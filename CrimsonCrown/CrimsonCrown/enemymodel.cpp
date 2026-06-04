@@ -2,5 +2,8 @@
 
 EnemyModel::EnemyModel() {}
 
-// FIX
-EnemyModel::~EnemyModel() {}
+EnemyModel::~EnemyModel()
+{
+
+}
+

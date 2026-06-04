@@ -31,7 +31,7 @@ QWidget* GameController::createView(HeroType hero)
     itsModel->resetGame(hero);
 
     itsView = new GameView(itsModel, parentWidget);
-    // Dans GameController::createView
+
     connect(itsView, &GameView::keyPressed, this, &GameController::onKeyPressed);
     connect(itsView, &GameView::keyReleased, this, &GameController::onKeyReleased);
 

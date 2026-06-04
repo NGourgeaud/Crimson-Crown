@@ -12,7 +12,7 @@ protected:
     int itsAttack2Damage;
 public:
     BossModel();
-    virtual ~BossModel(); // FIX
+    virtual ~BossModel();
 
     virtual void attack1(QPointF heroPos) = 0;
     virtual void attack2(QPointF heroPos) = 0;

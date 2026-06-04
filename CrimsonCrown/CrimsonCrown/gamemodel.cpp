@@ -6,6 +6,7 @@
 GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
 {
     resetGame(HeroType::None);
+    itsBoss = nullptr;
 }
 
 GameModel::~GameModel()
@@ -82,20 +83,6 @@ void GameModel::updateLogic()
         for (int i = itsEnemies.size() - 1; i >= 0; --i) {
             EnemyModel* enemy = itsEnemies.at(i);
 
-            // SCORE : Si l'ennemi est mort
-            if (enemy->getItsHP() <= 0) {
-                // Si c'est un Boss (LordModel), +150 pts ! Sinon +10 pts.
-                if (dynamic_cast<LordModel*>(enemy)) {
-                    itsScore += 150;
-                } else {
-                    itsScore += 10;
-                }
-
-                itsEnemies.removeAt(i);
-                delete enemy;
-                continue;
-            }
-
             // IA s'il est vivant
             LancerModel* lancer = dynamic_cast<LancerModel*>(enemy);
             if (lancer) lancer->update(itsPlayer->getHitBox().center());
@@ -158,5 +145,34 @@ void GameModel::updateLogic()
 int GameModel::getItsScore() const
 {
     return itsScore;
+}
+
+void GameModel::onEnemyDeath(EnemyModel * model)
+{
+    itsEnemies.removeOne(model);
+
+    //if (itsEnemies.empty()){
+    //    currentRoom->unlockDoors();
+    //}
+
+    QObject * qobjEnemy = dynamic_cast<QObject*>(model);
+    if (qobjEnemy) {
+        qobjEnemy->deleteLater();
+    }
+    else {
+        delete model;
+    }
+}
+
+void GameModel::onBossDeath(BossModel * model)
+{
+    QObject * qobjBoss = dynamic_cast<QObject*>(model);
+    disconnect(qobjBoss);
+    itsBoss = nullptr;
+    delete model;
+
+    itsScore += 150;
+    // V2
+    // currentRoom->unlockDoors();
 }
 

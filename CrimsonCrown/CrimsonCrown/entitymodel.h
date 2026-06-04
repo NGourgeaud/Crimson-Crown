@@ -24,12 +24,11 @@ protected:
 
 public:
     EntityModel();
-    virtual ~EntityModel(); // FIX : On ajoute le destructeur virtuel !
+    virtual ~EntityModel();
 
     virtual void takeDamage(int amount) = 0;
     virtual void move(QPointF pos) = 0;
     virtual QRectF getHitBox() const = 0;
-    int getItsHP() const;
 };
 
 #endif // ENTITYMODEL_H
