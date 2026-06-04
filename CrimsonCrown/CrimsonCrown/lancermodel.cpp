@@ -41,14 +41,19 @@ void LancerModel::attack(QPointF heroPos)
     QLineF aimLine(itsHitBox.center(), heroPos);
     qreal angle = aimLine.angle(); // Returns the angle in degrees (0 is right, 90 is up)
 
-    // 2. Create the base attack rectangle (centered at 0,0 to make rotation easy)
-    QRect baseAttackRect(itsHitBox.center().x(),itsHitBox.center().y(), LancerAttackHitboxWidth, LancerAttackHitboxHeight);
+    // 1. Crée le rectangle d'attaque centré sur 0,0
+    QRect baseAttackRect(-LancerAttackHitboxWidth / 2, -LancerAttackHitboxHeight / 2, LancerAttackHitboxWidth, LancerAttackHitboxHeight);
 
-    // 3. Set up a QTransform to move and rotate the rectangle
+    // 2. Initialise le QTransform
     QTransform transform;
-    transform.rotate(-angle); // Rotate towards Hero (Qt angles go counter-clockwise, QTransform rotates clockwise, so we negate)
 
-    // 4. Map the rectangle through the transform to get a rotated polygon
+    // 3. Translate le centre du système de coordonnées vers ton personnage
+    transform.translate(itsHitBox.center().x(), itsHitBox.center().y());
+
+    // 4. Applique la rotation
+    transform.rotate(-angle);
+
+    // 5. Génère le polygone final
     QPolygon attackHitbox = transform.mapToPolygon(baseAttackRect);
     emit attacking(attackHitbox, itsAttackDamage);
     canAttack = false;
@@ -63,7 +68,7 @@ void LancerModel::attack(QPointF heroPos)
 bool LancerModel::handleAI(QPointF heroPos)
 {
     // Goes towards the player if it's too far
-    if (QLineF(heroPos, itsHitBox.center()).length() > LancerAttackHitboxWidth-20){
+    if (QLineF(heroPos, itsHitBox.center()).length() > LancerAttackHitboxWidth-5){
         for (int i = 0; i<itsSpeed; i++){
             QLineF aimLine = QLineF(itsHitBox.center(), heroPos);
             qreal angle = aimLine.angle();

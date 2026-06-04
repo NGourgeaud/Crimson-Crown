@@ -281,6 +281,7 @@ void GameModel::onBossDeath(BossModel * model)
 
 void GameModel::onEnemyAttack(QPolygon hitbox, int damage)
 {
+    emit attack(hitbox);
     if (hitbox.intersects(itsPlayer->getHitBox().toRect())){
         itsPlayer->takeDamage(damage);
     }
@@ -288,6 +289,7 @@ void GameModel::onEnemyAttack(QPolygon hitbox, int damage)
 
 void GameModel::onPlayerAttack(QPolygon hitbox, int damage)
 {
+    emit attack(hitbox);
     if (!itsEnemies.empty()){
         for (EnemyModel* enemy : itsEnemies){
             if (hitbox.intersects(enemy->getHitBox().toRect())){

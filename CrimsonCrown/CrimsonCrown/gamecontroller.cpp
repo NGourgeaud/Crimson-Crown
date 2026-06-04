@@ -34,6 +34,7 @@ QWidget* GameController::createView(HeroType hero)
 
     connect(itsView, &GameView::keyPressed, this, &GameController::onKeyPressed);
     connect(itsView, &GameView::keyReleased, this, &GameController::onKeyReleased);
+    connect(itsModel, &GameModel::attack, itsView, &GameView::drawAttackArea);
 
     itsView->setFocus();
 

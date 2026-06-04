@@ -5,6 +5,8 @@
 #include <QKeyEvent>
 #include <QPainter>
 #include <QPointF>
+#include <QPolygon>
+#include <QList>
 #include "gamemodel.h"
 #include "roomview.h"
 #include "obstacleview.h"
@@ -27,6 +29,7 @@ private:
     RoomView *itsRoomView;
     ObstacleView *itsObstacleView;
     PlayerView *itsPlayerView;
+    QList<QPolygon> itsAttackAreas;
 
     QPointF currentCameraCenter;
     bool isCameraInitialized;
@@ -34,6 +37,8 @@ private:
 signals:
     void keyPressed(int key);
     void keyReleased(int key);
+public slots:
+    void drawAttackArea(QPolygon hitbox);
 };
 
 #endif // GAMEVIEW_H

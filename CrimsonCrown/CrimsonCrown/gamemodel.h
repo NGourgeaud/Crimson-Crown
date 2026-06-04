@@ -40,6 +40,7 @@ public:
 signals:
     void roomCleared();
     void gameOver(int score);
+    void attack(QPolygon);
 
 private slots:
     void onEnemyDeath(EnemyModel * model);
