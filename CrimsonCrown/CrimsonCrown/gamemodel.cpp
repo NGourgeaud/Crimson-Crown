@@ -40,8 +40,8 @@ void GameModel::resetGame(HeroType hero)
 
     // Salle 2 : Combat (1000x600)
     RoomModel* combatRoom = new RoomModel(RoomType::Combat, 1000, 0, 1125, 675);
-    combatRoom->addObstacle(1600, 200, 100, 100);
-    combatRoom->addObstacle(2100, 400, 100, 100);
+    combatRoom->addObstacle(200, 150, 60, 60);
+    combatRoom->addObstacle(800, 450, 60, 60);
     allRooms.append(combatRoom);
 
     // Ennemi de test
@@ -77,12 +77,7 @@ PlayerModel *GameModel::getItsPlayer() const { return itsPlayer; }
 
 void GameModel::updateLogic()
 {
-    // 1. UPDATE DU JOUEUR (Sans blocage sur les murs pour le moment)
-    if (itsPlayer != nullptr) {
-        itsPlayer->update();
-    }
-
-    // 2. UPDATE DE L'IA (Fluide)
+    // 1. UPDATE DE L'IA DES ENNEMIS
     if (itsPlayer != nullptr) {
         for (EnemyModel* enemy : itsEnemies) {
             LancerModel* lancer = dynamic_cast<LancerModel*>(enemy);
@@ -90,6 +85,51 @@ void GameModel::updateLogic()
 
             LordModel* lord = dynamic_cast<LordModel*>(enemy);
             if (lord) lord->update(itsPlayer->getHitBox().center());
+        }
+    }
+
+    // 2. UPDATE DU JOUEUR & COLLISIONS
+    if (itsPlayer != nullptr) {
+        // A. On sauvegarde l'ancienne position avant de bouger
+        QPointF oldPos = itsPlayer->getHitBox().topLeft();
+
+        // B. Le joueur fait son mouvement
+        itsPlayer->update();
+
+        bool collision = false;
+
+        // C. VÉRIFICATION DES MURS EXTÉRIEURS
+        QPainterPath mapBounds;
+        for (RoomModel* room : allRooms) {
+            // On dessine le plan exact de chaque pièce et on les fusionne (simplified)
+            mapBounds.addRect(room->getOffsetX(), room->getOffsetY(),
+                              room->getWidth(), room->getHeight());
+        }
+        mapBounds = mapBounds.simplified();
+
+        // Si la HitBox du joueur n'est plus à 100% à l'intérieur du plan du donjon, il touche un mur !
+        if (!mapBounds.contains(itsPlayer->getHitBox())) {
+            collision = true;
+        }
+
+        // D. VÉRIFICATION DES CAISSES
+        for (RoomModel* room : allRooms) {
+            for (ObstacleModel* obs : room->getItsObstacles()) {
+                // On transforme la coordonnée Locale de la caisse en coordonnée Globale
+                QRectF globalObsRect = obs->getHitBox();
+                globalObsRect.translate(room->getOffsetX(), room->getOffsetY());
+
+                // Si le joueur rentre dans la caisse
+                if (itsPlayer->getHitBox().intersects(globalObsRect)) {
+                    collision = true;
+                }
+            }
+        }
+
+        // E. APPLICATION DE LA PHYSIQUE
+        // Si on a touché un mur ou une caisse, on annule le mouvement en remettant l'ancienne position !
+        if (collision) {
+            itsPlayer->move(oldPos);
         }
     }
 }
