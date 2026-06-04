@@ -30,6 +30,11 @@ QWidget* GameController::createView(HeroType hero)
 {
     itsModel->resetGame(hero);
 
+    if (itsModel->getItsPlayer()) {
+        connect(itsModel->getItsPlayer(), &PlayerModel::death, this, &GameController::onPlayerDeath);
+    }
+    connect(itsModel, &GameModel::gameWon, this, &GameController::gameWon);
+
     itsView = new GameView(itsModel, parentWidget);
     connect(itsView, &GameView::keyPressed, this, &GameController::onKeyPressed);
     connect(itsView, &GameView::keyReleased, this, &GameController::onKeyReleased);
@@ -51,6 +56,18 @@ void GameController::destroyView()
     itsView->deleteLater();
     itsView = nullptr;
 }
+
+void GameController::onPlayerDeath()
+{
+    emit gameOver(itsModel->getItsScore());
+}
+
+void GameController::onBossDeath()
+{
+    emit gameWon(itsModel->getItsScore());
+}
+
+
 
 ///
 /// \brief GameController::onTick

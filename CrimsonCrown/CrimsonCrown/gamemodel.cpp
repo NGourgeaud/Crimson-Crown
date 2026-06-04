@@ -132,21 +132,22 @@ void GameModel::goToNextRoom()
             roomCount = 0; //
         }
         else {
-            // C'est une salle normale
-            currentRoom = new RoomModel(false, false); //
-            currentRoom->lockDoors(); //
-            currentRoom->addObstacle(300, 200, 50, 50); //
+            // C'est une salle normal
+            currentRoom = new RoomModel(false, false);
+            currentRoom->lockDoors();
+            currentRoom->addObstacle(300, 200, 50, 50);
 
             // On utilise ta méthode pour faire spawner les ennemis de base
-            spawnEnemies(false); //
+            spawnEnemies(false);
         }
     }
 }
 
 PlayerModel *GameModel::getItsPlayer() const
 {
-    return itsPlayer; //
+    return itsPlayer;
 }
+
 
 void GameModel::onEnemyDeath(EnemyModel * model)
 {
@@ -175,4 +176,11 @@ void GameModel::onBossDeath(BossModel * model)
     itsScore += 150;
     // V2
     // currentRoom->unlockDoors();
+
+    emit gameWon(itsScore);
+}
+
+int GameModel::getItsScore() const
+{
+    return itsScore;
 }

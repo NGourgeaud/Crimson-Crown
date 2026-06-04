@@ -14,6 +14,7 @@ public:
 
 signals:
     void backToMenuRequested();
+    void menuRequested();
 
 private:
     GameOverView *itsView;

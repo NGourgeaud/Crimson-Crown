@@ -35,10 +35,11 @@ public:
 
     PlayerModel * getItsPlayer() const;
 
+    int getItsScore() const;
+
 signals:
     void roomCleared();
-
-    void gameOver(int score);
+    void gameWon(int score);
 
 private slots:
     void onEnemyDeath(EnemyModel * model);

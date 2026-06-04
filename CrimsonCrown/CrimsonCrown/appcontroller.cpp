@@ -37,6 +37,10 @@ AppController::AppController(QObject *parent)
 
     connect(gameController, &GameController::menuRequested, this, &AppController::onMenuRequested);
     connect(gameController, &GameController::gameOver, this, &AppController::onGameOver);
+    connect(gameController, &GameController::gameWon, this, &AppController::onGameWon);
+
+    connect(itsGameOverController, &GameOverController::menuRequested, this, &AppController::onMenuRequested);
+    connect(itsGameWonController, &GameWonController::menuRequested, this, &AppController::onMenuRequested);
 
     start();
 }
@@ -151,11 +155,11 @@ void AppController::onGameOver(int score)
 {
     // Logique quand la partie est perdue
     gameController->destroyView();
-    mainWindow->setCentralWidget(itsGameOverControler->makeView(score));
+    mainWindow->setCentralWidget(itsGameOverController->createView(score));
 }
 
 void AppController::onGameWon(int score)
 {
     gameController->destroyView();
-    mainWindow->setCentralWidget(itsGameWonControler->makeView(score));
+    mainWindow->setCentralWidget(itsGameWonController->createView(score));
 }
