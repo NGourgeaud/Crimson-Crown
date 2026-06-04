@@ -1,4 +1,5 @@
 #include "roommodel.h"
+#include "config.h"
 
 
 RoomModel::RoomModel(RoomType type, int x, int y, int w, int h)

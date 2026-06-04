@@ -10,7 +10,7 @@ LordModel::LordModel(int maxHp, int speed, int x, int y, float attack1Cooldown, 
     itsHP = maxHp;
     itsMaxHP = maxHp;
     itsSpeed = speed;
-    itsHitBox = QRect(x,y, LordWidth, LordHeight);
+    itsHitBox = QRectF(x,y, LordWidth, LordHeight);
     itsAttack1Cooldown = attack1Cooldown;
     itsAttack2Cooldown = attack2Cooldown;
     itsAttack1Damage = attack1Damage;
@@ -53,6 +53,7 @@ void LordModel::update(QPointF heroPos)
 ///
 void LordModel::attack1(QPointF heroPos)
 {
+    Q_UNUSED(heroPos);
     QPainterPath * hitboxCercle = nullptr;
     hitboxCercle->addEllipse(itsHitBox.center().x(), itsHitBox.center().y(), LordAttack1HitBoxWidth, LordAttack1HitBoxHeight);
     canAttack1 = false;

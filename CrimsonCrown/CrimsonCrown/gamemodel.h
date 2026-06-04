@@ -16,6 +16,7 @@ private:
     BossModel * itsBoss;
     int itsScore;
     PlayerModel * itsPlayer;
+    BossModel * itsBoss;
 
 public:
     GameModel();
