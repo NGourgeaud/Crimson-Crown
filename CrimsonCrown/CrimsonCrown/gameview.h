@@ -28,7 +28,6 @@ private:
     ObstacleView *itsObstacleView;
     PlayerView *itsPlayerView;
 
-    // Les variables pour l'élastique de la caméra
     QPointF currentCameraCenter;
     bool isCameraInitialized;
 

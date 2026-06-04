@@ -23,8 +23,8 @@ const QString LABEL_CHARSELECT_TITLE = "SELECTIONNEZ UN PERSONNAGE";
 const QString LABEL_CONTINUE = "CONTINUER";
 const QString LABEL_BACK = "RETOUR AU MENU";
 
-const int playerWidth = 100;
-const int playerHeight = 100;
+const int playerWidth = 80;
+const int playerHeight = 80;
 
 const int BlacksmithAttack1HitboxWidth = 50;
 const int BlacksmithAttack1HitboxHeight = 20;
@@ -34,9 +34,9 @@ const int BlacksmithAttack2HitboxRadius = 40;
 const int BlacksmithAttack1Cooldown = 1;
 const int BlacksmithAttack2Cooldown = 5;
 
-// ===================
-// Ennemies Stats
-// ===================
+// ==========================================
+// --- DIMENSIONS ET ATTAQUES DES ENNEMIS ---
+// ==========================================
 
 // Lancer Stats
 const int LancerDefaultMaxHp = 18;
@@ -46,9 +46,13 @@ const float LancerDefaultAttackCoolDown = 0.5;
 
 const int LancerWidth = 80;
 const int LancerHeight = 80;
+>>>>>>> CrimsonCrown/CrimsonCrown/config.h
 
-const int LancerAttackHitboxWidth = 0;
-const int LancerAttackHitboxHeight = 0;
+const int LancerWidth = 80;
+const int LancerHeight = 80;
+
+const int LancerAttackHitboxWidth = 100;
+const int LancerAttackHitboxHeight = 100;
 
 // Lord Stats
 const int LordDefaultMaxHp = 150;
@@ -94,7 +98,6 @@ const QString STATS_BLACKSMITH =
     "<span style='color: #BBBBBB;'>Vitesse :</span> <span style='color: #33FF33;'><b>2 px/tick</b></span><br>"
     "<span style='color: #BBBBBB;'>Dégâts :</span> <span style='color: #3333FF;'><b>13 HP</b></span>"
     "</p>";
-
 
 
 namespace keyBind {

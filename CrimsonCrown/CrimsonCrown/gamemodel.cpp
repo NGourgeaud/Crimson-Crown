@@ -2,6 +2,7 @@
 #include "blacksmithmodel.h"
 #include "lancermodel.h"
 #include "lordmodel.h"
+#include "config.h"
 #include "qpainterpath.h"
 #include "random"
 
@@ -33,30 +34,54 @@ void GameModel::resetGame(HeroType hero)
         itsPlayer = nullptr;
     }
 
-    // GÉNÉRATION DE LA CARTE
+    // ==========================================
+    // GÉNÉRATION DE LA CARTE (SANS LES ENNEMIS GLOBAUX)
+    // ==========================================
 
-    // salle spawn : petit carré
+    // 1. Spawn
     allRooms.append(new RoomModel(RoomType::Spawn, 0, 0, 600, 600));
-
-    // couloir horizontal centré sur le mur droit
     allRooms.append(new RoomModel(RoomType::CorridorHorizontal, 600, 225, 400, 150));
 
-    // Salle 2 : Combat (1000x600)
-    RoomModel* combatRoom = new RoomModel(RoomType::Combat, 1000, 0, 1125, 675);
-    combatRoom->addObstacle(200, 150, 60, 60);
-    combatRoom->addObstacle(800, 450, 60, 60);
-    allRooms.append(combatRoom);
+    // 2. Combat 1
+    RoomModel* combat1 = new RoomModel(RoomType::Combat, 1000, -25, 1100, 650);
+    combat1->addObstacle(200, 150, 60, 60);
+    combat1->addObstacle(800, 450, 60, 60);
+    combat1->spawnEnemies(1); // <-- Indique à la salle qu'elle contient 1 ennemi en attente
+    allRooms.append(combat1);
 
+    allRooms.append(new RoomModel(RoomType::CorridorVertical, 1475, 625, 150, 400));
     // Ennemi de test
     itsEnemies.append(new LancerModel(LancerDefaultMaxHp, LancerDefaultSpeed, 1900, 300, LancerDefaultAttackCoolDown, LancerDefaultAttackDamage));
 
-    // Couloir Vertical
-    allRooms.append(new RoomModel(RoomType::CorridorVertical, 1475, -400, 150, 400));
+    // 3. Combat 2 (Carrefour)
+    RoomModel* combat2 = new RoomModel(RoomType::Combat, 1000, 1025, 1100, 650);
+    combat2->addObstacle(520, 300, 60, 60);
+    combat2->spawnEnemies(1); // <-- Ennemi en attente
+    allRooms.append(combat2);
 
-    // Salle 3 : Boss
-    allRooms.append(new RoomModel(RoomType::Boss, 1050, -1000, 1000, 600));
+    // 4. Loot
+    allRooms.append(new RoomModel(RoomType::CorridorVertical, 1475, 1675, 150, 400));
+    allRooms.append(new RoomModel(RoomType::Spawn, 1250, 2075, 600, 600));
 
-    // Création du Joueur
+    // 5. Combat 3
+    allRooms.append(new RoomModel(RoomType::CorridorHorizontal, 2100, 1275, 400, 150));
+    RoomModel* combat3 = new RoomModel(RoomType::Combat, 2500, 1025, 1100, 650);
+    combat3->spawnEnemies(1); // <-- Ennemi en attente
+    allRooms.append(combat3);
+
+    // 6. Boss
+    allRooms.append(new RoomModel(RoomType::CorridorVertical, 2975, 625, 150, 400));
+    RoomModel* bossRoom = new RoomModel(RoomType::Boss, 2500, -25, 1100, 650);
+    bossRoom->spawnEnemies(1); // <-- Boss en attente
+    allRooms.append(bossRoom);
+
+    // 7. Combat 4
+    allRooms.append(new RoomModel(RoomType::CorridorHorizontal, 3600, 1275, 400, 150));
+    RoomModel* combat4 = new RoomModel(RoomType::Combat, 4000, 1025, 1100, 650);
+    combat4->spawnEnemies(1); // <-- Ennemi en attente
+    allRooms.append(combat4);
+
+    // Joueur
     switch(hero) {
     case HeroType::Blacksmith:
         itsPlayer = new BlacksmithModel();
@@ -67,14 +92,16 @@ void GameModel::resetGame(HeroType hero)
     }
 
     if (itsPlayer != nullptr) {
-        itsPlayer->move(QPointF(500, 300)); // Au centre exact du Spawn !
+        itsPlayer->move(QPointF(300, 300));
     }
 
     itsScore = 0;
 }
 
 const QList<RoomModel*>& GameModel::getAllRooms() const { return allRooms; }
+const QList<EnemyModel*>& GameModel::getItsEnemies() const { return itsEnemies; }
 PlayerModel *GameModel::getItsPlayer() const { return itsPlayer; }
+
 
 // Spawn enemies function needing curentRom
 void GameModel::spawnEnemies(bool isBoss)
@@ -110,12 +137,11 @@ void GameModel::spawnEnemies(bool isBoss)
 
 void GameModel::updateLogic()
 {
-    // 1. UPDATE DE L'IA DES ENNEMIS ET GESTION DU SCORE
+    // 1. UPDATE DE L'IA
     if (itsPlayer != nullptr) {
         for (int i = itsEnemies.size() - 1; i >= 0; --i) {
             EnemyModel* enemy = itsEnemies.at(i);
 
-            // IA s'il est vivant
             LancerModel* lancer = dynamic_cast<LancerModel*>(enemy);
             if (lancer) lancer->update(itsPlayer->getHitBox().center());
 
@@ -129,20 +155,79 @@ void GameModel::updateLogic()
         QPointF oldPos = itsPlayer->getHitBox().topLeft();
         itsPlayer->update();
 
+        // --- A. DÉTECTION DE LA SALLE ACTIVE ---
+        RoomModel* activeRoom = nullptr;
+        for (RoomModel* room : allRooms) {
+            if (room->getBounds().contains(itsPlayer->getHitBox().center())) {
+                activeRoom = room;
+                break;
+            }
+        }
+
+        // --- B. SPAWN DES ENNEMIS ET PORTES ---
+        if (activeRoom != nullptr) {
+            RoomType type = activeRoom->getType();
+            if (type == RoomType::Combat || type == RoomType::Boss) {
+
+                // 1) DÉCLENCHEMENT DU PIÈGE (Le joueur entre pour la première fois)
+                if (activeRoom->getRemainingEnemyCount() > 0 && activeRoom->getBounds().contains(itsPlayer->getHitBox())) {
+
+                    // On calcule le centre exact de la salle
+                    int spawnX = activeRoom->getOffsetX() + (activeRoom->getWidth() / 2) - (LancerWidth / 2);
+                    int spawnY = activeRoom->getOffsetY() + (activeRoom->getHeight() / 2) - (LancerHeight / 2);
+
+                    // ASTUCE : On met la vitesse à 0 pour qu'il soit totalement fixe !
+                    itsEnemies.append(new LancerModel(50, 0, spawnX, spawnY, 2.0f, 100, 10));
+
+                    // On indique que la salle est "vide" de sa réserve pour ne pas le spawner en boucle
+                    activeRoom->spawnEnemies(0);
+
+                    // On verrouille les portes
+                    activeRoom->lockDoors();
+                }
+
+                // 2) OUVERTURE DES PORTES (Si tous les ennemis sont morts)
+                if (activeRoom->getIsLocked()) {
+                    bool enemiesAliveInRoom = false;
+                    for (EnemyModel* enemy : itsEnemies) {
+                        if (activeRoom->getBounds().intersects(enemy->getHitBox())) {
+                            enemiesAliveInRoom = true;
+                            break;
+                        }
+                    }
+
+                    if (!enemiesAliveInRoom) {
+                        activeRoom->unlockDoors();
+                    }
+                }
+            }
+        }
+
+        // --- C. GESTION DES MURS ---
         bool collision = false;
 
-        // C. VÉRIFICATION DES MURS EXTÉRIEURS (Avec getBounds)
-        QPainterPath mapBounds;
-        for (RoomModel* room : allRooms) {
-            mapBounds.addRect(room->getBounds());
+        if (activeRoom != nullptr && activeRoom->getIsLocked()) {
+            if (!activeRoom->getBounds().contains(itsPlayer->getHitBox())) {
+                collision = true;
+            }
         }
-        mapBounds = mapBounds.simplified();
+        else {
+            QPainterPath mapBounds;
+            for (RoomModel* room : allRooms) {
+                mapBounds.addRect(room->getOffsetX(), room->getOffsetY(),
+                                  room->getWidth(), room->getHeight());
+            }
+            mapBounds = mapBounds.simplified();
 
+            if (!mapBounds.contains(itsPlayer->getHitBox())) {
+                collision = true;
+            }
+        }
+
+        // --- D. COLLISIONS CAISSES ---
         if (!mapBounds.contains(itsPlayer->getHitBox())) {
             collision = true;
         }
-
-        // D. VÉRIFICATION DES CAISSES (Avec getBounds)
         for (RoomModel* room : allRooms) {
             for (ObstacleModel* obs : room->getItsObstacles()) {
                 QRectF globalObsRect = obs->getHitBox();
@@ -172,6 +257,31 @@ void GameModel::updateLogic()
             }
         }
     }
+}
+
+void GameModel::cheatKillEnemies()
+{
+    if (!itsPlayer) return;
+    RoomModel* activeRoom = nullptr;
+    for (RoomModel* room : allRooms) {
+        if (room->getBounds().contains(itsPlayer->getHitBox().center())) {
+            activeRoom = room;
+            break;
+        }
+    }
+    if (!activeRoom) return;
+
+    for (int i = itsEnemies.size() - 1; i >= 0; --i) {
+        if (activeRoom->getBounds().intersects(itsEnemies[i]->getHitBox())) {
+            delete itsEnemies[i];
+            itsEnemies.removeAt(i);
+        }
+    }
+}
+
+PlayerModel *GameModel::getItsPlayer() const
+{
+    return itsPlayer;
 }
 
 int GameModel::getItsScore() const
@@ -207,4 +317,3 @@ void GameModel::onBossDeath(BossModel * model)
     // V2
     // currentRoom->unlockDoors();
 }
-

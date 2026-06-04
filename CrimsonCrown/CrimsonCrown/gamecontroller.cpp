@@ -89,6 +89,10 @@ void GameController::onKeyPressed(int key)
     case keyBind::keyDown:
         itsModel->getItsPlayer()->setMovementDown(true);
         break;
+    // Touche de kill ennemis
+    case Qt::Key_T:
+        itsModel->cheatKillEnemies();
+        break;
     case keyBind::keyAttaque1:
         itsModel->getItsPlayer()->setAttack1(true);
     case keyBind::keyAttaque2:

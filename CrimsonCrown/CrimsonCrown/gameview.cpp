@@ -33,18 +33,13 @@ void GameView::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
     QPainter painter(this);
 
-    // Lissage des textures (Anti-Aliasing)
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
 
-    // fond noir
     painter.fillRect(this->rect(), Qt::black);
 
     if (itsModel->getItsPlayer() == nullptr) return;
 
-    // ==========================================
-    // CAMÉRA DYNAMIQUE LERP
-    // ==========================================
     QPointF playerCenter = itsModel->getItsPlayer()->getHitBox().center();
     QPointF cameraTarget = playerCenter;
 
@@ -62,7 +57,6 @@ void GameView::paintEvent(QPaintEvent *event)
 
             if (minY <= maxY) cameraTarget.setY(qBound(minY, playerCenter.y(), maxY));
             else cameraTarget.setY(roomRect.center().y());
-
             break;
         }
     }
@@ -82,7 +76,7 @@ void GameView::paintEvent(QPaintEvent *event)
     painter.save();
     painter.translate(cameraOffset);
 
-    // DESSIN DU DONJON
+    // 1. DESSIN DU DONJON
     for (RoomModel* room : itsModel->getAllRooms()) {
         painter.save();
         painter.translate(room->getBounds().x(), room->getBounds().y()); // CORRECTION ICI
@@ -90,7 +84,14 @@ void GameView::paintEvent(QPaintEvent *event)
         painter.restore();
     }
 
-    // DESSIN DU JOUEUR
+    // 2. DESSIN DES ENNEMIS (Carrés rouges temporaires)
+    painter.setBrush(QColor(220, 20, 60)); // Rouge "monstre"
+    painter.setPen(QPen(Qt::black, 3));
+    for (EnemyModel* enemy : itsModel->getItsEnemies()) {
+        painter.drawRect(enemy->getHitBox());
+    }
+
+    // 3. DESSIN DU JOUEUR
     if (itsPlayerView != nullptr) {
         itsPlayerView->draw(&painter);
     }
