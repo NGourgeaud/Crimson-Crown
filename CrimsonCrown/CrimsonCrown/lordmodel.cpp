@@ -59,7 +59,7 @@ void LordModel::attack1(QPointF heroPos)
     canAttack1 = false;
     QPolygon attackHitbox = hitboxCercle->toFillPolygon().toPolygon();
     itsCoolDownTimer1->start(itsAttack1Cooldown*1000);
-    emit attacking(&attackHitbox, itsAttack1Damage);
+    emit attacking(attackHitbox, itsAttack1Damage);
 }
 
 ///
@@ -170,14 +170,14 @@ void LordModel::dashStep()
     itsHitBox.moveCenter(nouvellePosition.toPoint());
 
     // Création de la hitbox à cette nouvelle position
-    QRect baseAttackRect(-LordAttack2HitBoxWidth / 2, -LancerAttackHitboxHeight / 2, LordAttack2HitBoxWidth, LancerAttackHitboxHeight);
+    QRect baseAttackRect(0 / 2, -LancerAttackHitboxHeight / 2, LordAttack2HitBoxWidth, LancerAttackHitboxHeight);
     qreal angle = currentAimLine.angle(); // Returns the angle in degrees (0 is right, 90 is up)
     QTransform transform;
     transform.translate(itsHitBox.center().x(), itsHitBox.center().y());
     transform.rotate(-angle);
 
     QPolygon attackHitbox = transform.mapToPolygon(baseAttackRect);
-    emit attacking(&attackHitbox, itsAttack2Damage);
+    emit attacking(attackHitbox, itsAttack2Damage);
 
     // On passe à l'étape suivante pour le prochain "tic" du timer
     currentDashStep++;

@@ -28,6 +28,12 @@ GameView::~GameView()
 void GameView::keyPressEvent(QKeyEvent *event) { if (!event->isAutoRepeat()) emit keyPressed(event->key()); }
 void GameView::keyReleaseEvent(QKeyEvent *event) { if (!event->isAutoRepeat()) emit keyReleased(event->key()); }
 
+void GameView::drawAttackArea(QPolygon hitbox)
+{
+    itsAttackAreas.append(hitbox);
+    update();
+}
+
 void GameView::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
@@ -94,6 +100,16 @@ void GameView::paintEvent(QPaintEvent *event)
     // 3. DESSIN DU JOUEUR
     if (itsPlayerView != nullptr) {
         itsPlayerView->draw(&painter);
+    }
+
+    // 4 DESSIN DES ZONES D'ATTAQUE
+    if (!itsAttackAreas.empty()){
+        for (QPolygon area : itsAttackAreas){
+            painter.setBrush(QBrush(Qt::white));
+            painter.setPen(QPen(Qt::red));
+            painter.drawPolygon(area);
+        }
+        itsAttackAreas.clear();
     }
 
     painter.restore(); // Fin de la zone gérée par la caméra
