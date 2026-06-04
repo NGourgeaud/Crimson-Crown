@@ -66,5 +66,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     images.qrc
 
+
 macx:QMAKE_CXXFLAGS += -Wno-error=implicit-function-declaration
 macx:QMAKE_CFLAGS += -Wno-error=implicit-function-declaration

@@ -168,6 +168,7 @@ void GameModel::updateLogic()
 
         // --- C. GESTION DES MURS ---
         bool collision = false;
+        bool bossAccess = areAllCombatRoomsCleared(); // On vérifie si on a le droit de passer !
 
         if (activeRoom != nullptr && activeRoom->getIsLocked()) {
             if (!activeRoom->getBounds().contains(itsPlayer->getHitBox())) {
@@ -177,6 +178,10 @@ void GameModel::updateLogic()
         else {
             QPainterPath mapBounds;
             for (RoomModel* room : allRooms) {
+                // LA MAGIE EST ICI : Si on n'a pas tout nettoyé, on retire le Boss de la carte !
+                if (room->getType() == RoomType::Boss && !bossAccess) {
+                    continue;
+                }
                 mapBounds.addRect(room->getOffsetX(), room->getOffsetY(),
                                   room->getWidth(), room->getHeight());
             }
@@ -228,4 +233,17 @@ void GameModel::cheatKillEnemies()
 PlayerModel *GameModel::getItsPlayer() const
 {
     return itsPlayer;
+}
+
+bool GameModel::areAllCombatRoomsCleared() const
+{
+    for (RoomModel* room : allRooms) {
+        if (room->getType() == RoomType::Combat) {
+            // S'il reste des ennemis à faire spawner OU si la salle est verrouillée (combat en cours)
+            if (room->getRemainingEnemyCount() > 0 || room->getIsLocked()) {
+                return false; // On bloque l'accès !
+            }
+        }
+    }
+    return true; // Tout est nettoyé !
 }

@@ -26,10 +26,12 @@ public:
     const RoomModel* getCurrentRoom() const;
     PlayerModel * getItsPlayer() const;
 
-    // --- LA LIGNE À AJOUTER ---
     const QList<EnemyModel*>& getItsEnemies() const;
 
+    bool areAllCombatRoomsCleared() const;
+
     void cheatKillEnemies();
+
 
 signals:
     void roomCleared();

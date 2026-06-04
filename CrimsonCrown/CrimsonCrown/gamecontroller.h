@@ -30,6 +30,7 @@ private:
     GameView *itsView;
     QWidget *parentWidget;
     QTimer *itsTimer;
+
 };
 
 #endif // GAMECONTROLLER_H
