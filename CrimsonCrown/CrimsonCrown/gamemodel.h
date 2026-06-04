@@ -16,6 +16,7 @@ private:
     BossModel * itsBoss;
     int itsScore;
     PlayerModel * itsPlayer;
+    RoomModel * activeRoom;
 
 public:
     GameModel();
@@ -27,7 +28,6 @@ public:
     const RoomModel* getCurrentRoom() const;
     PlayerModel * getItsPlayer() const;
     void spawnEnemies(bool isBoss);
-    void spawnEnemiesInRoom(RoomModel* room, int count);
 
     // --- LA LIGNE À AJOUTER ---
     const QList<EnemyModel*>& getItsEnemies() const;

@@ -11,7 +11,6 @@ class RoomModel
 {
 private:
     bool isLocked;// bloquer les portes
-    int remainingEnemyCount; // ennemie restant
     QList<ObstacleModel*> itsObstacles;
     bool isCorridor; // couloir
     bool isBossRoom; // boss
@@ -28,14 +27,12 @@ public:
 
     void lockDoors();
     void unlockDoors();
-    void spawnEnemies(int count);
 
     // Getters
     const QList<ObstacleModel*>& getItsObstacles() const;
     bool getIsLocked() const;
     bool getIsCorridor() const;
     bool getIsBossRoom() const;
-    int getRemainingEnemyCount() const;
     QRectF getBounds() const;
 
     RoomType getType() const { return itsType; }
