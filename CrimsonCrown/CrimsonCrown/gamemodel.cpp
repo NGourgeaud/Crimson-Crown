@@ -32,9 +32,6 @@ void GameModel::resetGame(HeroType hero)
         itsPlayer = nullptr;
     }
 
-    // ==========================================
-    // GÉNÉRATION DE LA CARTE (SANS LES ENNEMIS GLOBAUX)
-    // ==========================================
 
     // 1. Spawn
     allRooms.append(new RoomModel(RoomType::Spawn, 0, 0, 600, 600));
@@ -94,7 +91,10 @@ void GameModel::resetGame(HeroType hero)
     itsScore = 0;
 }
 
-const QList<RoomModel*>& GameModel::getAllRooms() const { return allRooms; }
+const QList<RoomModel*>& GameModel::getAllRooms() const
+{
+    return allRooms;
+}
 void GameModel::spawnEnemiesForCurrentRoom(int count) {}
 
 const QList<EnemyModel*>& GameModel::getItsEnemies() const { return itsEnemies; }
