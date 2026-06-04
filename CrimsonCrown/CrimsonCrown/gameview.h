@@ -4,17 +4,18 @@
 #include <QWidget>
 #include <QKeyEvent>
 #include <QPainter>
+#include <QPointF>
 #include "gamemodel.h"
+#include "roomview.h"
+#include "obstacleview.h"
+#include "playerview.h"
 
 class GameView : public QWidget
 {
     Q_OBJECT
 public:
     explicit GameView(GameModel *model, QWidget *parent = nullptr);
-
-signals:
-    void keyPressed(int key);
-    void keyReleased(int key);
+    ~GameView();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -23,6 +24,17 @@ protected:
 
 private:
     GameModel *itsModel;
+    RoomView *itsRoomView;
+    ObstacleView *itsObstacleView;
+    PlayerView *itsPlayerView;
+
+    // Les variables pour l'élastique de la caméra
+    QPointF currentCameraCenter;
+    bool isCameraInitialized;
+
+signals:
+    void keyPressed(int key);
+    void keyReleased(int key);
 };
 
 #endif // GAMEVIEW_H

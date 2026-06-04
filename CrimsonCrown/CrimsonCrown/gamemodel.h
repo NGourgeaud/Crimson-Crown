@@ -11,14 +11,12 @@ class GameModel : public QObject
     Q_OBJECT
 
 private:
-    RoomModel* currentRoom;
+    QList<RoomModel*> allRooms; // Remplace "currentRoom". Contient toute la carte.
     QList<EnemyModel*> itsEnemies;
+    BossModel * itsBoss;
     int itsScore;
     PlayerModel * itsPlayer;
     BossModel * itsBoss;
-
-    int roomCount;
-    bool nextisCorridor;
 
 public:
     GameModel();
@@ -26,18 +24,19 @@ public:
 
     void resetGame(HeroType hero); // Méthode pour (re)lancer une partie
 
-    const RoomModel* getCurrentRoom() const;
+    // Getter pour récupérer toute la carte d'un coup
+    const QList<RoomModel*>& getAllRooms() const;
 
     void updateLogic(); // Méthode appelée à chaque "tick" du jeu
-    void goToNextRoom(); // Nouvelle méthode pour gérer la transition
 
     void spawnEnemies(bool isBoss);
 
     PlayerModel * getItsPlayer() const;
 
+    int getItsScore() const;
+
 signals:
     void roomCleared();
-
     void gameOver(int score);
 
 private slots:

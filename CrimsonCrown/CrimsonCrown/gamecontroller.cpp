@@ -31,8 +31,11 @@ QWidget* GameController::createView(HeroType hero)
     itsModel->resetGame(hero);
 
     itsView = new GameView(itsModel, parentWidget);
+
     connect(itsView, &GameView::keyPressed, this, &GameController::onKeyPressed);
     connect(itsView, &GameView::keyReleased, this, &GameController::onKeyReleased);
+
+    itsView->setFocus();
 
     itsTimer->start(16);
     return itsView;
@@ -58,7 +61,7 @@ void GameController::destroyView()
 void GameController::onTick()
 {
     // Advance simulation frames (Uncomment when update loops are deployed in GameModel)
-    // itsModel->updateLogic();
+    itsModel->updateLogic();
 
     if (itsView != nullptr) {
         itsView->update();

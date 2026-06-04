@@ -8,7 +8,6 @@
 
 class PlayerModel : public QObject, public EntityModel
 {
-
     Q_OBJECT
 
 protected:
@@ -36,16 +35,25 @@ public:
     virtual void attack1() = 0;
     virtual void attack2() = 0;
     void update();
+
     void setMovementLeft(bool enabled);
     void setMovementRight(bool enabled);
     void setMovementUp(bool enabled);
     void setMovementDown(bool enabled);
+
     void setAttack1(bool enabled);
     void setAttack2(bool enabled);
+
     void takeDamage(int amont);
-    void move(QPointF pos) ;
+    void move(QPointF pos);
     QRectF getHitBox() const;
     void setCenter(QPoint centre);
+
+    // Getters pour la caméra
+    bool getIsMovingUp() const { return isMovingUp; }
+    bool getIsMovingDown() const { return isMovingDown; }
+    bool getIsMovingLeft() const { return isMovingLeft; }
+    bool getIsMovingRight() const { return isMovingRight; }
 
 signals:
     void death();

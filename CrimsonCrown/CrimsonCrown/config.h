@@ -101,5 +101,7 @@ namespace keyBind {
     const Qt::Key keyAttaque2 = Qt::Key_L;
 }
 
+const float CAMERA_LERP_SPEED = 0.07f;  // Vitesse de lissage (0.05 = très fluide, 0.2 = très rapide)
+const float CAMERA_MAX_OFFSET = 100.0f; // Distance max d'anticipation en pixels s'il court
 
 #endif // CONFIG_H

@@ -15,7 +15,7 @@ void PlayerView::draw(QPainter * painter)
         return;
     }
 
-    painter->drawPixmap(itsModel->getHitBox().topLeft(), itsTexture);
+    painter->drawPixmap(itsModel->getHitBox().toRect(), itsTexture);
 }
 
 void PlayerView::setItsTexture(HeroType namePlayer)
