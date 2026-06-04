@@ -26,7 +26,7 @@ LancerModel::LancerModel(int maxHp, int speed, int x, int y, float attackCooldow
 ///
 void LancerModel::update(QPointF heroPos)
 {
-    if(handleAI(heroPos))
+    if(handleAI(heroPos) and canAttack)
         attack(heroPos);
 }
 
@@ -42,7 +42,7 @@ void LancerModel::attack(QPointF heroPos)
     qreal angle = aimLine.angle(); // Returns the angle in degrees (0 is right, 90 is up)
 
     // 1. Crée le rectangle d'attaque centré sur 0,0
-    QRect baseAttackRect(-LancerAttackHitboxWidth / 2, -LancerAttackHitboxHeight / 2, LancerAttackHitboxWidth, LancerAttackHitboxHeight);
+    QRect baseAttackRect(0, -LancerAttackHitboxHeight / 2, LancerAttackHitboxWidth, LancerAttackHitboxHeight);
 
     // 2. Initialise le QTransform
     QTransform transform;

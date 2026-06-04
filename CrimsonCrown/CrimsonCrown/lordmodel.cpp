@@ -170,7 +170,7 @@ void LordModel::dashStep()
     itsHitBox.moveCenter(nouvellePosition.toPoint());
 
     // Création de la hitbox à cette nouvelle position
-    QRect baseAttackRect(-LordAttack2HitBoxWidth / 2, -LancerAttackHitboxHeight / 2, LordAttack2HitBoxWidth, LancerAttackHitboxHeight);
+    QRect baseAttackRect(0 / 2, -LancerAttackHitboxHeight / 2, LordAttack2HitBoxWidth, LancerAttackHitboxHeight);
     qreal angle = currentAimLine.angle(); // Returns the angle in degrees (0 is right, 90 is up)
     QTransform transform;
     transform.translate(itsHitBox.center().x(), itsHitBox.center().y());

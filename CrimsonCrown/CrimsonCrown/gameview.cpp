@@ -1,5 +1,4 @@
 #include "gameview.h"
-#include <QDebug>
 
 GameView::GameView(GameModel *model, QWidget *parent)
     : QWidget(parent), itsModel(model), isCameraInitialized(false)
@@ -32,7 +31,6 @@ void GameView::keyReleaseEvent(QKeyEvent *event) { if (!event->isAutoRepeat()) e
 void GameView::drawAttackArea(QPolygon hitbox)
 {
     itsAttackAreas.append(hitbox);
-    qDebug() << "hitbox ajouté";
     update();
 }
 
@@ -111,7 +109,7 @@ void GameView::paintEvent(QPaintEvent *event)
             painter.setPen(QPen(Qt::red));
             painter.drawPolygon(area);
         }
-
+        itsAttackAreas.clear();
     }
 
     painter.restore(); // Fin de la zone gérée par la caméra
