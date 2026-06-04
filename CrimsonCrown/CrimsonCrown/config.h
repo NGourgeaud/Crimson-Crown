@@ -23,8 +23,8 @@ const QString LABEL_CHARSELECT_TITLE = "SELECTIONNEZ UN PERSONNAGE";
 const QString LABEL_CONTINUE = "CONTINUER";
 const QString LABEL_BACK = "RETOUR AU MENU";
 
-const int playerWidth = 100;
-const int playerHeight = 100;
+const int playerWidth = 80;
+const int playerHeight = 80;
 
 const int BlacksmithAttack1HitboxWidth = 50;
 const int BlacksmithAttack1HitboxHeight = 20;
@@ -34,12 +34,15 @@ const int BlacksmithAttack2HitboxRadius = 40;
 const int BlacksmithAttack1Cooldown = 1;
 const int BlacksmithAttack2Cooldown = 5;
 
-// / a définir
-const int LancerWidth = 0;
-const int LancerHeight = 0;
+// ==========================================
+// --- DIMENSIONS ET ATTAQUES DES ENNEMIS ---
+// ==========================================
 
-const int LancerAttackHitboxWidth = 0;
-const int LancerAttackHitboxHeight = 0;
+const int LancerWidth = 80;
+const int LancerHeight = 80;
+
+const int LancerAttackHitboxWidth = 100;
+const int LancerAttackHitboxHeight = 100;
 
 enum HeroType {
     None,
@@ -57,16 +60,14 @@ const QString STATS_BLACKSMITH =
     "<span style='color: #BBBBBB;'>Dégâts :</span> <span style='color: #3333FF;'><b>13 HP</b></span>"
     "</p>";
 
-const int LordWidth = 0;
-const int LordHeight = 0;
+const int LordWidth = 150;
+const int LordHeight = 150;
 
-const int LordAttack1HitBoxWidth = 100;
-const int LordAttack1HitBoxHeight = 100;
+const int LordAttack1HitBoxWidth = 250;
+const int LordAttack1HitBoxHeight = 250;
 
-// a changer en fonction de la taille du lord
-const int LordAttack2HitBoxWidth = 40;
-const int LordAttack2HitBoxHeight = 30;
-
+const int LordAttack2HitBoxWidth = 100;
+const int LordAttack2HitBoxHeight = 80;
 const float CAMERA_LERP_SPEED = 0.07f;  // Vitesse de lissage (0.05 = très fluide, 0.2 = très rapide)
 const float CAMERA_MAX_OFFSET = 100.0f; // Distance max d'anticipation en pixels s'il court
 

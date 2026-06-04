@@ -93,6 +93,11 @@ void GameController::onKeyPressed(int key)
     case Qt::Key_S:
         itsModel->getItsPlayer()->setMovementDown(true);
         break;
+    // Touche de kill ennemis
+    case Qt::Key_T:
+        itsModel->cheatKillEnemies();
+        break;
+
     default:
         break;
     }
