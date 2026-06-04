@@ -7,7 +7,6 @@ class EnemyModel : public EntityModel
 {
 protected:
     float itsAttackCooldown;
-    int itsMaxAttackDistance;
     int itsAttackDamage;
 public:
     EnemyModel();

@@ -1,6 +1,7 @@
 #ifndef GAMEMODEL_H
 #define GAMEMODEL_H
 #include <QObject>
+#include "bossmodel.h"
 #include "enemymodel.h"
 #include "roommodel.h"
 #include "playermodel.h"
@@ -14,6 +15,7 @@ private:
     QList<EnemyModel*> itsEnemies;
     int itsScore;
     PlayerModel * itsPlayer;
+    BossModel * itsBoss;
 
     int roomCount;
     bool nextisCorridor;
@@ -29,7 +31,7 @@ public:
     void updateLogic(); // Méthode appelée à chaque "tick" du jeu
     void goToNextRoom(); // Nouvelle méthode pour gérer la transition
 
-    void spawnEnemiesForCurrentRoom(int count);
+    void spawnEnemies(bool isBoss);
 
     PlayerModel * getItsPlayer() const;
 
@@ -38,7 +40,9 @@ signals:
 
     void gameOver(int score);
 
-    //  autres méthodes
+private slots:
+    void onEnemyDeath(EnemyModel * model);
+    void onBossDeath(BossModel * model);
 };
 
 #endif // GAMEMODEL_H

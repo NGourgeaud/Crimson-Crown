@@ -5,14 +5,13 @@
 
 
 
-LancerModel::LancerModel(int maxHp, int speed, int x, int y, float attackCooldown, int maxAttackDistance, int attackDamage) : EnemyModel()
+LancerModel::LancerModel(int maxHp, int speed, int x, int y, float attackCooldown, int attackDamage) : EnemyModel()
 {
     itsHP = maxHp;
     itsMaxHP = maxHp;
     itsSpeed = speed;
     itsHitBox = QRectF(x,y,LancerWidth, LancerHeight);
     itsAttackCooldown = attackCooldown;
-    itsMaxAttackDistance = maxAttackDistance;
     itsAttackDamage = attackDamage;
     canAttack = true;
     itsCoolDownTimer = new QTimer();
@@ -98,7 +97,7 @@ void LancerModel::takeDamage(int amount)
 {
     itsHP-= amount;
     if (itsHP<=0)
-        emit death();
+        emit death(this);
 }
 
 ///
