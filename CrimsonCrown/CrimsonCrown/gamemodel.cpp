@@ -3,11 +3,13 @@
 #include "lancermodel.h"
 #include "lordmodel.h"
 #include "config.h"
-#include <QPainterPath>
+#include "qpainterpath.h"
+#include "random"
 
 GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
 {
     resetGame(HeroType::None);
+    itsBoss = nullptr;
 }
 
 GameModel::~GameModel()
@@ -48,6 +50,8 @@ void GameModel::resetGame(HeroType hero)
     allRooms.append(combat1);
 
     allRooms.append(new RoomModel(RoomType::CorridorVertical, 1475, 625, 150, 400));
+    // Ennemi de test
+    itsEnemies.append(new LancerModel(LancerDefaultMaxHp, LancerDefaultSpeed, 1900, 300, LancerDefaultAttackCoolDown, LancerDefaultAttackDamage));
 
     // 3. Combat 2 (Carrefour)
     RoomModel* combat2 = new RoomModel(RoomType::Combat, 1000, 1025, 1100, 650);
@@ -95,16 +99,49 @@ void GameModel::resetGame(HeroType hero)
 }
 
 const QList<RoomModel*>& GameModel::getAllRooms() const { return allRooms; }
-void GameModel::spawnEnemiesForCurrentRoom(int count) {}
-
 const QList<EnemyModel*>& GameModel::getItsEnemies() const { return itsEnemies; }
+PlayerModel *GameModel::getItsPlayer() const { return itsPlayer; }
+
+
+// Spawn enemies function needing curentRom
+void GameModel::spawnEnemies(bool isBoss)
+{
+    /*QRect roomBoundaries = currentRoom->getItsWalls();
+    if (!isBoss){
+        std::random_device rd;
+        std::default_random_engine eng(rd());
+        std::uniform_int_distribution<int> EnemiesNb(4,6);
+        std::uniform_int_distribution<int> RoomX(roomBoundaries.topLeft().rx(),roomBoundaries.topRight().rx());
+        std::uniform_int_distribution<int> RoomY(roomBoundaries.topLeft().ry(),roomBoundaries.bottomLeft().ry());
+
+        int nbEnemies = EnemiesNb(eng);
+        for (int i = 0; i < nbEnemies; i++){
+            LancerModel * newEnnemy = new LancerModel(LancerDefaultMaxHp, LancerDefaultSpeed, RoomX(eng), RoomY(eng), LancerDefaultAttackCoolDown, LancerDefaultAttackDamage);
+            itsEnemies.append(newEnnemy);
+
+            // Utilisation d'une lambda pour sécuriser le passage de paramètre
+            connect(newEnnemy, &LancerModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
+        }
+    }
+    else{
+        LordModel * newLord = new LordModel(LordDefaultMaxHp, LordDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
+                                           LordDefaultAttack1CoolDown, LordDefaultAttack2CoolDown, LordDefaultAttack1Damage, LordDefaultAttack2Damage);
+        itsBoss = newLord;
+
+        connect(newLord, &LordModel::death, this, &GameModel::onBossDeath);
+    }
+    */
+}
+
 
 
 void GameModel::updateLogic()
 {
     // 1. UPDATE DE L'IA
     if (itsPlayer != nullptr) {
-        for (EnemyModel* enemy : itsEnemies) {
+        for (int i = itsEnemies.size() - 1; i >= 0; --i) {
+            EnemyModel* enemy = itsEnemies.at(i);
+
             LancerModel* lancer = dynamic_cast<LancerModel*>(enemy);
             if (lancer) lancer->update(itsPlayer->getHitBox().center());
 
@@ -188,10 +225,13 @@ void GameModel::updateLogic()
         }
 
         // --- D. COLLISIONS CAISSES ---
+        if (!mapBounds.contains(itsPlayer->getHitBox())) {
+            collision = true;
+        }
         for (RoomModel* room : allRooms) {
             for (ObstacleModel* obs : room->getItsObstacles()) {
                 QRectF globalObsRect = obs->getHitBox();
-                globalObsRect.translate(room->getOffsetX(), room->getOffsetY());
+                globalObsRect.translate(room->getBounds().x(), room->getBounds().y());
 
                 if (itsPlayer->getHitBox().intersects(globalObsRect)) {
                     collision = true;
@@ -199,8 +239,22 @@ void GameModel::updateLogic()
             }
         }
 
+        // E. APPLICATION DE LA PHYSIQUE
         if (collision) {
             itsPlayer->move(oldPos);
+        }
+
+        // F. SCORE : DÉCOUVERTE D'UNE NOUVELLE SALLE
+        for (RoomModel* room : allRooms) {
+            // Si la salle n'est pas explorée ET que le joueur marche dedans
+            if (!room->getIsVisited() && itsPlayer->getHitBox().intersects(room->getBounds())) {
+                room->setIsVisited(); // Découverte d'une salle
+
+                // On ne donne pas 100 points pour un couloir, NI POUR LA SALLE DE SPAWN
+                if (!room->getIsCorridor() && room->getType() != RoomType::Spawn) {
+                    itsScore += 100;
+                }
+            }
         }
     }
 }
@@ -228,4 +282,38 @@ void GameModel::cheatKillEnemies()
 PlayerModel *GameModel::getItsPlayer() const
 {
     return itsPlayer;
+}
+
+int GameModel::getItsScore() const
+{
+    return itsScore;
+}
+
+void GameModel::onEnemyDeath(EnemyModel * model)
+{
+    itsEnemies.removeOne(model);
+
+    //if (itsEnemies.empty()){
+    //    currentRoom->unlockDoors();
+    //}
+
+    QObject * qobjEnemy = dynamic_cast<QObject*>(model);
+    if (qobjEnemy) {
+        qobjEnemy->deleteLater();
+    }
+    else {
+        delete model;
+    }
+}
+
+void GameModel::onBossDeath(BossModel * model)
+{
+    QObject * qobjBoss = dynamic_cast<QObject*>(model);
+    disconnect(qobjBoss);
+    itsBoss = nullptr;
+    delete model;
+
+    itsScore += 150;
+    // V2
+    // currentRoom->unlockDoors();
 }

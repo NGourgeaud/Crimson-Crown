@@ -38,15 +38,54 @@ const int BlacksmithAttack2Cooldown = 5;
 // --- DIMENSIONS ET ATTAQUES DES ENNEMIS ---
 // ==========================================
 
+// Lancer Stats
+const int LancerDefaultMaxHp = 18;
+const int LancerDefaultSpeed = 2;
+const int LancerDefaultAttackDamage = 6;
+const float LancerDefaultAttackCoolDown = 0.5;
+
+const int LancerWidth = 80;
+const int LancerHeight = 80;
+>>>>>>> CrimsonCrown/CrimsonCrown/config.h
+
 const int LancerWidth = 80;
 const int LancerHeight = 80;
 
 const int LancerAttackHitboxWidth = 100;
 const int LancerAttackHitboxHeight = 100;
 
+// Lord Stats
+const int LordDefaultMaxHp = 150;
+const int LordDefaultSpeed = 1;
+const int LordDefaultAttack1Damage = 10;
+const int LordDefaultAttack2Damage = 10;
+const float LordDefaultAttack1CoolDown = 5;
+const float LordDefaultAttack2CoolDown = 5;
+
+
+const int LordWidth = 125;
+const int LordHeight = 125;
+
+const int LordAttack1HitBoxWidth = 100;
+const int LordAttack1HitBoxHeight = 100;
+
+// a changer en fonction de la taille du lord
+const int LordAttack2HitBoxWidth = 40;
+const int LordAttack2HitBoxHeight = 30;
+
 enum HeroType {
     None,
     Blacksmith
+};
+
+enum EnemyType{
+    NOTDEF,
+    LANCER
+};
+
+enum BossType{
+    UNDEF,
+    LORD
 };
 
 // --- STATISTIQUES ET DESCRIPTION DU FORGERON (HTML STYLISÉ) ---
@@ -60,14 +99,16 @@ const QString STATS_BLACKSMITH =
     "<span style='color: #BBBBBB;'>Dégâts :</span> <span style='color: #3333FF;'><b>13 HP</b></span>"
     "</p>";
 
-const int LordWidth = 150;
-const int LordHeight = 150;
 
-const int LordAttack1HitBoxWidth = 250;
-const int LordAttack1HitBoxHeight = 250;
+namespace keyBind {
+    const Qt::Key keyUp = Qt::Key_Z;
+    const Qt::Key keyDown = Qt::Key_S;
+    const Qt::Key keyLeft = Qt::Key_Q;
+    const Qt::Key keyRight = Qt::Key_D;
+    const Qt::Key keyAttaque1 = Qt::Key_K;
+    const Qt::Key keyAttaque2 = Qt::Key_L;
+}
 
-const int LordAttack2HitBoxWidth = 100;
-const int LordAttack2HitBoxHeight = 80;
 const float CAMERA_LERP_SPEED = 0.07f;  // Vitesse de lissage (0.05 = très fluide, 0.2 = très rapide)
 const float CAMERA_MAX_OFFSET = 100.0f; // Distance max d'anticipation en pixels s'il court
 

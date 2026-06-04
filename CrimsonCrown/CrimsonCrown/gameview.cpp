@@ -44,7 +44,7 @@ void GameView::paintEvent(QPaintEvent *event)
     QPointF cameraTarget = playerCenter;
 
     for (RoomModel* room : itsModel->getAllRooms()) {
-        QRectF roomRect(room->getOffsetX(), room->getOffsetY(), room->getWidth(), room->getHeight());
+        QRectF roomRect = room->getBounds(); // CORRECTION ICI
 
         if (roomRect.contains(playerCenter)) {
             qreal minX = roomRect.left() + (this->width() / 2.0);
@@ -79,7 +79,7 @@ void GameView::paintEvent(QPaintEvent *event)
     // 1. DESSIN DU DONJON
     for (RoomModel* room : itsModel->getAllRooms()) {
         painter.save();
-        painter.translate(room->getOffsetX(), room->getOffsetY());
+        painter.translate(room->getBounds().x(), room->getBounds().y()); // CORRECTION ICI
         itsRoomView->draw(painter, room, *itsObstacleView);
         painter.restore();
     }
@@ -96,5 +96,14 @@ void GameView::paintEvent(QPaintEvent *event)
         itsPlayerView->draw(&painter);
     }
 
-    painter.restore();
+    painter.restore(); // Fin de la zone gérée par la caméra
+
+    // ==========================================
+    // INTERFACE DE JEU (HUD FIXE) - LE SCORE !
+    // ==========================================
+    painter.setPen(Qt::white);
+    painter.setFont(QFont("Alagard", 22, QFont::Bold));
+
+    QString scoreText = QString("SCORE : %1").arg(itsModel->getItsScore());
+    painter.drawText(20, 40, scoreText);
 }

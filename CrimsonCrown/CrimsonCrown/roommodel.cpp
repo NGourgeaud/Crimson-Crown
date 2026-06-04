@@ -1,8 +1,10 @@
 #include "roommodel.h"
+#include "config.h"
+
 
 RoomModel::RoomModel(RoomType type, int x, int y, int w, int h)
     : isLocked(false), remainingEnemyCount(0),
-    itsType(type), itsBounds(x, y, w, h)
+    itsType(type), itsBounds(x, y, w, h), isVisited(false)
 {
     isCorridor = (type == CorridorHorizontal || type == CorridorVertical);
     isBossRoom = (type == Boss);
@@ -16,7 +18,6 @@ RoomModel::~RoomModel()
 
 void RoomModel::lockDoors() { isLocked = true; }
 void RoomModel::unlockDoors() { isLocked = false; }
-void RoomModel::spawnEnemies(int count) { remainingEnemyCount = count; }
 
 const QList<ObstacleModel*>& RoomModel::getItsObstacles() const
 {
@@ -50,4 +51,14 @@ QRectF RoomModel::getBounds() const
 void RoomModel::addObstacle(int x, int y, int width, int height)
 {
     itsObstacles.append(new ObstacleModel(x, y, width, height));
+}
+
+bool RoomModel::getIsVisited() const
+{
+    return isVisited;
+}
+
+void RoomModel::setIsVisited()
+{
+    isVisited = true;
 }

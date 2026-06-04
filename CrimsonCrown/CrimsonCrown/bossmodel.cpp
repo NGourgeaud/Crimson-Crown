@@ -2,5 +2,8 @@
 
 BossModel::BossModel() {}
 
-// FIX
-BossModel::~BossModel() {}
+BossModel::~BossModel()
+{
+
+}
+

@@ -19,6 +19,8 @@ private:
     RoomType itsType;
     QRectF itsBounds;
 
+    bool isVisited;
+
 public:
     // Mise à jour du constructeur pour inclure le type et la géométrie
     RoomModel(RoomType type, int x, int y, int w, int h);
@@ -26,7 +28,6 @@ public:
 
     void lockDoors();
     void unlockDoors();
-    void spawnEnemies(int count);
 
     // Getters
     const QList<ObstacleModel*>& getItsObstacles() const;
@@ -41,10 +42,10 @@ public:
     int getOffsetY() const { return itsBounds.y(); }
     int getWidth() const { return itsBounds.width(); }
     int getHeight() const { return itsBounds.height(); }
-    // Dans roommodel.cpp
-
 
     void addObstacle(int x, int y, int width, int height);
+    bool getIsVisited() const;
+    void setIsVisited();
 };
 
 #endif

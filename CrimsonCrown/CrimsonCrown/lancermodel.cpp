@@ -5,14 +5,13 @@
 
 
 
-LancerModel::LancerModel(int maxHp, int speed, int x, int y, float attackCooldown, int maxAttackDistance, int attackDamage) : EnemyModel()
+LancerModel::LancerModel(int maxHp, int speed, int x, int y, float attackCooldown, int attackDamage) : EnemyModel()
 {
     itsHP = maxHp;
     itsMaxHP = maxHp;
     itsSpeed = speed;
-    itsHitBox = QRect(x,y,LancerWidth, LancerHeight);
+    itsHitBox = QRectF(x,y,LancerWidth, LancerHeight);
     itsAttackCooldown = attackCooldown;
-    itsMaxAttackDistance = maxAttackDistance;
     itsAttackDamage = attackDamage;
     canAttack = true;
     itsCoolDownTimer = new QTimer();
@@ -51,7 +50,7 @@ void LancerModel::attack(QPointF heroPos)
 
     // 4. Map the rectangle through the transform to get a rotated polygon
     QPolygon attackHitbox = transform.mapToPolygon(baseAttackRect);
-    emit attacking(attackHitbox);
+    emit attacking(attackHitbox, itsAttackDamage);
     canAttack = false;
     itsCoolDownTimer->start(itsAttackCooldown*1000);
 }
@@ -66,19 +65,12 @@ bool LancerModel::handleAI(QPointF heroPos)
     // Goes towards the player if it's too far
     if (QLineF(heroPos, itsHitBox.center()).length() > LancerAttackHitboxWidth-20){
         for (int i = 0; i<itsSpeed; i++){
-            // Goes to fastest towards the player
-            int distX = std::abs(heroPos.x() - itsHitBox.center().x());
-            int distY = std::abs(heroPos.y() - itsHitBox.center().y());
+            QLineF aimLine = QLineF(itsHitBox.center(), heroPos);
+            qreal angle = aimLine.angle();
 
-            if (distX + 20 >= distY or distX -20 <= distY or distY + 20 >= distX or distY <= distX){
-                itsHitBox.translate(QPoint(itsHitBox.topLeft().x() + 1, itsHitBox.topLeft().y()+1));
-            }
-            else if (distX > distY){
-                itsHitBox.translate(QPoint(itsHitBox.topLeft().x() + 1, itsHitBox.topLeft().y()));
-            }
-            else{
-                itsHitBox.translate(QPoint(itsHitBox.topLeft().x(), itsHitBox.topLeft().y() + 1));
-            }
+            QLineF movementVector = QLineF::fromPolar(1, angle);
+
+            itsHitBox.translate(movementVector.dx(), movementVector.dy());
         }
         return false;
     }
@@ -105,7 +97,7 @@ void LancerModel::takeDamage(int amount)
 {
     itsHP-= amount;
     if (itsHP<=0)
-        emit death();
+        emit death(this);
 }
 
 ///

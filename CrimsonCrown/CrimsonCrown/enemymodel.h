@@ -7,12 +7,10 @@ class EnemyModel : public EntityModel
 {
 protected:
     float itsAttackCooldown;
-    int itsMaxAttackDistance;
     int itsAttackDamage;
 public:
     EnemyModel();
-    virtual ~EnemyModel(); // FIX
-
+    ~EnemyModel() = default;
     virtual void attack(QPointF heroPos) = 0;
     virtual bool handleAI(QPointF heroPos) = 0;
 };
