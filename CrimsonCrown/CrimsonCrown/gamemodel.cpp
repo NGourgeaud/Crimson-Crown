@@ -2,6 +2,7 @@
 #include "blacksmithmodel.h"
 #include "lancermodel.h"
 #include "lordmodel.h"
+#include "qpainterpath.h"
 #include "random"
 
 GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
