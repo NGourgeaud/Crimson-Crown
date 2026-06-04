@@ -79,6 +79,7 @@ void GameModel::resetGame(HeroType hero)
     switch(hero) {
     case HeroType::Blacksmith:
         itsPlayer = new BlacksmithModel();
+        connect(itsPlayer, &BlacksmithModel::attackPlayer, this, [this](QPolygon *hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
         break;
     default:
         itsPlayer = nullptr;
@@ -113,6 +114,7 @@ void GameModel::spawnEnemies(bool isBoss)
 
             // Utilisation d'une lambda pour sécuriser le passage de paramètre
             connect(newEnnemy, &LancerModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
+            connect(newEnnemy, &LancerModel::attacking, this, [this](QPolygon *hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
         }
     }
     else{
@@ -121,6 +123,7 @@ void GameModel::spawnEnemies(bool isBoss)
         itsBoss = newLord;
 
         connect(newLord, &LordModel::death, this, &GameModel::onBossDeath);
+        connect(newLord, &LordModel::attacking, this, [this](QPolygon *hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
     }
 
 }
