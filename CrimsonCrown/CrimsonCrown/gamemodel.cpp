@@ -273,3 +273,26 @@ void GameModel::onBossDeath(BossModel * model)
 
     delete model;
 }
+
+void GameModel::onEnemyAttack(QPolygon * hitbox, int damage)
+{
+    if (hitbox->intersects(itsPlayer->getHitBox().toRect())){
+        itsPlayer->takeDamage(damage);
+    }
+}
+
+void GameModel::onPlayerAttack(QPolygon *hitbox, int damage)
+{
+    if (!itsEnemies.empty()){
+        for (EnemyModel* enemy : itsEnemies){
+            if (hitbox->intersects(enemy->getHitBox().toRect())){
+                enemy->takeDamage(damage);
+            }
+        }
+    }
+    else if(itsBoss){
+        if (hitbox->intersects(itsBoss->getHitBox().toRect())){
+            itsBoss->takeDamage(damage);
+        }
+    }
+}
