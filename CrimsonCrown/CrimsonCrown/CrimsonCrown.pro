@@ -13,6 +13,7 @@ SOURCES += \
     blacksmithmodel.cpp \
     blacksmithview.cpp \
     bossmodel.cpp \
+    bossview.cpp \
     charselectcontroller.cpp \
     charselectview.cpp \
     enemymodel.cpp \
@@ -39,6 +40,7 @@ HEADERS += \
     blacksmithmodel.h \
     blacksmithview.h \
     bossmodel.h \
+    bossview.h \
     charselectcontroller.h \
     charselectview.h \
     config.h \
