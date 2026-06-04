@@ -125,38 +125,6 @@ void GameModel::spawnEnemies(bool isBoss)
 
 }
 
-
-// ==========================================
-// FONCTION DE SPAWN ALÉATOIRE SÉCURISÉE
-// ==========================================
-void GameModel::spawnEnemiesInRoom(RoomModel* room, int count)
-{
-    if (!room) return;
-
-    QRectF bounds = room->getBounds();
-
-    int minX = bounds.left() + 50;
-    int maxX = bounds.right() - 50;
-    int minY = bounds.top() + 50;
-    int maxY = bounds.bottom() - 50;
-
-    for (int i = 0; i < count; ++i) {
-        int randomX = QRandomGenerator::global()->bounded(minX, maxX);
-        int randomY = QRandomGenerator::global()->bounded(minY, maxY);
-
-        if (room->getType() == RoomType::Boss) {
-            LordModel* boss = new LordModel(200, 1, randomX, randomY, 2.0f, 3.0f, 20, 30);
-            itsBoss = boss; // CORRECTION : On range le Boss dans sa propre variable
-            connect(boss, &LordModel::death, this, &GameModel::onBossDeath);
-        } else {
-            LancerModel* lancer = new LancerModel(50, 2, randomX, randomY, 2.0f, 10);
-            itsEnemies.append(lancer); // Les Lanciers vont dans la liste d'ennemis
-            connect(lancer, &LancerModel::death, this, [this, lancer]() { this->onEnemyDeath(lancer); });
-        }
-    }
-}
-
-
 void GameModel::updateLogic()
 {
     // 1. UPDATE DE L'IA
