@@ -186,9 +186,14 @@ void GameModel::updateLogic()
 
         // --- C. GESTION DES MURS ---
         bool collision = false;
+        bool bossAccess = areAllCombatRoomsCleared(); // A-t-on le droit d'aller au Boss ?
 
         QPainterPath mapBounds;
         for (RoomModel* room : allRooms) {
+            // Si c'est le boss et qu'on n'a pas accès, on ne dessine pas son sol (ça devient un mur)
+            if (room->getType() == RoomType::Boss && !bossAccess) {
+                continue;
+            }
             mapBounds.addRect(room->getOffsetX(), room->getOffsetY(),
                               room->getWidth(), room->getHeight());
         }
@@ -199,8 +204,10 @@ void GameModel::updateLogic()
                 collision = true;
             }
         }
-        else if (!mapBounds.contains(itsPlayer->getHitBox())){
-            collision = true;
+        else {
+            if (!mapBounds.contains(itsPlayer->getHitBox())) {
+                collision = true;
+            }
         }
 
         // --- D. COLLISIONS CAISSES ---
@@ -311,4 +318,17 @@ void GameModel::onPlayerAttack(QPolygon hitbox, int damage)
             itsBoss->takeDamage(damage);
         }
     }
+}
+
+bool GameModel::areAllCombatRoomsCleared() const
+{
+    for (RoomModel* room : allRooms) {
+        if (room->getType() == RoomType::Combat) {
+            // Si une salle de combat n'a pas encore été visitée OU est encore verrouillée (combat en cours)
+            if (!room->getIsVisited() || room->getIsLocked()) {
+                return false;
+            }
+        }
+    }
+    return true;
 }

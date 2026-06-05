@@ -5,31 +5,32 @@ GameWonView::GameWonView(int score, QWidget *parent)
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN);
-    mainLayout->setAlignment(Qt::AlignTop);
 
-    // Titre de l'écran
-    itsTitle = new QLabel("VICTOIRE");
-    QFont titleFont("Alagard");
-    titleFont.setPointSize(MENU_TITLE_FONT_SIZE + 10);
-    titleFont.setBold(true);
-    itsTitle->setFont(titleFont);
-    itsTitle->setStyleSheet("color: #FFD700; background: transparent;"); // Jaune/Doré pour la victoire
-    mainLayout->addWidget(itsTitle, 0, Qt::AlignHCenter);
+    // 1. GRAND RESSORT : Pousse tout vers le bas
+    mainLayout->addStretch(6);
 
+    // 2. LE FORGERON SUR LE PONT
+    QLabel *characterImage = new QLabel();
+    characterImage->setFixedSize(160, 200);
+    QPixmap forgeron(":/forgeron-win.png");
+    characterImage->setPixmap(forgeron.scaled(160, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    characterImage->setStyleSheet("background: transparent;");
+    mainLayout->addWidget(characterImage, 0, Qt::AlignHCenter);
+
+    // 3. PETIT RESSORT : Espace entre le personnage et le score
     mainLayout->addSpacing(20);
 
-    // Affichage du score
-    QString textScore = "Score : " + QString::number(score);
+    // 4. LE SCORE EN BLANC TOUT EN BAS DU PONT
+    QString textScore = QString("SCORE FINAL : %1").arg(score);
     itsScoreLabel = new QLabel(textScore);
     QFont scoreFont("Alagard");
-    scoreFont.setPointSize(MENU_TITLE_FONT_SIZE - 10);
+    scoreFont.setPointSize(45);
+    scoreFont.setBold(true);
     itsScoreLabel->setFont(scoreFont);
     itsScoreLabel->setStyleSheet("color: white; background: transparent;");
     mainLayout->addWidget(itsScoreLabel, 0, Qt::AlignHCenter);
 
-    mainLayout->addStretch(1);
-
-    // Layout du bas pour le bouton retour
+    // 5. BOUTON RETOUR (En bas à droite)
     QHBoxLayout *bottomLayout = new QHBoxLayout();
     bottomLayout->addStretch(1);
 
@@ -44,12 +45,12 @@ GameWonView::GameWonView(int score, QWidget *parent)
         "   border-radius: 3px;"
         "}"
         "QPushButton:hover {"
-        "   background-color: #FFD700;" // Hover doré pour coller à la victoire
+        "   background-color: #FFD700;" // Doré au survol pour la victoire
         "   color: black;"
         "   border-color: white;"
         "}";
 
-    itsBackButton = new QPushButton(LABEL_BACK); // Utilise ta macro de config.h
+    itsBackButton = new QPushButton(LABEL_BACK);
     itsBackButton->setFixedSize(220, BUTTON_HEIGHT);
     itsBackButton->setStyleSheet(backButtonStyle);
     connect(itsBackButton, &QPushButton::clicked, this, &GameWonView::menuRequested);
