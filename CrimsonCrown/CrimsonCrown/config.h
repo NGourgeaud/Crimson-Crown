@@ -34,6 +34,8 @@ const int BlacksmithAttack2HitboxRadius = 40;
 const int BlacksmithAttack1Cooldown = 1;
 const int BlacksmithAttack2Cooldown = 5;
 
+const int playerRegen = 20;
+
 // ==========================================
 // --- DIMENSIONS ET ATTAQUES DES ENNEMIS ---
 // ==========================================

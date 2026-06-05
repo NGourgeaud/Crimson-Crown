@@ -260,6 +260,7 @@ void GameModel::onEnemyDeath(EnemyModel * model)
     QObject * qobjEnemy = dynamic_cast<QObject*>(model);
     if (qobjEnemy) {
         qobjEnemy->deleteLater();
+        itsPlayer->regen();
     }
     else {
         delete model;
