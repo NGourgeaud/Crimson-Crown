@@ -35,6 +35,11 @@ void GameModel::resetGame(HeroType hero)
     qDeleteAll(itsEnemies);
     itsEnemies.clear();
 
+    if (itsBoss != nullptr) {
+        delete itsBoss;
+        itsBoss = nullptr;
+    }
+
     if (itsPlayer != nullptr) {
         delete itsPlayer;
         itsPlayer = nullptr;
@@ -287,6 +292,7 @@ void GameModel::onBossDeath(BossModel * model)
 
     itsBoss = nullptr;
     itsScore += 150;
+
     // V2
     // currentRoom->unlockDoors();
 

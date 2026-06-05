@@ -23,8 +23,8 @@ const QString LABEL_CHARSELECT_TITLE = "SELECTIONNEZ UN PERSONNAGE";
 const QString LABEL_CONTINUE = "CONTINUER";
 const QString LABEL_BACK = "RETOUR AU MENU";
 
-const int playerWidth = 40;
-const int playerHeight = 40;
+const int playerWidth = 60;
+const int playerHeight = 60;
 
 const int BlacksmithAttack1HitboxWidth = 50;
 const int BlacksmithAttack1HitboxHeight = 20;
@@ -44,7 +44,7 @@ const float playerIframe = 0.5;
 // Lancer Stats
 const int LancerDefaultMaxHp = 18;
 const int LancerDefaultSpeed = 2;
-const int LancerDefaultAttackDamage = 6;
+const int LancerDefaultAttackDamage = 3;
 const float LancerDefaultAttackCoolDown = 0.5;
 const float LancerIframe = 0.2;
 
