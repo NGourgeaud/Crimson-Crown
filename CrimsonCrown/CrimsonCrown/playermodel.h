@@ -24,6 +24,8 @@ protected:
     bool canAttack2;
     int itsAttack1Damage;
     int itsAttack2Damage;
+    QTimer * IframeTimer;
+    bool isInIframe;
 
     Direction itsDirection;
     QRectF itsHitBox;
@@ -68,6 +70,7 @@ signals:
 private slots:
     void resetAttackCooldown1();
     void resetAttackCooldown2();
+    void resetIframe();
 };
 
 #endif // PLAYERMODEL_H

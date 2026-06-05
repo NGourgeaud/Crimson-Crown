@@ -15,8 +15,11 @@ LancerModel::LancerModel(int maxHp, int speed, int x, int y, float attackCooldow
     itsAttackDamage = attackDamage;
     canAttack = true;
     itsCoolDownTimer = new QTimer();
+    IframeTimer = new QTimer();
+    isInIframe = false;
 
     connect(itsCoolDownTimer, &QTimer::timeout, this, &LancerModel::resetAttackCooldown);
+    connect(IframeTimer, &QTimer::timeout, this, &LancerModel::resetIframe);
 }
 
 ///
@@ -93,6 +96,12 @@ void LancerModel::resetAttackCooldown()
     itsCoolDownTimer->stop();
 }
 
+void LancerModel::resetIframe()
+{
+    IframeTimer->stop();
+    isInIframe = false;
+}
+
 ///
 /// \brief makes the Lancer take damage
 /// \param amount: Amount of damage taken
@@ -100,7 +109,10 @@ void LancerModel::resetAttackCooldown()
 ///
 void LancerModel::takeDamage(int amount)
 {
-    itsHP-= amount;
+    if (!isInIframe){
+        itsHP-= amount;
+        IframeTimer->start(LancerIframe*1000);
+    }
     if (itsHP<=0)
         emit death(this);
 }

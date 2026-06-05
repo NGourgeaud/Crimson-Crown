@@ -23,10 +23,13 @@ LordModel::LordModel(int maxHp, int speed, int x, int y, float attack1Cooldown, 
     isDashing = false;
     currentDashStep = 0;
     maxDashSteps = 0;
+    IframeTimer = new QTimer();
+    isInIframe = false;
 
     connect(itsCoolDownTimer1, &QTimer::timeout, this, &LordModel::resetAttack1Cooldown);
     connect(itsCoolDownTimer2, &QTimer::timeout, this, &LordModel::resetAttack2Cooldown);
     connect(itsDashTimer, &QTimer::timeout, this, &LordModel::dashStep);
+    connect(IframeTimer, &QTimer::timeout, this, &LordModel::resetIframe);
 }
 
 ///
@@ -87,7 +90,11 @@ void LordModel::attack2(QPointF heroPos)
 ///
 void LordModel::takeDamage(int amount)
 {
-    itsHP-= amount;
+    if (!isInIframe){
+        itsHP -= amount;
+        isInIframe = true;
+        IframeTimer->start(LordIframe*1000);
+    }
     if (itsHP<=0)
         emit death(this);
 }
@@ -181,4 +188,10 @@ void LordModel::dashStep()
 
     // On passe à l'étape suivante pour le prochain "tic" du timer
     currentDashStep++;
+}
+
+void LordModel::resetIframe()
+{
+    IframeTimer->stop();
+    isInIframe = false;
 }

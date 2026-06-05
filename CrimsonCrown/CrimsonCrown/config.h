@@ -35,6 +35,7 @@ const int BlacksmithAttack1Cooldown = 1;
 const int BlacksmithAttack2Cooldown = 5;
 
 const int playerRegen = 20;
+const float playerIframe = 0.5;
 
 // ==========================================
 // --- DIMENSIONS ET ATTAQUES DES ENNEMIS ---
@@ -45,6 +46,7 @@ const int LancerDefaultMaxHp = 18;
 const int LancerDefaultSpeed = 2;
 const int LancerDefaultAttackDamage = 6;
 const float LancerDefaultAttackCoolDown = 0.5;
+const float LancerIframe = 0.2;
 
 const int LancerWidth = 80;
 const int LancerHeight = 80;
@@ -59,6 +61,7 @@ const int LordDefaultAttack1Damage = 10;
 const int LordDefaultAttack2Damage = 10;
 const float LordDefaultAttack1CoolDown = 5;
 const float LordDefaultAttack2CoolDown = 5;
+const float LordIframe = 0.2;
 
 
 const int LordWidth = 125;
