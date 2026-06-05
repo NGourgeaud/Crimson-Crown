@@ -37,8 +37,6 @@ public:
 
     int getItsScore() const;
 
-    int getItsScore() const;
-
 signals:
     void roomCleared();
     void gameWon(int score);

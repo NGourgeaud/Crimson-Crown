@@ -282,11 +282,6 @@ void GameModel::onBossDeath(BossModel * model)
     delete model;
 }
 
-int GameModel::getItsScore() const
-{
-    return itsScore;
-}
-
 void GameModel::onEnemyAttack(QPolygon hitbox, int damage)
 {
     emit attack(hitbox);
