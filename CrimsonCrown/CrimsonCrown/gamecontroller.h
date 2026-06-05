@@ -19,8 +19,11 @@ public:
 signals:
     void menuRequested();
     void gameOver(int score);
+    void gameWon(int score);
 
 private slots:
+    void onPlayerDeath();
+    void onBossDeath();
     void onTick();
     void onKeyPressed(int key);
     void onKeyReleased(int key);

@@ -16,7 +16,9 @@ AppController::AppController(QObject *parent)
     currentView(nullptr),
     currentState(AppState::Menu),
     charSelectController(new CharSelectController(mainWindow, this)),
-    gameController(new GameController(mainWindow, this))
+    gameController(new GameController(mainWindow, this)),
+    itsGameOverController(new GameOverController()),
+    itsGameWonController(new GameWonController())
 {
     // Police
     int fontId = QFontDatabase::addApplicationFont(":/alagard.ttf");
@@ -35,6 +37,10 @@ AppController::AppController(QObject *parent)
 
     connect(gameController, &GameController::menuRequested, this, &AppController::onMenuRequested);
     connect(gameController, &GameController::gameOver, this, &AppController::onGameOver);
+    connect(gameController, &GameController::gameWon, this, &AppController::onGameWon);
+
+    connect(itsGameOverController, &GameOverController::menuRequested, this, &AppController::onMenuRequested);
+    connect(itsGameWonController, &GameWonController::menuRequested, this, &AppController::onMenuRequested);
 
     start();
 }
@@ -87,16 +93,6 @@ void AppController::onSettingsRequested() {
 void AppController::onGameRequested(HeroType type) {
     selectedHero = type;
     navigateTo(AppState::Game);
-}
-
-///
-/// \brief AppController::onGameOver
-/// \details Slot triggered upon reaching a Game Over state.
-/// \param score The final score achieved by the player during the session.
-///
-void AppController::onGameOver(int score) {
-    Q_UNUSED(score);
-    navigateTo(AppState::Menu);
 }
 
 ///
@@ -153,4 +149,17 @@ void AppController::cleanupCurrentView() {
     }
 
     currentView = nullptr;
+}
+
+void AppController::onGameOver(int score)
+{
+    // Logique quand la partie est perdue
+    gameController->destroyView();
+    mainWindow->setCentralWidget(itsGameOverController->createView(score));
+}
+
+void AppController::onGameWon(int score)
+{
+    gameController->destroyView();
+    mainWindow->setCentralWidget(itsGameWonController->createView(score));
 }

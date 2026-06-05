@@ -21,6 +21,10 @@ SOURCES += \
     entitymodel.cpp \
     gamecontroller.cpp \
     gamemodel.cpp \
+    gameovercontroller.cpp \
+    gameoverview.cpp \
+    gamewoncontroller.cpp \
+    gamewonview.cpp \
     lordmodel.cpp \
     gameview.cpp \
     main.cpp \
@@ -49,6 +53,10 @@ HEADERS += \
     entitymodel.h \
     gamecontroller.h \
     gamemodel.h \
+    gameovercontroller.h \
+    gameoverview.h \
+    gamewoncontroller.h \
+    gamewonview.h \
     lordmodel.h \
     gameview.h \
     mainwindow.h \

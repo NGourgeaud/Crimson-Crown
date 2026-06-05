@@ -4,5 +4,7 @@
         <file>alagard.ttf</file>
         <file>ecran_selection_personnages.png</file>
         <file>forgeron.png</file>
+        <file>ecran_defaite.png</file>
+        <file>ecran_victoire.png</file>
     </qresource>
 </RCC>

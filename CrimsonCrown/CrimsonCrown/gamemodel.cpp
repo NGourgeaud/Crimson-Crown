@@ -194,10 +194,8 @@ void GameModel::updateLogic()
                 collision = true;
             }
         }
-        else {
-            if (!mapBounds.contains(itsPlayer->getHitBox())) {
-                collision = true;
-            }
+        else if (!mapBounds.contains(itsPlayer->getHitBox())){
+            collision = true;
         }
 
         // --- D. COLLISIONS CAISSES ---
@@ -249,6 +247,7 @@ int GameModel::getItsScore() const
     return itsScore;
 }
 
+
 void GameModel::onEnemyDeath(EnemyModel * model)
 {
     itsEnemies.removeOne(model);
@@ -274,9 +273,18 @@ void GameModel::onBossDeath(BossModel * model)
     if (qobjBoss) disconnect(qobjBoss);
 
     itsBoss = nullptr;
-    itsScore += 150; // +150 Points pour le boss !
+    itsScore += 150;
+    // V2
+    // currentRoom->unlockDoors();
+
+    emit gameWon(itsScore);
 
     delete model;
+}
+
+int GameModel::getItsScore() const
+{
+    return itsScore;
 }
 
 void GameModel::onEnemyAttack(QPolygon hitbox, int damage)
