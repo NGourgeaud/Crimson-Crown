@@ -6,6 +6,11 @@
 #include "qpainterpath.h"
 #include <QRandomGenerator> // Pour le spawn aléatoire
 
+BossModel *GameModel::getItsBoss() const
+{
+    return itsBoss;
+}
+
 GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
 {
     resetGame(HeroType::None);

@@ -37,6 +37,8 @@ public:
 
     int getItsScore() const;
 
+    BossModel * getItsBoss() const;
+
 signals:
     void roomCleared();
     void gameWon(int score);

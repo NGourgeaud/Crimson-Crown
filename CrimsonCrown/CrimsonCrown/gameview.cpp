@@ -7,6 +7,7 @@ GameView::GameView(GameModel *model, QWidget *parent)
 
     itsRoomView = new RoomView();
     itsObstacleView = new ObstacleView();
+    itsBossView = new BossView(LORD);
 
     if (itsModel->getItsPlayer() != nullptr) {
         itsPlayerView = new PlayerView(nullptr, itsModel->getItsPlayer());
@@ -95,6 +96,10 @@ void GameView::paintEvent(QPaintEvent *event)
     painter.setPen(QPen(Qt::black, 3));
     for (EnemyModel* enemy : itsModel->getItsEnemies()) {
         painter.drawRect(enemy->getHitBox());
+    }
+    const BossModel * boss = itsModel->getItsBoss();
+    if (boss){
+        itsBossView->draw(&painter, boss);
     }
 
     // 3. DESSIN DU JOUEUR
