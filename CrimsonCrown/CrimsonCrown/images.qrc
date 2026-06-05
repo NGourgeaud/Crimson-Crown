@@ -6,5 +6,7 @@
         <file>forgeron.png</file>
         <file>ecran_defaite.png</file>
         <file>ecran_victoire.png</file>
+        <file>forgeron-win.png</file>
+        <file>forgeron-loose.png</file>
     </qresource>
 </RCC>

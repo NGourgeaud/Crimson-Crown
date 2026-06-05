@@ -30,12 +30,13 @@ public:
     PlayerModel * getItsPlayer() const;
     void spawnEnemies(bool isBoss);
 
-    // --- LA LIGNE À AJOUTER ---
     const QList<EnemyModel*>& getItsEnemies() const;
 
     void cheatKillEnemies();
 
     int getItsScore() const;
+
+    bool areAllCombatRoomsCleared() const;
 
     BossModel * getItsBoss() const;
 

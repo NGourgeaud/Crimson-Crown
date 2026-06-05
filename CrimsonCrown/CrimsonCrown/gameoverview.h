@@ -22,7 +22,6 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
-    QLabel *itsTitle;
     QLabel *itsScoreLabel;
     QPushButton *itsBackButton;
 };
