@@ -13,7 +13,6 @@ public:
     void destroyView();
 
 signals:
-    void backToMenuRequested();
     void menuRequested();
 
 private:

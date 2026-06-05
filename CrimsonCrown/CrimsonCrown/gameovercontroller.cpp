@@ -6,7 +6,7 @@ GameOverController::GameOverController(QWidget *parentWidget, QObject *parent)
 QWidget* GameOverController::createView(int score) {
     itsView = new GameOverView(score, parentWidget);
 
-    connect(itsView, &GameOverView::menuRequested, this, &GameOverController::backToMenuRequested);
+    connect(itsView, &GameOverView::menuRequested, this, &GameOverController::menuRequested);
 
     return itsView;
 }

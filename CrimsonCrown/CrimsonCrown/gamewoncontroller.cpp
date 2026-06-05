@@ -6,7 +6,7 @@ GameWonController::GameWonController(QWidget *parentWidget, QObject *parent)
 QWidget* GameWonController::createView(int score) {
     itsView = new GameWonView(score, parentWidget);
 
-    connect(itsView, &GameWonView::menuRequested, this, &GameWonController::backToMenuRequested);
+    connect(itsView, &GameWonView::menuRequested, this, &GameWonController::menuRequested);
 
     return itsView;
 }
