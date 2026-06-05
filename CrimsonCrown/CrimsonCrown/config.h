@@ -23,8 +23,8 @@ const QString LABEL_CHARSELECT_TITLE = "SELECTIONNEZ UN PERSONNAGE";
 const QString LABEL_CONTINUE = "CONTINUER";
 const QString LABEL_BACK = "RETOUR AU MENU";
 
-const int playerWidth = 80;
-const int playerHeight = 80;
+const int playerWidth = 40;
+const int playerHeight = 40;
 
 const int BlacksmithAttack1HitboxWidth = 50;
 const int BlacksmithAttack1HitboxHeight = 20;
@@ -48,8 +48,8 @@ const int LancerDefaultAttackDamage = 6;
 const float LancerDefaultAttackCoolDown = 0.5;
 const float LancerIframe = 0.2;
 
-const int LancerWidth = 80;
-const int LancerHeight = 80;
+const int LancerWidth = 40;
+const int LancerHeight = 40;
 
 const int LancerAttackHitboxWidth = 50;
 const int LancerAttackHitboxHeight = 20;
@@ -64,8 +64,8 @@ const float LordDefaultAttack2CoolDown = 5;
 const float LordIframe = 0.2;
 
 
-const int LordWidth = 125;
-const int LordHeight = 125;
+const int LordWidth = 50;
+const int LordHeight = 50;
 
 const int LordAttack1HitBoxWidth = 100;
 const int LordAttack1HitBoxHeight = 100;
