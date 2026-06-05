@@ -2,6 +2,7 @@
 #define BOSSMODEL_H
 
 #include "entitymodel.h"
+#include "qtimer.h"
 
 class BossModel : public EntityModel
 {
@@ -10,6 +11,8 @@ protected:
     float itsAttack2Cooldown;
     int itsAttack1Damage;
     int itsAttack2Damage;
+    QTimer * IframeTimer;
+    bool isInIframe;
 public:
     BossModel();
     virtual ~BossModel();

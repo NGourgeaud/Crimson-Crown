@@ -40,6 +40,7 @@ private slots:
     void resetAttack1Cooldown();
     void resetAttack2Cooldown();
     void dashStep();
+    void resetIframe();
 };
 
 #endif // LORDMODEL_H

@@ -29,6 +29,7 @@ signals:
 
 private slots:
     void resetAttackCooldown();
+    void resetIframe();
 };
 
 #endif // LANCERMODEL_H

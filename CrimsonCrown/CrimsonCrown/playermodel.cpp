@@ -13,6 +13,8 @@ PlayerModel::PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, in
     itsCooldown2 = new QTimer();
     canAttack1 = true;
     canAttack2 = true;
+    IframeTimer = new QTimer();
+    isInIframe = false;
 
     itsHP = aHp;
     itsMaxHP = aMaxHP;
@@ -23,6 +25,7 @@ PlayerModel::PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, in
 
     connect(itsCooldown1, &QTimer::timeout, this, &PlayerModel::resetAttackCooldown1);
     connect(itsCooldown2, &QTimer::timeout, this, &PlayerModel::resetAttackCooldown2);
+    connect(IframeTimer, &QTimer::timeout, this, &PlayerModel::resetIframe);
 }
 
 void PlayerModel::update()
@@ -102,7 +105,11 @@ void PlayerModel::setAttack2(bool enabled)
 
 void PlayerModel::takeDamage(int amont)
 {
-    itsHP -= amont;
+    if (!isInIframe){
+        itsHP -= amont;
+        isInIframe = true;
+        IframeTimer->start(playerIframe*1000);
+    }
     if (itsHP<=0)
         emit death();
 }
@@ -122,6 +129,12 @@ void PlayerModel::resetAttackCooldown2()
 {
     canAttack2 = true;
     itsCooldown2->stop();
+}
+
+void PlayerModel::resetIframe()
+{
+    isInIframe = false;
+    IframeTimer->stop();
 }
 
 QRectF PlayerModel::getHitBox() const
