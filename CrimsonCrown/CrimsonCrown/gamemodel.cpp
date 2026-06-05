@@ -260,12 +260,12 @@ void GameModel::onEnemyDeath(EnemyModel * model)
 
     if (itsEnemies.empty()){
         activeRoom->unlockDoors();
+        itsPlayer->regen();
     }
 
     QObject * qobjEnemy = dynamic_cast<QObject*>(model);
     if (qobjEnemy) {
         qobjEnemy->deleteLater();
-        itsPlayer->regen();
     }
     else {
         delete model;

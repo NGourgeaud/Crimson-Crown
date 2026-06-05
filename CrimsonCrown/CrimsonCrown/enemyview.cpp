@@ -1,10 +1,8 @@
 #include "enemyview.h"
+#include <QtCore/qtpreprocessorsupport.h>
 
 
-EnemyView::EnemyView(EnemyType type, const EnemyModel *model) : itsModel(model)
-{
-    itsType = type;
-}
+EnemyView::EnemyView() {}
 
 void EnemyView::draw(QPainter * painter)
 {
@@ -20,7 +18,7 @@ void EnemyView::draw(QPainter * painter)
 
 void EnemyView::setItsTexture(EnemyType type)
 {
-    switch (itsType) {
+    switch (type) {
     case LANCER:
         itsTexTure = QPixmap(":/lancier.png");
         break;
