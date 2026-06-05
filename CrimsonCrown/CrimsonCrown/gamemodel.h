@@ -5,45 +5,51 @@
 #include "enemymodel.h"
 #include "roommodel.h"
 #include "playermodel.h"
+#include "QPolygon"
 
 class GameModel : public QObject
 {
     Q_OBJECT
 
 private:
-    RoomModel* currentRoom;
+    QList<RoomModel*> allRooms;
     QList<EnemyModel*> itsEnemies;
+    BossModel * itsBoss;
     int itsScore;
     PlayerModel * itsPlayer;
-    BossModel * itsBoss;
-
-    int roomCount;
-    bool nextisCorridor;
+    RoomModel * activeRoom;
 
 public:
     GameModel();
     ~GameModel();
 
-    void resetGame(HeroType hero); // Méthode pour (re)lancer une partie
-
+    void resetGame(HeroType hero);
+    void updateLogic();
+    const QList<RoomModel*>& getAllRooms() const;
     const RoomModel* getCurrentRoom() const;
-
-    void updateLogic(); // Méthode appelée à chaque "tick" du jeu
-    void goToNextRoom(); // Nouvelle méthode pour gérer la transition
-
+    PlayerModel * getItsPlayer() const;
     void spawnEnemies(bool isBoss);
 
-    PlayerModel * getItsPlayer() const;
+    // --- LA LIGNE À AJOUTER ---
+    const QList<EnemyModel*>& getItsEnemies() const;
+
+    void cheatKillEnemies();
+
+    int getItsScore() const;
 
     int getItsScore() const;
 
 signals:
     void roomCleared();
     void gameWon(int score);
+    void gameOver(int score);
+    void attack(QPolygon);
 
 private slots:
     void onEnemyDeath(EnemyModel * model);
     void onBossDeath(BossModel * model);
+    void onEnemyAttack(QPolygon hitbox, int damage);
+    void onPlayerAttack(QPolygon hitbox, int damage);
 };
 
 #endif // GAMEMODEL_H

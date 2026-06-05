@@ -1,6 +1,7 @@
 #ifndef ENTITYMODEL_H
 #define ENTITYMODEL_H
 #include <QRect>
+#include <QPointF>
 
 enum Direction{
     Left,

@@ -23,8 +23,8 @@ const QString LABEL_CHARSELECT_TITLE = "SELECTIONNEZ UN PERSONNAGE";
 const QString LABEL_CONTINUE = "CONTINUER";
 const QString LABEL_BACK = "RETOUR AU MENU";
 
-const int playerWidth = 100;
-const int playerHeight = 100;
+const int playerWidth = 80;
+const int playerHeight = 80;
 
 const int BlacksmithAttack1HitboxWidth = 50;
 const int BlacksmithAttack1HitboxHeight = 20;
@@ -34,9 +34,9 @@ const int BlacksmithAttack2HitboxRadius = 40;
 const int BlacksmithAttack1Cooldown = 1;
 const int BlacksmithAttack2Cooldown = 5;
 
-// ===================
-// Ennemies Stats
-// ===================
+// ==========================================
+// --- DIMENSIONS ET ATTAQUES DES ENNEMIS ---
+// ==========================================
 
 // Lancer Stats
 const int LancerDefaultMaxHp = 18;
@@ -44,11 +44,11 @@ const int LancerDefaultSpeed = 2;
 const int LancerDefaultAttackDamage = 6;
 const float LancerDefaultAttackCoolDown = 0.5;
 
-const int LancerWidth = 0;
-const int LancerHeight = 0;
+const int LancerWidth = 80;
+const int LancerHeight = 80;
 
-const int LancerAttackHitboxWidth = 0;
-const int LancerAttackHitboxHeight = 0;
+const int LancerAttackHitboxWidth = 50;
+const int LancerAttackHitboxHeight = 20;
 
 // Lord Stats
 const int LordDefaultMaxHp = 150;
@@ -59,8 +59,8 @@ const float LordDefaultAttack1CoolDown = 5;
 const float LordDefaultAttack2CoolDown = 5;
 
 
-const int LordWidth = 0;
-const int LordHeight = 0;
+const int LordWidth = 125;
+const int LordHeight = 125;
 
 const int LordAttack1HitBoxWidth = 100;
 const int LordAttack1HitBoxHeight = 100;
@@ -79,6 +79,11 @@ enum EnemyType{
     LANCER
 };
 
+enum BossType{
+    UNDEF,
+    LORD
+};
+
 // --- STATISTIQUES ET DESCRIPTION DU FORGERON (HTML STYLISÉ) ---
 const QString STATS_BLACKSMITH =
     "<p style='font-family: Alagard; font-size: 24px; color: #FFD700; margin: 0 0 4px 0;'><b>LE FORGERON</b></p>"
@@ -91,7 +96,6 @@ const QString STATS_BLACKSMITH =
     "</p>";
 
 
-
 namespace keyBind {
     const Qt::Key keyUp = Qt::Key_Z;
     const Qt::Key keyDown = Qt::Key_S;
@@ -101,5 +105,7 @@ namespace keyBind {
     const Qt::Key keyAttaque2 = Qt::Key_L;
 }
 
+const float CAMERA_LERP_SPEED = 0.07f;  // Vitesse de lissage (0.05 = très fluide, 0.2 = très rapide)
+const float CAMERA_MAX_OFFSET = 100.0f; // Distance max d'anticipation en pixels s'il court
 
 #endif // CONFIG_H

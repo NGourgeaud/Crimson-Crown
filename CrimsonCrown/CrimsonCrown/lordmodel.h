@@ -4,7 +4,7 @@
 #include <QObject>
 #include "bossmodel.h"
 #include <QPolygon>
-#include "qpainterpath.h"
+#include "qline.h"
 #include "qtimer.h"
 
 class LordModel : public QObject, public BossModel
@@ -34,8 +34,7 @@ private:
 
 signals:
     void death(BossModel * Boss);
-    void attacking(QPainterPath * hitbox, int damage);
-    void dashing(QPolygon * hitbox, int damage);
+    void attacking(QPolygon hitbox, int damage);
 
 private slots:
     void resetAttack1Cooldown();

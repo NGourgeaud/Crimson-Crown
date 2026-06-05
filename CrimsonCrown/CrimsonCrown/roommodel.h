@@ -2,20 +2,27 @@
 #define ROOMMODEL_H
 
 #include <QList>
+#include <QRectF>
 #include "obstaclemodel.h"
+
+enum RoomType { Spawn, CorridorHorizontal, CorridorVertical, Combat, Boss };
 
 class RoomModel
 {
 private:
-    bool isLocked;
-    int remainingEnemyCount;
-    QList<ObstacleModel*> itsObstacles; // Liste des obstacles de la salle
-    bool isCorridor;
-    bool isBossRoom;
-    QRect itsWalls;
+    bool isLocked;// bloquer les portes
+    QList<ObstacleModel*> itsObstacles;
+    bool isCorridor; // couloir
+    bool isBossRoom; // boss
+
+    RoomType itsType;
+    QRectF itsBounds;
+
+    bool isVisited;
 
 public:
-    RoomModel(bool corridor = false, bool boosRoom = false, int width = 0, int height = 0);
+    // Mise à jour du constructeur pour inclure le type et la géométrie
+    RoomModel(RoomType type, int x, int y, int w, int h);
     ~RoomModel();
 
     void lockDoors();
@@ -26,11 +33,17 @@ public:
     bool getIsLocked() const;
     bool getIsCorridor() const;
     bool getIsBossRoom() const;
-    int getRemainingEnemyCount() const;
-    QRect getItsWalls() const;
+    QRectF getBounds() const;
 
-    // Méthode utilitaire ajoutée pour faciliter la checklist "the placement of obstacles"
+    RoomType getType() const { return itsType; }
+    int getOffsetX() const { return itsBounds.x(); }
+    int getOffsetY() const { return itsBounds.y(); }
+    int getWidth() const { return itsBounds.width(); }
+    int getHeight() const { return itsBounds.height(); }
+
     void addObstacle(int x, int y, int width, int height);
+    bool getIsVisited() const;
+    void setIsVisited();
 };
 
-#endif // ROOMMODEL_H
+#endif

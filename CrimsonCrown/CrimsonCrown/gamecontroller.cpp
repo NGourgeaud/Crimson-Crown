@@ -36,8 +36,12 @@ QWidget* GameController::createView(HeroType hero)
     connect(itsModel, &GameModel::gameWon, this, &GameController::gameWon);
 
     itsView = new GameView(itsModel, parentWidget);
+
     connect(itsView, &GameView::keyPressed, this, &GameController::onKeyPressed);
     connect(itsView, &GameView::keyReleased, this, &GameController::onKeyReleased);
+    connect(itsModel, &GameModel::attack, itsView, &GameView::drawAttackArea);
+
+    itsView->setFocus();
 
     itsTimer->start(16);
     return itsView;
@@ -75,7 +79,7 @@ void GameController::onBossDeath()
 void GameController::onTick()
 {
     // Advance simulation frames (Uncomment when update loops are deployed in GameModel)
-    // itsModel->updateLogic();
+    itsModel->updateLogic();
 
     if (itsView != nullptr) {
         itsView->update();
@@ -102,6 +106,10 @@ void GameController::onKeyPressed(int key)
         break;
     case keyBind::keyDown:
         itsModel->getItsPlayer()->setMovementDown(true);
+        break;
+    // Touche de kill ennemis
+    case Qt::Key_T:
+        itsModel->cheatKillEnemies();
         break;
     case keyBind::keyAttaque1:
         itsModel->getItsPlayer()->setAttack1(true);
