@@ -9,17 +9,77 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    ennemimodel.cpp \
+    appcontroller.cpp \
+    blacksmithmodel.cpp \
+    blacksmithview.cpp \
+    bossmodel.cpp \
+    bossview.cpp \
+    charselectcontroller.cpp \
+    charselectview.cpp \
+    enemymodel.cpp \
+    enemyview.cpp \
     entitymodel.cpp \
+    gamecontroller.cpp \
+    gamemodel.cpp \
+    gameovercontroller.cpp \
+    gameoverview.cpp \
+    gamewoncontroller.cpp \
+    gamewonview.cpp \
+    lordmodel.cpp \
+    gameview.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    menucontroller.cpp \
+    menuview.cpp \
+    playermodel.cpp \
+    lancermodel.cpp \
+    obstaclemodel.cpp \
+    obstacleview.cpp \
+    playerview.cpp \
+    roommodel.cpp \
+    roomview.cpp
 
 HEADERS += \
-    ennemimodel.h \
+    appcontroller.h \
+    blacksmithmodel.h \
+    blacksmithview.h \
+    bossmodel.h \
+    bossview.h \
+    charselectcontroller.h \
+    charselectview.h \
+    config.h \
+    enemymodel.h \
+    enemyview.h \
     entitymodel.h \
-    mainwindow.h
+    gamecontroller.h \
+    gamemodel.h \
+    gameovercontroller.h \
+    gameoverview.h \
+    gamewoncontroller.h \
+    gamewonview.h \
+    lordmodel.h \
+    gameview.h \
+    mainwindow.h \
+    menucontroller.h \
+    menuview.h \
+    playermodel.h \
+    lancermodel.h \
+    obstaclemodel.h \
+    obstacleview.h \
+    playerview.h \
+    roommodel.h \
+    roomview.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    images.qrc
+
+macx:QMAKE_CXXFLAGS += -Wno-error=implicit-function-declaration
+macx:QMAKE_CFLAGS += -Wno-error=implicit-function-declaration
+
+DISTFILES += \
+    lancier.png

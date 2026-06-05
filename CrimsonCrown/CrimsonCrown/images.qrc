@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>fondjeu.png</file>
+        <file>alagard.ttf</file>
+        <file>ecran_selection_personnages.png</file>
+        <file>forgeron.png</file>
+        <file>ecran_defaite.png</file>
+        <file>ecran_victoire.png</file>
+        <file>forgeron-win.png</file>
+        <file>forgeron-loose.png</file>
+    </qresource>
+</RCC>

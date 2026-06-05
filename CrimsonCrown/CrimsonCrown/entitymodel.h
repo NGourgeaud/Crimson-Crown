@@ -1,6 +1,18 @@
 #ifndef ENTITYMODEL_H
 #define ENTITYMODEL_H
 #include <QRect>
+#include <QPointF>
+
+enum Direction{
+    Left,
+    Right,
+    Up,
+    Down,
+    LeftDown,
+    LeftUp,
+    RightDown,
+    RightUp
+};
 
 class EntityModel
 {
@@ -8,16 +20,14 @@ protected:
     int itsHP;
     int itsMaxHP;
     int itsSpeed;
-    int itsX;
-    int itsY;
-    QRect itsHitBox;
+    QRectF itsHitBox;
 
 public:
     EntityModel();
-    virtual void update() = 0;
+    virtual ~EntityModel() = default;
     virtual void takeDamage(int amount) = 0;
-    virtual void move(int axisX,int axisY) = 0;
-    virtual QRect getHitBox() const = 0;
+    virtual void move(QPointF pos) = 0;
+    virtual QRectF getHitBox() const = 0;
 };
 
 #endif // ENTITYMODEL_H
