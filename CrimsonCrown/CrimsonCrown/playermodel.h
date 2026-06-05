@@ -55,6 +55,10 @@ public:
     bool getIsMovingLeft() const { return isMovingLeft; }
     bool getIsMovingRight() const { return isMovingRight; }
 
+    // getters pour le vie
+    int getHP();
+    int getMaxHP();
+
 signals:
     void death();
 

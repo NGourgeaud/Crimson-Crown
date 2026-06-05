@@ -133,3 +133,14 @@ void PlayerModel::setCenter(QPoint centre)
 {
     itsHitBox.moveCenter(centre);
 }
+
+int PlayerModel::getHP()
+{
+    return itsHP;
+}
+
+int PlayerModel::getMaxHP()
+{
+    return itsMaxHP;
+}
+
