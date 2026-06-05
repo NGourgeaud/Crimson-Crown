@@ -73,7 +73,7 @@ void BlacksmithModel::attack2()
 
         // addEllipse prend le centre et les rayons X et Y.
         // Mettre la même valeur crée un cercle parfait.
-        path.addEllipse(itsHitBox.center(), BlacksmithAttack2HitboxRadius, BlacksmithAttack2HitboxRadius);
+        path.addEllipse(itsHitBox.center().x() - BlacksmithAttack2HitboxRadius/2, itsHitBox.center().y() - BlacksmithAttack2HitboxRadius/2, BlacksmithAttack2HitboxRadius, BlacksmithAttack2HitboxRadius);
 
         // Convertir ce chemin en polygone
         // toFillPolygon() renvoie un QPolygonF (avec des floats)

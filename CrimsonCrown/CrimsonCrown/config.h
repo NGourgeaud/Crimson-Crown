@@ -29,7 +29,7 @@ const int playerHeight = 60;
 const int BlacksmithAttack1HitboxWidth = 50;
 const int BlacksmithAttack1HitboxHeight = 20;
 
-const int BlacksmithAttack2HitboxRadius = 40;
+const int BlacksmithAttack2HitboxRadius = 80;
 
 const int BlacksmithAttack1Cooldown = 1;
 const int BlacksmithAttack2Cooldown = 5;

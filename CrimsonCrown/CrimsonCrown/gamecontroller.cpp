@@ -113,9 +113,10 @@ void GameController::onKeyPressed(int key)
         break;
     case keyBind::keyAttaque1:
         itsModel->getItsPlayer()->setAttack1(true);
-    case keyBind::keyAttaque2:
         break;
+    case keyBind::keyAttaque2:
         itsModel->getItsPlayer()->setAttack2(true);
+        break;
     default:
         break;
     }
@@ -146,6 +147,7 @@ void GameController::onKeyReleased(int key)
         break;
     case keyBind::keyAttaque2:
         itsModel->getItsPlayer()->setAttack2(false);
+        break;
     default:
         break;
     }
