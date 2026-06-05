@@ -55,6 +55,8 @@ public:
     bool getIsMovingLeft() const { return isMovingLeft; }
     bool getIsMovingRight() const { return isMovingRight; }
 
+    void regen();
+
 signals:
     void death();
 
