@@ -10,9 +10,9 @@ enum RoomType { Spawn, CorridorHorizontal, CorridorVertical, Combat, Boss };
 class RoomModel
 {
 private:
-    bool isLocked;// bloquer les portes
+    bool isLocked;// block the doors
     QList<ObstacleModel*> itsObstacles;
-    bool isCorridor; // couloir
+    bool isCorridor; // corridor
     bool isBossRoom; // boss
 
     RoomType itsType;
@@ -21,7 +21,6 @@ private:
     bool isVisited;
 
 public:
-    // Mise à jour du constructeur pour inclure le type et la géométrie
     RoomModel(RoomType type, int x, int y, int w, int h);
     ~RoomModel();
 

@@ -6,10 +6,10 @@ GameWonView::GameWonView(int score, QWidget *parent)
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN);
 
-    // 1. GRAND RESSORT : Pousse tout vers le bas
+    // 1. LARGE SPRING: Pushes everything down
     mainLayout->addStretch(6);
 
-    // 2. LE FORGERON SUR LE PONT
+    // 2. THE BLACKSMITH ON THE BRIDGE
     QLabel *characterImage = new QLabel();
     characterImage->setFixedSize(160, 200);
     QPixmap forgeron(":/forgeron-win.png");
@@ -17,10 +17,9 @@ GameWonView::GameWonView(int score, QWidget *parent)
     characterImage->setStyleSheet("background: transparent;");
     mainLayout->addWidget(characterImage, 0, Qt::AlignHCenter);
 
-    // 3. PETIT RESSORT : Espace entre le personnage et le score
     mainLayout->addSpacing(20);
 
-    // 4. LE SCORE EN BLANC TOUT EN BAS DU PONT
+    // 4. THE SCORE IN WHITE AT THE VERY BOTTOM OF THE BRIDGE
     QString textScore = QString("SCORE FINAL : %1").arg(score);
     itsScoreLabel = new QLabel(textScore);
     QFont scoreFont("Alagard");
@@ -30,7 +29,7 @@ GameWonView::GameWonView(int score, QWidget *parent)
     itsScoreLabel->setStyleSheet("color: white; background: transparent;");
     mainLayout->addWidget(itsScoreLabel, 0, Qt::AlignHCenter);
 
-    // 5. BOUTON RETOUR (En bas à droite)
+    // 5. BACK BUTTON (Bottom right)
     QHBoxLayout *bottomLayout = new QHBoxLayout();
     bottomLayout->addStretch(1);
 
@@ -45,7 +44,7 @@ GameWonView::GameWonView(int score, QWidget *parent)
         "   border-radius: 3px;"
         "}"
         "QPushButton:hover {"
-        "   background-color: #FFD700;" // Doré au survol pour la victoire
+        "   background-color: #FFD700;"
         "   color: black;"
         "   border-color: white;"
         "}";

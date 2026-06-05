@@ -25,7 +25,7 @@ private:
     bool handleAI(QPointF heroPos);
     void attack1(QPointF heroPos);
     void attack2(QPointF heroPos);
-    // variables pour le dash
+    // variables for the dash
     int currentDashStep;
     int maxDashSteps;
     bool isDashing;

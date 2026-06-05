@@ -38,7 +38,7 @@ const int playerRegen = 20;
 const float playerIframe = 0.5;
 
 // ==========================================
-// --- DIMENSIONS ET ATTAQUES DES ENNEMIS ---
+// --- ENEMY DIMENSIONS AND ATTACKS ---
 // ==========================================
 
 // Lancer Stats
@@ -70,7 +70,6 @@ const int LordHeight = 50;
 const int LordAttack1HitBoxWidth = 100;
 const int LordAttack1HitBoxHeight = 100;
 
-// a changer en fonction de la taille du lord
 const int LordAttack2HitBoxWidth = 40;
 const int LordAttack2HitBoxHeight = 30;
 
@@ -89,7 +88,7 @@ enum BossType{
     LORD
 };
 
-// --- STATISTIQUES ET DESCRIPTION DU FORGERON (HTML STYLISÉ) ---
+// --- STATISTICS AND DESCRIPTION OF THE BLACKSMITH (STYLISTED HTML) ---
 const QString STATS_BLACKSMITH =
     "<p style='font-family: Alagard; font-size: 24px; color: #FFD700; margin: 0 0 4px 0;'><b>LE FORGERON</b></p>"
     "<p style='font-family: Alagard; font-size: 14px; color: #DDDDDD; margin: 0 0 12px 0;'>"
@@ -110,7 +109,7 @@ namespace keyBind {
     const Qt::Key keyAttaque2 = Qt::Key_L;
 }
 
-const float CAMERA_LERP_SPEED = 0.07f;  // Vitesse de lissage (0.05 = très fluide, 0.2 = très rapide)
-const float CAMERA_MAX_OFFSET = 100.0f; // Distance max d'anticipation en pixels s'il court
+const float CAMERA_LERP_SPEED = 0.07f;  // Smoothing speed (0.05 = very smooth, 0.2 = very fast)
+const float CAMERA_MAX_OFFSET = 100.0f; // Maximum anticipation distance in pixels if running
 
 #endif // CONFIG_H

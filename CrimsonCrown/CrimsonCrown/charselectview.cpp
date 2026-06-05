@@ -9,12 +9,12 @@
 CharSelectView::CharSelectView(QWidget *parent)
     : QWidget(parent) {
 
-    // Layout Principal Vertical
+    // Main layout
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN);
     mainLayout->setAlignment(Qt::AlignTop);
 
-    // Titre de l'écran
+    // Screen Title
     itsTitle = new QLabel(LABEL_CHARSELECT_TITLE);
     QFont titleFont("Alagard");
     titleFont.setPointSize(MENU_TITLE_FONT_SIZE);

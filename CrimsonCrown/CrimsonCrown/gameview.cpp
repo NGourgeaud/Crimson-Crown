@@ -20,10 +20,10 @@ GameView::GameView(GameModel *model, QWidget *parent)
     }
 
     // ==========================================
-    // MENU PAUSE (Invisible par défaut)
+    // PAUSE MENU (Hidden by default)
     // ==========================================
     pauseMenu = new QFrame(this);
-    // On le centre sur la fenêtre de 1200x800
+    // Center it on the 1200x800 window
     pauseMenu->setGeometry((WINDOW_WIDTH - 300) / 2, (WINDOW_HEIGHT - 350) / 2, 300, 350);
     pauseMenu->setStyleSheet("QFrame { background-color: rgba(20, 20, 20, 220); border: 2px solid #555555; border-radius: 10px; }");
 
@@ -53,20 +53,19 @@ GameView::GameView(GameModel *model, QWidget *parent)
         "   border-color: white;"
         "}";
 
-    QPushButton *resumeBtn = new QPushButton("REPRENDRE");
+    QPushButton *resumeBtn = new QPushButton("RESUME");
     resumeBtn->setStyleSheet(btnStyle);
-    // Astuce : Cliquer sur "Reprendre" simule un appui sur Echap pour enlever la pause !
+    // Trick: Clicking "Resume" simulates pressing Escape to remove the pause!
     connect(resumeBtn, &QPushButton::clicked, this, [this]() { emit keyPressed(Qt::Key_Escape); });
     pauseLayout->addWidget(resumeBtn);
 
-    QPushButton *quitBtn = new QPushButton("QUITTER LE JEU");
+    QPushButton *quitBtn = new QPushButton("QUIT GAME");
     quitBtn->setStyleSheet(btnStyle);
     connect(quitBtn, &QPushButton::clicked, this, &GameView::quitRequested);
     pauseLayout->addWidget(quitBtn);
 
-    pauseMenu->hide(); // On le cache au démarrage
+    pauseMenu->hide(); // Hide it at startup
 }
-
 
 GameView::~GameView()
 {
@@ -102,7 +101,7 @@ void GameView::paintEvent(QPaintEvent *event)
     QPointF cameraTarget = playerCenter;
 
     for (RoomModel* room : itsModel->getAllRooms()) {
-        QRectF roomRect = room->getBounds(); // CORRECTION ICI
+        QRectF roomRect = room->getBounds(); // CORRECTION HERE
 
         if (roomRect.contains(playerCenter)) {
             qreal minX = roomRect.left() + (this->width() / 2.0);
@@ -134,10 +133,10 @@ void GameView::paintEvent(QPaintEvent *event)
     painter.save();
     painter.translate(cameraOffset);
 
-    // 1. DESSIN DU DONJON
+    // 1. DRAW DUNGEON
     for (RoomModel* room : itsModel->getAllRooms()) {
         painter.save();
-        painter.translate(room->getBounds().x(), room->getBounds().y()); // CORRECTION ICI
+        painter.translate(room->getBounds().x(), room->getBounds().y()); // CORRECTION HERE
         itsRoomView->draw(painter, room, *itsObstacleView);
         painter.restore();
     }
@@ -148,13 +147,13 @@ void GameView::paintEvent(QPaintEvent *event)
                 painter.save();
                 painter.translate(room->getBounds().x(), room->getBounds().y());
 
-                // On dessine une grosse poutre marron (couleur bois massif)
+                // Draw a large brown beam (solid wood color)
                 painter.setBrush(QColor(139, 69, 19));
                 painter.setPen(QPen(Qt::black, 3));
 
-                // On la place pile à l'entrée sud de la salle du Boss
-                int doorX = (room->getWidth() / 2) - 75; // Le couloir fait 150 de large
-                int doorY = room->getHeight() - 20;      // Tout en bas de la salle
+                // Place it right at the south entrance of the Boss room
+                int doorX = (room->getWidth() / 2) - 75; // The corridor is 150 wide
+                int doorY = room->getHeight() - 20;      // At the very bottom of the room
                 painter.drawRect(doorX, doorY, 150, 20);
 
                 painter.restore();
@@ -162,8 +161,8 @@ void GameView::paintEvent(QPaintEvent *event)
         }
     }
 
-    // 2. DESSIN DES ENNEMIS (Carrés rouges temporaires)
-    painter.setBrush(QColor(220, 20, 60)); // Rouge "monstre"
+    // 2. DRAW ENEMIES (Temporary red squares)
+    painter.setBrush(QColor(220, 20, 60)); // "Monster" red
     painter.setPen(QPen(Qt::black, 3));
     for (EnemyModel* enemy : itsModel->getItsEnemies()) {
         painter.drawRect(enemy->getHitBox());
@@ -173,12 +172,12 @@ void GameView::paintEvent(QPaintEvent *event)
         itsBossView->draw(&painter, boss);
     }
 
-    // 3. DESSIN DU JOUEUR
+    // 3. DRAW PLAYER
     if (itsPlayerView != nullptr) {
         itsPlayerView->draw(&painter);
     }
 
-    // 4 DESSIN DES ZONES D'ATTAQUE
+    // 4 DRAW ATTACK AREAS
     if (!itsAttackAreas.empty()){
         for (QPolygon area : itsAttackAreas){
             painter.setBrush(QBrush(Qt::white));
@@ -188,22 +187,22 @@ void GameView::paintEvent(QPaintEvent *event)
         itsAttackAreas.clear();
     }
 
-    painter.restore(); // Fin de la zone gérée par la caméra
+    painter.restore(); // End of camera-managed area
 
     // ==========================================
-    // INTERFACE DE JEU (HUD FIXE) - LE SCORE !
+    // GAME INTERFACE (STATIC HUD) - THE SCORE!
     // ==========================================
     painter.setFont(QFont("Arial", 14, QFont::Bold));
     int boxWidth = 160;
     int boxHeight = 40;
     int spacing = 20;
 
-    // Calcul pour centrer parfaitement les 2 boîtes en haut de l'écran
+    // Calculation to perfectly center the 2 boxes at the top of the screen
     int totalWidth = (2 * boxWidth) + spacing;
     int startX = (this->width() - totalWidth) / 2;
     int topY = 15;
 
-    // --- 1. BOÎTE DE VIE (Rouge) ---
+    // --- 1. HEALTH BOX (Red) ---
     PlayerModel* player = itsModel->getItsPlayer();
     int currentHP = 0, maxHP = 40;
     if (player != nullptr) {
@@ -219,15 +218,15 @@ void GameView::paintEvent(QPaintEvent *event)
     painter.setPen(Qt::white);
     painter.drawText(hpRect, Qt::AlignCenter, QString("♥ %1 / %2").arg(currentHP).arg(maxHP));
 
-    // --- 2. BOÎTE DE SCORE (Gris foncé avec texte Doré/Blanc) ---
+    // --- 2. SCORE BOX (Dark gray with Gold/White text) ---
     QRect scoreRect(startX + boxWidth + spacing, topY, boxWidth, boxHeight);
     painter.setBrush(QColor(40, 40, 40));
     painter.setPen(Qt::NoPen);
     painter.drawRect(scoreRect);
-    painter.setPen(QColor(255, 215, 0)); // Texte couleur Or pour faire ressortir le score
+    painter.setPen(QColor(255, 215, 0)); // Gold color text to make the score stand out
     painter.drawText(scoreRect, Qt::AlignCenter, QString("SCORE : %1").arg(itsModel->getItsScore()));
 
-    // --- 3. ENNEMIS RESTANTS (En bas à gauche) ---
+    // --- 3. REMAINING ENEMIES (Bottom left) ---
     painter.setPen(Qt::white);
     painter.setFont(QFont("Alagard", 18));
     int enemiesRemaining = itsModel->getItsEnemies().size();
@@ -241,7 +240,7 @@ void GameView::setPauseMenuVisible(bool visible)
         pauseMenu->show();
     } else {
         pauseMenu->hide();
-        // TRÈS IMPORTANT : Redonne le focus au jeu, sinon le clavier ne répond plus !
+        // VERY IMPORTANT: Give focus back to the game, otherwise the keyboard stops responding!
         this->setFocus();
     }
 }

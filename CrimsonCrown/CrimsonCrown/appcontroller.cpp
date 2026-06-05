@@ -153,7 +153,6 @@ void AppController::cleanupCurrentView() {
 
 void AppController::onGameOver(int score)
 {
-    // Logique quand la partie est perdue
     gameController->destroyView();
     mainWindow->setCentralWidget(itsGameOverController->createView(score));
 }

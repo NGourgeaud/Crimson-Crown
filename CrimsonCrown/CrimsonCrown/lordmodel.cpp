@@ -76,9 +76,9 @@ void LordModel::attack2(QPointF heroPos)
 
     currentAimLine = aimLine;
     currentDashStep = 0;
-    maxDashSteps = aimLine.length() / 5; // 5 pixels par étape
+    maxDashSteps = aimLine.length() / 5; // 5 pixels / step
 
-    // Déclenche le timer toutes les 8 ms
+    // Triggers the timer every 8 ms
     itsDashTimer->start(8);
     canAttack2 = false;
     isDashing = true;
@@ -169,14 +169,14 @@ void LordModel::dashStep()
         isDashing = false;
         return;
     }
-    // Calcul de la progression (de 0.0 à 1.0)
+    // Calculating the progression (from 0.0 to 1.0)
     qreal progression = (qreal)currentDashStep / (qreal)maxDashSteps;
 
-    // Trouve le point exact sur la ligne d'attaque selon la progression et déplace le Lord
+    // Find the exact point on the attack line according to the progression and move the Lord
     QPointF nouvellePosition = currentAimLine.pointAt(progression);
     itsHitBox.moveCenter(nouvellePosition.toPoint());
 
-    // Création de la hitbox à cette nouvelle position
+    // Create the hitbox at this new position
     QRect baseAttackRect(0 / 2, -LancerAttackHitboxHeight / 2, LordAttack2HitBoxWidth, LancerAttackHitboxHeight);
     qreal angle = currentAimLine.angle(); // Returns the angle in degrees (0 is right, 90 is up)
     QTransform transform;
@@ -186,7 +186,7 @@ void LordModel::dashStep()
     QPolygon attackHitbox = transform.mapToPolygon(baseAttackRect);
     emit attacking(attackHitbox, itsAttack2Damage);
 
-    // On passe à l'étape suivante pour le prochain "tic" du timer
+    // We move on to the next step for the next "tick" of the timer.
     currentDashStep++;
 }
 

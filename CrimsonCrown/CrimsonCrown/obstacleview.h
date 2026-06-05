@@ -14,7 +14,6 @@ private:
 public:
     ObstacleView();
 
-    // elle dessine l'obstacle en fonction de son model
     void draw(QPainter &painter, const ObstacleModel *model);
 
 
