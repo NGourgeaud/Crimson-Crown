@@ -134,6 +134,16 @@ void PlayerModel::setCenter(QPoint centre)
     itsHitBox.moveCenter(centre);
 }
 
+int PlayerModel::getHP()
+{
+    return itsHP;
+}
+
+int PlayerModel::getMaxHP()
+{
+    return itsMaxHP;
+}
+
 void PlayerModel::regen()
 {
     if(itsHP + playerRegen > itsMaxHP) {
@@ -143,5 +153,6 @@ void PlayerModel::regen()
         itsHP += playerRegen;
     }
 }
+
 
 

@@ -122,9 +122,44 @@ void GameView::paintEvent(QPaintEvent *event)
     // ==========================================
     // INTERFACE DE JEU (HUD FIXE) - LE SCORE !
     // ==========================================
-    painter.setPen(Qt::white);
-    painter.setFont(QFont("Alagard", 22, QFont::Bold));
+    painter.setFont(QFont("Arial", 14, QFont::Bold));
+    int boxWidth = 160;
+    int boxHeight = 40;
+    int spacing = 20;
 
-    QString scoreText = QString("SCORE : %1").arg(itsModel->getItsScore());
-    painter.drawText(20, 40, scoreText);
+    // Calcul pour centrer parfaitement les 2 boîtes en haut de l'écran
+    int totalWidth = (2 * boxWidth) + spacing;
+    int startX = (this->width() - totalWidth) / 2;
+    int topY = 15;
+
+    // --- 1. BOÎTE DE VIE (Rouge) ---
+    PlayerModel* player = itsModel->getItsPlayer();
+    int currentHP = 0, maxHP = 40;
+    if (player != nullptr) {
+        currentHP = player->getHP();
+        maxHP = player->getMaxHP();
+        if (currentHP < 0) currentHP = 0;
+    }
+
+    QRect hpRect(startX, topY, boxWidth, boxHeight);
+    painter.setBrush(QColor(230, 40, 40));
+    painter.setPen(Qt::NoPen);
+    painter.drawRect(hpRect);
+    painter.setPen(Qt::white);
+    painter.drawText(hpRect, Qt::AlignCenter, QString("♥ %1 / %2").arg(currentHP).arg(maxHP));
+
+    // --- 2. BOÎTE DE SCORE (Gris foncé avec texte Doré/Blanc) ---
+    QRect scoreRect(startX + boxWidth + spacing, topY, boxWidth, boxHeight);
+    painter.setBrush(QColor(40, 40, 40));
+    painter.setPen(Qt::NoPen);
+    painter.drawRect(scoreRect);
+    painter.setPen(QColor(255, 215, 0)); // Texte couleur Or pour faire ressortir le score
+    painter.drawText(scoreRect, Qt::AlignCenter, QString("SCORE : %1").arg(itsModel->getItsScore()));
+
+    // --- 3. ENNEMIS RESTANTS (En bas à gauche) ---
+    painter.setPen(Qt::white);
+    painter.setFont(QFont("Alagard", 18));
+    int enemiesRemaining = itsModel->getItsEnemies().size();
+
+    painter.drawText(20, this->height() - 45, QString("Ennemis restants : %1").arg(enemiesRemaining));
 }
