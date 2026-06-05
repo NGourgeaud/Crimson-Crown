@@ -1,21 +1,21 @@
 #include "bossview.h"
 #include "qpainter.h"
 
-BossView::BossView(BossType type, const BossModel * model) : itsModel(model)
+BossView::BossView(BossType type)
 {
     itsType = type;
 }
 
-void BossView::draw(QPainter * painter)
+void BossView::draw(QPainter * painter, const BossModel * model)
 {
     if (itsTexTure.isNull()) {
-        painter->fillRect(itsModel->getHitBox(), QColor(200, 50, 50));
-        painter->setPen(Qt::red);
-        painter->drawRect(itsModel->getHitBox());
+        painter->fillRect(model->getHitBox(), QColor(0, 0, 200));
+        painter->setPen(Qt::blue);
+        painter->drawRect(model->getHitBox());
         return;
     }
 
-    painter->drawPixmap(itsModel->getHitBox().topLeft(), itsTexTure);
+    painter->drawPixmap(model->getHitBox().topLeft(), itsTexTure);
 }
 
 void BossView::setItsTexture()
