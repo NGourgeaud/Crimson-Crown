@@ -6,6 +6,11 @@
 #include "qpainterpath.h"
 #include <QRandomGenerator> // Pour le spawn aléatoire
 
+BossModel *GameModel::getItsBoss() const
+{
+    return itsBoss;
+}
+
 GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
 {
     resetGame(HeroType::None);
@@ -260,6 +265,7 @@ void GameModel::onEnemyDeath(EnemyModel * model)
     QObject * qobjEnemy = dynamic_cast<QObject*>(model);
     if (qobjEnemy) {
         qobjEnemy->deleteLater();
+        itsPlayer->regen();
     }
     else {
         delete model;

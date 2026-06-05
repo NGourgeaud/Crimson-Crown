@@ -59,6 +59,9 @@ public:
     int getHP();
     int getMaxHP();
 
+    void regen();
+
+
 signals:
     void death();
 

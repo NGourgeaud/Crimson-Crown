@@ -9,10 +9,9 @@ class BossView
 private:
     QPixmap itsTexTure;
     BossType itsType;
-    const BossModel * itsModel;
 public:
-    BossView(BossType type, const BossModel * model);
-    void draw(QPainter * painter);
+    BossView(BossType type);
+    void draw(QPainter * painter, const BossModel *model);
     void setItsTexture();
 };
 

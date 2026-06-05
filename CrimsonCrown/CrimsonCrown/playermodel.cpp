@@ -144,3 +144,15 @@ int PlayerModel::getMaxHP()
     return itsMaxHP;
 }
 
+void PlayerModel::regen()
+{
+    if(itsHP + playerRegen > itsMaxHP) {
+        itsHP = itsMaxHP;
+    }
+    else {
+        itsHP += playerRegen;
+    }
+}
+
+
+
