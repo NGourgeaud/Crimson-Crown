@@ -27,12 +27,14 @@ private slots:
     void onTick();
     void onKeyPressed(int key);
     void onKeyReleased(int key);
+    void togglePause();
 
 private:
     GameModel *itsModel;
     GameView *itsView;
     QWidget *parentWidget;
     QTimer *itsTimer;
+    bool isPaused = false;
 };
 
 #endif // GAMECONTROLLER_H

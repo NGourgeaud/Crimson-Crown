@@ -7,6 +7,7 @@
 #include <QPointF>
 #include <QPolygon>
 #include <QList>
+#include <QFrame>
 #include "bossview.h"
 #include "gamemodel.h"
 #include "roomview.h"
@@ -19,6 +20,7 @@ class GameView : public QWidget
 public:
     explicit GameView(GameModel *model, QWidget *parent = nullptr);
     ~GameView();
+    void setPauseMenuVisible(bool visible);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -36,9 +38,13 @@ private:
     QPointF currentCameraCenter;
     bool isCameraInitialized;
 
+    QFrame *pauseMenu;
+
 signals:
     void keyPressed(int key);
     void keyReleased(int key);
+    void quitRequested();
+
 public slots:
     void drawAttackArea(QPolygon hitbox);
 };

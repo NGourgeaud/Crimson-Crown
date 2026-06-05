@@ -1,4 +1,7 @@
 #include "gameview.h"
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QPushButton>
 
 GameView::GameView(GameModel *model, QWidget *parent)
     : QWidget(parent), itsModel(model), isCameraInitialized(false)
@@ -15,7 +18,55 @@ GameView::GameView(GameModel *model, QWidget *parent)
     } else {
         itsPlayerView = nullptr;
     }
+
+    // ==========================================
+    // MENU PAUSE (Invisible par défaut)
+    // ==========================================
+    pauseMenu = new QFrame(this);
+    // On le centre sur la fenêtre de 1200x800
+    pauseMenu->setGeometry((WINDOW_WIDTH - 300) / 2, (WINDOW_HEIGHT - 350) / 2, 300, 350);
+    pauseMenu->setStyleSheet("QFrame { background-color: rgba(20, 20, 20, 220); border: 2px solid #555555; border-radius: 10px; }");
+
+    QVBoxLayout *pauseLayout = new QVBoxLayout(pauseMenu);
+    pauseLayout->setContentsMargins(30, 30, 30, 30);
+    pauseLayout->setSpacing(20);
+
+    QLabel *pauseTitle = new QLabel("PAUSE");
+    pauseTitle->setFont(QFont("Alagard", 35, QFont::Bold));
+    pauseTitle->setStyleSheet("color: #FFD700; background: transparent; border: none;");
+    pauseTitle->setAlignment(Qt::AlignCenter);
+    pauseLayout->addWidget(pauseTitle);
+
+    QString btnStyle =
+        "QPushButton {"
+        "   background-color: #111111;"
+        "   color: white;"
+        "   border: 2px solid #555555;"
+        "   font-family: 'Alagard';"
+        "   font-size: 18px;"
+        "   font-weight: bold;"
+        "   border-radius: 3px;"
+        "   height: 50px;"
+        "}"
+        "QPushButton:hover {"
+        "   background-color: #E30000;"
+        "   border-color: white;"
+        "}";
+
+    QPushButton *resumeBtn = new QPushButton("REPRENDRE");
+    resumeBtn->setStyleSheet(btnStyle);
+    // Astuce : Cliquer sur "Reprendre" simule un appui sur Echap pour enlever la pause !
+    connect(resumeBtn, &QPushButton::clicked, this, [this]() { emit keyPressed(Qt::Key_Escape); });
+    pauseLayout->addWidget(resumeBtn);
+
+    QPushButton *quitBtn = new QPushButton("QUITTER LE JEU");
+    quitBtn->setStyleSheet(btnStyle);
+    connect(quitBtn, &QPushButton::clicked, this, &GameView::quitRequested);
+    pauseLayout->addWidget(quitBtn);
+
+    pauseMenu->hide(); // On le cache au démarrage
 }
+
 
 GameView::~GameView()
 {
@@ -182,4 +233,15 @@ void GameView::paintEvent(QPaintEvent *event)
     int enemiesRemaining = itsModel->getItsEnemies().size();
 
     painter.drawText(20, this->height() - 45, QString("Ennemis restants : %1").arg(enemiesRemaining));
+}
+
+void GameView::setPauseMenuVisible(bool visible)
+{
+    if (visible) {
+        pauseMenu->show();
+    } else {
+        pauseMenu->hide();
+        // TRÈS IMPORTANT : Redonne le focus au jeu, sinon le clavier ne répond plus !
+        this->setFocus();
+    }
 }

@@ -41,6 +41,8 @@ QWidget* GameController::createView(HeroType hero)
     connect(itsView, &GameView::keyReleased, this, &GameController::onKeyReleased);
     connect(itsModel, &GameModel::attack, itsView, &GameView::drawAttackArea);
 
+    connect(itsView, &GameView::quitRequested, this, &GameController::menuRequested);
+
     itsView->setFocus();
 
     itsTimer->start(16);
@@ -78,11 +80,12 @@ void GameController::onBossDeath()
 ///
 void GameController::onTick()
 {
-    // Advance simulation frames (Uncomment when update loops are deployed in GameModel)
-    itsModel->updateLogic();
+    if (!isPaused) {
+        itsModel->updateLogic(); // Le jeu s'arrête de calculer si isPaused == true !
+    }
 
     if (itsView != nullptr) {
-        itsView->update();
+        itsView->update(); // On continue de dessiner pour voir l'écran de pause
     }
 }
 
@@ -91,6 +94,14 @@ void GameController::onTick()
 ///
 void GameController::onKeyPressed(int key)
 {
+    if (key == Qt::Key_Escape || key == Qt::Key_P) {
+        togglePause();
+        return;
+    }
+    if (isPaused) return;
+
+
+    if (!itsModel || !itsModel->getItsPlayer()) return;
     // Safe guard model verification passes
     if (!itsModel || !itsModel->getItsPlayer()) return;
 
@@ -150,5 +161,13 @@ void GameController::onKeyReleased(int key)
         break;
     default:
         break;
+    }
+}
+
+void GameController::togglePause()
+{
+    isPaused = !isPaused;
+    if (itsView != nullptr) {
+        itsView->setPauseMenuVisible(isPaused);
     }
 }
