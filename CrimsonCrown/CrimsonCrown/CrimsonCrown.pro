@@ -87,5 +87,4 @@ RESOURCES += \
 macx:QMAKE_CXXFLAGS += -Wno-error=implicit-function-declaration
 macx:QMAKE_CFLAGS += -Wno-error=implicit-function-declaration
 
-DISTFILES += \
-    lancier.png
+DISTFILES +=

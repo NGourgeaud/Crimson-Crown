@@ -28,6 +28,11 @@ QRectF ProjectileModel::getItsHitbox() const
     return itsHitbox;
 }
 
+ProjectileType ProjectileModel::getItsType() const
+{
+    return itsType;
+}
+
 ProjectileModel::ProjectileModel(QRectF Hitbox, QLineF direction, int speed, int damage, Team team, ProjectileType type)
 {
     itsHitbox = Hitbox;
@@ -36,4 +41,9 @@ ProjectileModel::ProjectileModel(QRectF Hitbox, QLineF direction, int speed, int
     itsDamage = damage;
     itsTeam = team;
     itsType = type;
+}
+
+QLineF ProjectileModel::getItsDiretion() const
+{
+    return itsDiretion;
 }

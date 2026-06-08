@@ -45,7 +45,7 @@ CharSelectView::CharSelectView(QWidget *parent)
     itsBlacksmithCardButton->setStyleSheet(blacksmithCardStyle);
 
     connect(itsBlacksmithCardButton, &QPushButton::clicked, this, [this]() {
-        emit selectCharacterRequested(HeroType::Blacksmith);
+        emit selectCharacterRequested(HeroType::Hunter);
     });
     mainLayout->addWidget(itsBlacksmithCardButton, 0, Qt::AlignHCenter);
 

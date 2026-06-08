@@ -2,6 +2,7 @@
 #define HUNTERMODEL_H
 
 #include "playermodel.h"
+#include "projectilemodel.h"
 #include <QPolygon>
 #include <QLineF>
 #include <QTransform>
@@ -17,6 +18,7 @@ public:
 
 signals:
     void attackPlayer(QPolygon attackHitBox, int damage);
+    void fireProjectile(ProjectileModel* projectile);
 };
 
 #endif // HUNTERMODEL_H

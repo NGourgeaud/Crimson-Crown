@@ -1,8 +1,10 @@
 #include "huntermodel.h"
 #include <QPainterPath>
+#include "config.h"
 
 HunterModel::HunterModel()
-    :PlayerModel(25, 25, 10, 10, 10, HeroType::Hunter) {}
+    :PlayerModel(25, 25, 6, 10, 5, HeroType::Hunter)
+{}
 
 void HunterModel::attack1()
 {
@@ -10,29 +12,32 @@ void HunterModel::attack1()
         int attackDirectionX = 0, attackDirectionY = 0;
 
         switch(itsDirection) {
-        case Left :     attackDirectionX = -5; break;
-        case Right:     attackDirectionX = 5; break;
-        case Up:        attackDirectionY = -5; break;
-        case Down:      attackDirectionY = 5; break;
-        case LeftDown:  attackDirectionX = -5; attackDirectionY = 5; break;
-        case LeftUp:    attackDirectionX = -5; attackDirectionY = -5; break;
-        case RightDown: attackDirectionX = 5;  attackDirectionY = 5; break;
-        case RightUp:   attackDirectionX = 5;  attackDirectionY = -5; break;
+        case Left :     attackDirectionX = -1; break;
+        case Right:     attackDirectionX = 1;  break;
+        case Up:        attackDirectionY = -1; break;
+        case Down:      attackDirectionY = 1;  break;
+        case LeftDown:  attackDirectionX = -1; attackDirectionY = 1;  break;
+        case LeftUp:    attackDirectionX = -1; attackDirectionY = -1; break;
+        case RightDown: attackDirectionX = 1;  attackDirectionY = 1;  break;
+        case RightUp:   attackDirectionX = 1;  attackDirectionY = -1; break;
         default: break;
         }
 
         QLineF aimLine(QPointF(0,0), QPointF(attackDirectionX, attackDirectionY));
-        qreal angle = aimLine.angle();
 
-        QRect baseAttackRect(0, -HunterAttack1HitboxHeight / 2, HunterAttack1HitboxWidth, HunterAttack1HitboxHeight);
+        QRectF arrowHitbox(0, 0, 60, 15);
+        arrowHitbox.moveCenter(itsHitBox.center());
 
-        QTransform transform;
-        transform.translate(itsHitBox.center().x(), itsHitBox.center().y());
-        transform.rotate(-angle);
+        ProjectileModel* arrow = new ProjectileModel(
+            arrowHitbox,
+            aimLine,
+            12, // Vitesse de la flèche (ajustable)
+            itsAttack1Damage,
+            PLAYER,
+            ARROW
+            );
 
-        QPolygon attackHitbox = transform.mapToPolygon(baseAttackRect);
-
-        emit attackPlayer(attackHitbox, itsAttack1Damage);
+        emit fireProjectile(arrow);
 
         canAttack1 = false;
         itsCooldown1->start(HunterAttack1Cooldown * 1000);

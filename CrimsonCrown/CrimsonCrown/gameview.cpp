@@ -191,6 +191,8 @@ void GameView::paintEvent(QPaintEvent *event)
     // draw projectile
     if (!itsModel->getItsProjeciles().empty()){
         for (ProjectileModel * projectile : itsModel->getItsProjeciles()){
+
+            itsProjectileView->setItsTexture(projectile->getItsType());
             itsProjectileView->draw(&painter, projectile);
         }
     }

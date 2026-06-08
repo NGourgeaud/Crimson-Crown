@@ -24,6 +24,7 @@ public:
     QLineF getItsDiretion() const;
     void update();
     QRectF getItsHitbox() const;
+    ProjectileType getItsType() const;
 
 signals:
     void tick(ProjectileModel*);

@@ -103,6 +103,7 @@ void GameModel::resetGame(HeroType hero)
         HunterModel * newPlayer = new HunterModel();
         itsPlayer = newPlayer;
         connect(newPlayer, &HunterModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
+        connect(newPlayer, &HunterModel::fireProjectile, this, &GameModel::onNewProjectile);
         break;
     }
     default:
