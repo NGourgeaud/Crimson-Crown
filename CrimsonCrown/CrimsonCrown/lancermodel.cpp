@@ -17,6 +17,7 @@ LancerModel::LancerModel(int maxHp, int speed, int x, int y, float attackCooldow
     itsCoolDownTimer = new QTimer();
     IframeTimer = new QTimer();
     isInIframe = false;
+    itsType = LANCER;
 
     connect(itsCoolDownTimer, &QTimer::timeout, this, &LancerModel::resetAttackCooldown);
     connect(IframeTimer, &QTimer::timeout, this, &LancerModel::resetIframe);
