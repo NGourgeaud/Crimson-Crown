@@ -20,6 +20,8 @@ AppController::AppController(QObject *parent)
     itsGameOverController(new GameOverController()),
     itsGameWonController(new GameWonController())
 {
+    mainWindow->setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+
     // Police
     int fontId = QFontDatabase::addApplicationFont(":/alagard.ttf");
     if (fontId != -1) {

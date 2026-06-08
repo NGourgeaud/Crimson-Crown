@@ -16,7 +16,9 @@ GameView::GameView(GameModel *model, QWidget *parent)
 
     if (itsModel->getItsPlayer() != nullptr) {
         itsPlayerView = new PlayerView(nullptr, itsModel->getItsPlayer());
+
         itsPlayerView->setItsTexture(itsModel->getItsPlayer()->getItsName());
+
     } else {
         itsPlayerView = nullptr;
     }
