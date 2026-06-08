@@ -18,6 +18,7 @@ private:
     int itsScore;
     PlayerModel * itsPlayer;
     RoomModel * activeRoom;
+    int currentLevel;
 
 public:
     GameModel();
@@ -39,6 +40,8 @@ public:
     bool areAllCombatRoomsCleared() const;
 
     BossModel * getItsBoss() const;
+
+    void loadLevel(int levelId);
 
 signals:
     void roomCleared();

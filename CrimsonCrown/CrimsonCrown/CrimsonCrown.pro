@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     appcontroller.cpp \
+    assassinmodel.cpp \
     blacksmithmodel.cpp \
     blacksmithview.cpp \
     bossmodel.cpp \
@@ -41,6 +42,7 @@ SOURCES += \
 
 HEADERS += \
     appcontroller.h \
+    assassinmodel.h \
     blacksmithmodel.h \
     blacksmithview.h \
     bossmodel.h \
@@ -82,3 +84,7 @@ RESOURCES += \
 
 DISTFILES += \
     lancier.png
+
+macx:QMAKE_CXXFLAGS += -Wno-error=implicit-function-declaration
+
+macx:QMAKE_CFLAGS += -Wno-error=implicit-function-declaration
