@@ -11,6 +11,11 @@ BossModel *GameModel::getItsBoss() const
     return itsBoss;
 }
 
+QList<ProjectileModel *> GameModel::getItsProjeciles() const
+{
+    return itsProjeciles;
+}
+
 GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
 {
     resetGame(HeroType::None);
@@ -155,6 +160,13 @@ void GameModel::updateLogic()
         if (itsBoss != nullptr) {
             LordModel* lord = dynamic_cast<LordModel*>(itsBoss);
             if (lord) lord->update(itsPlayer->getHitBox().center());
+        }
+    }
+
+    // projectile update
+    if (!itsProjeciles.empty()){
+        for (ProjectileModel * pro : itsProjeciles){
+            pro->update();
         }
     }
 
@@ -321,6 +333,37 @@ void GameModel::onPlayerAttack(QPolygon hitbox, int damage)
     else if(itsBoss){
         if (hitbox.intersects(itsBoss->getHitBox().toRect())){
             itsBoss->takeDamage(damage);
+        }
+    }
+}
+
+void GameModel::onNewProjectile(ProjectileModel * projectile)
+{
+    itsProjeciles.append(projectile);
+    if (projectile->getItsTeam() == ENEMY)
+        connect(projectile, &ProjectileModel::tick, this, &GameModel::onEnemyProjectile);
+    else
+        connect(projectile, &ProjectileModel::tick, this, &GameModel::onplayerProjectile);
+}
+
+void GameModel::onEnemyProjectile(ProjectileModel * projectile)
+{
+    if (projectile->getItsHitbox().intersects(itsPlayer->getHitBox())){
+        itsPlayer->takeDamage(projectile->getItsDamage());
+        disconnect(projectile);
+        itsProjeciles.removeOne(projectile);
+        delete projectile;
+    }
+}
+
+void GameModel::onplayerProjectile(ProjectileModel *projectile)
+{
+    for (EnemyModel * enemy : itsEnemies){
+        if (projectile->getItsHitbox().intersects(enemy->getHitBox())){
+            enemy->takeDamage(projectile->getItsDamage());
+            disconnect(projectile);
+            itsProjeciles.removeOne(projectile);
+            delete projectile;
         }
     }
 }
