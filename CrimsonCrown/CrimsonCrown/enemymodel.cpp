@@ -2,3 +2,8 @@
 
 EnemyModel::EnemyModel() {}
 
+EnemyType EnemyModel::getitsEnemyType()
+{
+    return itsType;
+}
+

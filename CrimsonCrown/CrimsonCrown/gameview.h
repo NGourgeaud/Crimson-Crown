@@ -9,6 +9,7 @@
 #include <QList>
 #include <QFrame>
 #include "bossview.h"
+#include "enemyview.h"
 #include "gamemodel.h"
 #include "projectileview.h"
 #include "roomview.h"
@@ -34,6 +35,7 @@ private:
     ObstacleView *itsObstacleView;
     PlayerView *itsPlayerView;
     BossView * itsBossView;
+    EnemyView * itsEnemyView;
     ProjectileView * itsProjectileView;
     QList<QPolygon> itsAttackAreas;
 

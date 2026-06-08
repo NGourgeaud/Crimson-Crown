@@ -1,5 +1,10 @@
 #include "playermodel.h"
 
+HeroType PlayerModel::getItsName() const
+{
+    return itsName;
+}
+
 PlayerModel::PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, int aAttack2Damage, HeroType aName)
     :itsDirection(Right), itsHitBox(QRectF(0, 0, playerWidth, playerHeight))
 {
