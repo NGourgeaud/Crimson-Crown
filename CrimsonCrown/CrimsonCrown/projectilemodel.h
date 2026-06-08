@@ -15,9 +15,10 @@ private:
     int itsSpeed;
     int itsDamage;
     Team itsTeam;
+    ProjectileType itsType;
 
 public:
-    ProjectileModel(QRectF Hitbox, QLineF direction, int speed, int damage, Team team);
+    ProjectileModel(QRectF Hitbox, QLineF direction, int speed, int damage, Team team, ProjectileType type);
     Team getItsTeam() const;
     int getItsDamage() const;
     QLineF getItsDiretion() const;

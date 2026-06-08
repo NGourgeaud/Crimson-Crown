@@ -1,5 +1,6 @@
 #include "projectilemodel.h"
 
+
 Team ProjectileModel::getItsTeam() const
 {
     return itsTeam;
@@ -27,11 +28,12 @@ QRectF ProjectileModel::getItsHitbox() const
     return itsHitbox;
 }
 
-ProjectileModel::ProjectileModel(QRectF Hitbox, QLineF direction, int speed, int damage, Team team)
+ProjectileModel::ProjectileModel(QRectF Hitbox, QLineF direction, int speed, int damage, Team team, ProjectileType type)
 {
     itsHitbox = Hitbox;
     itsDiretion = direction;
     itsSpeed = speed;
     itsDamage = damage;
     itsTeam = team;
+    itsType = type;
 }

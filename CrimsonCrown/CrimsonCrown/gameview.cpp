@@ -11,6 +11,7 @@ GameView::GameView(GameModel *model, QWidget *parent)
     itsRoomView = new RoomView();
     itsObstacleView = new ObstacleView();
     itsBossView = new BossView(LORD);
+    itsProjectileView = new ProjectileView;
 
     if (itsModel->getItsPlayer() != nullptr) {
         itsPlayerView = new PlayerView(nullptr, itsModel->getItsPlayer());
@@ -185,6 +186,13 @@ void GameView::paintEvent(QPaintEvent *event)
             painter.drawPolygon(area);
         }
         itsAttackAreas.clear();
+    }
+
+    // draw projectile
+    if (!itsModel->getItsProjeciles().empty()){
+        for (ProjectileModel * projectile : itsModel->getItsProjeciles()){
+            itsProjectileView->draw(&painter, projectile);
+        }
     }
 
     painter.restore(); // End of camera-managed area

@@ -37,6 +37,7 @@ SOURCES += \
     obstacleview.cpp \
     playerview.cpp \
     projectilemodel.cpp \
+    projectileview.cpp \
     roommodel.cpp \
     roomview.cpp
 
@@ -69,6 +70,7 @@ HEADERS += \
     obstacleview.h \
     playerview.h \
     projectilemodel.h \
+    projectileview.h \
     roommodel.h \
     roomview.h
 

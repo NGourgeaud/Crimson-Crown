@@ -93,6 +93,10 @@ enum Team{
     PLAYER
 };
 
+enum ProjectileType {
+    ARROW
+};
+
 // --- STATISTICS AND DESCRIPTION OF THE BLACKSMITH (STYLISTED HTML) ---
 const QString STATS_BLACKSMITH =
     "<p style='font-family: Alagard; font-size: 24px; color: #FFD700; margin: 0 0 4px 0;'><b>LE FORGERON</b></p>"
