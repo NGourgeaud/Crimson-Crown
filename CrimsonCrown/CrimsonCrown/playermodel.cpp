@@ -157,6 +157,12 @@ int PlayerModel::getMaxHP()
     return itsMaxHP;
 }
 
+HeroType PlayerModel::getItsName() const
+{
+    return itsName;
+}
+
+
 void PlayerModel::regen()
 {
     if(itsHP + playerRegen > itsMaxHP) {
