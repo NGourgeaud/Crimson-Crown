@@ -3,6 +3,7 @@
 #include "lancermodel.h"
 #include "lordmodel.h"
 #include "config.h"
+#include "qdebug.h"
 #include "qpainterpath.h"
 #include <QRandomGenerator> // for random spawn
 #include "huntermodel.h"
@@ -360,19 +361,88 @@ void GameModel::onEnemyProjectile(ProjectileModel * projectile)
         itsPlayer->takeDamage(projectile->getItsDamage());
         disconnect(projectile);
         itsProjeciles.removeOne(projectile);
+        projectile->deleteLater();
+    }
+
+    if (!activeRoom->getItsObstacles().empty()){
+        for (ObstacleModel * obstacle : activeRoom->getItsObstacles()){
+            // Création d'une Hitbox globale comme pour le joueur
+            QRectF globalObsRect = obstacle->getHitBox();
+            globalObsRect.translate(activeRoom->getBounds().x(), activeRoom->getBounds().y());
+
+            if (projectile->getItsHitbox().intersects(globalObsRect)){
+                disconnect(projectile);
+                itsProjeciles.removeOne(projectile);
+                delete projectile;
+                return;
+            }
+        }
+    }
+
+    // Define the inner area (the hollow space past the border)
+    QMarginsF margins(1, 1, 1, 1);
+    QRectF innerSpace = activeRoom->getBounds().marginsRemoved(margins);
+
+    // If innerSpace fully contains r1, it means r1 safely bypassed the border
+    // and is floating in the middle. Otherwise, it's stuck in the border zone.
+    if (!innerSpace.contains(projectile->getItsHitbox())){
+        disconnect(projectile);
+        itsProjeciles.removeOne(projectile);
         delete projectile;
+        return;
     }
 }
 
 void GameModel::onplayerProjectile(ProjectileModel *projectile)
 {
-    for (EnemyModel * enemy : itsEnemies){
-        if (projectile->getItsHitbox().intersects(enemy->getHitBox())){
-            enemy->takeDamage(projectile->getItsDamage());
+    if(!itsEnemies.empty()){
+        for (EnemyModel * enemy : itsEnemies){
+            if (projectile->getItsHitbox().intersects(enemy->getHitBox())){
+                enemy->takeDamage(projectile->getItsDamage());
+                disconnect(projectile);
+                itsProjeciles.removeOne(projectile);
+                delete projectile;
+                return;
+            }
+        }
+    }
+    else if (itsBoss){
+        if (projectile->getItsHitbox().intersects(itsBoss->getHitBox())){
+            itsBoss->takeDamage(projectile->getItsDamage());
             disconnect(projectile);
             itsProjeciles.removeOne(projectile);
             delete projectile;
+            return;
         }
+    }
+
+
+    if (!activeRoom->getItsObstacles().empty()){
+        for (ObstacleModel * obstacle : activeRoom->getItsObstacles()){
+            // Création d'une Hitbox globale
+            QRectF globalObsRect = obstacle->getHitBox();
+            globalObsRect.translate(activeRoom->getBounds().x(), activeRoom->getBounds().y());
+
+            if (projectile->getItsHitbox().intersects(globalObsRect)){
+                disconnect(projectile);
+                itsProjeciles.removeOne(projectile);
+                delete projectile;
+                return;
+            }
+        }
+    }
+
+    // Define the inner area (the hollow space past the border)
+    QMarginsF margins(1, 1, 1, 1);
+    QRectF innerSpace = activeRoom->getBounds().marginsRemoved(margins);
+
+    // If innerSpace fully contains r1, it means r1 safely bypassed the border
+    //    and is floating in the middle. Otherwise, it's stuck in the border zone.
+    if (!innerSpace.contains(projectile->getItsHitbox())){
+        disconnect(projectile);
+       itsProjeciles.removeOne(projectile);
+       delete projectile;
+       return;
     }
 }
 
