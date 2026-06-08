@@ -3,6 +3,7 @@
 #include <QObject>
 #include "bossmodel.h"
 #include "enemymodel.h"
+#include "projectilemodel.h"
 #include "roommodel.h"
 #include "playermodel.h"
 #include "QPolygon"
@@ -14,6 +15,7 @@ class GameModel : public QObject
 private:
     QList<RoomModel*> allRooms;
     QList<EnemyModel*> itsEnemies;
+    QList<ProjectileModel*> itsProjeciles;
     BossModel * itsBoss;
     int itsScore;
     PlayerModel * itsPlayer;
@@ -40,6 +42,8 @@ public:
 
     BossModel * getItsBoss() const;
 
+    QList<ProjectileModel *> getItsProjeciles() const;
+
 signals:
     void roomCleared();
     void gameWon(int score);
@@ -51,6 +55,9 @@ private slots:
     void onBossDeath(BossModel * model);
     void onEnemyAttack(QPolygon hitbox, int damage);
     void onPlayerAttack(QPolygon hitbox, int damage);
+    void onNewProjectile(ProjectileModel * projectile);
+    void onEnemyProjectile(ProjectileModel * projectile);
+    void onplayerProjectile(ProjectileModel * projectile);
 };
 
 #endif // GAMEMODEL_H
