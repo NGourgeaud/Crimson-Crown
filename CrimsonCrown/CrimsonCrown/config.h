@@ -34,6 +34,15 @@ const int BlacksmithAttack2HitboxRadius = 80;
 const int BlacksmithAttack1Cooldown = 1;
 const int BlacksmithAttack2Cooldown = 5;
 
+// Hunter Stats
+const int HunterAttack1HitboxWidth = 400;
+const int HunterAttack1HitboxHeight = 5;
+
+const int HunterAttack2HitboxRadius = 200;
+
+const int HunterAttack1Cooldown = 1;
+const int HunterAttack2Cooldown = 5;
+
 const int playerRegen = 20;
 const float playerIframe = 0.5;
 
@@ -73,9 +82,11 @@ const int LordAttack1HitBoxHeight = 100;
 const int LordAttack2HitBoxWidth = 40;
 const int LordAttack2HitBoxHeight = 30;
 
+
 enum HeroType {
     None,
-    Blacksmith
+    Blacksmith,
+    Hunter
 };
 
 enum EnemyType{
@@ -97,6 +108,16 @@ const QString STATS_BLACKSMITH =
     "<span style='color: #BBBBBB;'>Vie :</span> <span style='color: #FF3333;'><b>40 HP</b></span><br>"
     "<span style='color: #BBBBBB;'>Vitesse :</span> <span style='color: #33FF33;'><b>2 px/tick</b></span><br>"
     "<span style='color: #BBBBBB;'>Dégâts :</span> <span style='color: #3333FF;'><b>13 HP</b></span>"
+    "</p>";
+
+const QString STATS_HUNTER =
+    "<p style='font-family: Alagard; font-size: 24px; color: #FFD700; margin: 0 0 4px 0;'><b>LE CHASSEUR</b></p>"
+    "<p style='font-family: Alagard; font-size: 14px; color: #DDDDDD; margin: 0 0 12px 0;'>"
+    "Combattant à distance très mobile mais vulnérable, spécialisé dans le harcèlement continu et le contrôle de zone grâce à ses volées de flèches.</p>"
+    "<p style='font-family: Alagard; font-size: 16px; color: white; line-height: 150%; margin: 0;'>"
+    "<span style='color: #BBBBBB;'>Vie :</span> <span style='color: #FF3333;'><b>25 HP</b></span><br>"
+    "<span style='color: #BBBBBB;'>Vitesse :</span> <span style='color: #33FF33;'><b>10 px/tick</b></span><br>"
+    "<span style='color: #BBBBBB;'>Dégâts :</span> <span style='color: #3333FF;'><b>10 HP</b></span>"
     "</p>";
 
 
