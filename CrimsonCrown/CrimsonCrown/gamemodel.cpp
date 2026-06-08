@@ -5,6 +5,7 @@
 #include "config.h"
 #include "qpainterpath.h"
 #include <QRandomGenerator> // for random spawn
+#include "huntermodel.h"
 
 BossModel *GameModel::getItsBoss() const
 {
@@ -98,6 +99,13 @@ void GameModel::resetGame(HeroType hero)
         connect(newPlayer, &BlacksmithModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
         break;
         }
+    case HeroType::Hunter: {
+        HunterModel * newPlayer = new HunterModel();
+        itsPlayer = newPlayer;
+        connect(newPlayer, &HunterModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
+        connect(newPlayer, &HunterModel::fireProjectile, this, &GameModel::onNewProjectile);
+        break;
+    }
     default:
         itsPlayer = nullptr;
         break;

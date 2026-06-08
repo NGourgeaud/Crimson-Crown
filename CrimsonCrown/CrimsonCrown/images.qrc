@@ -8,5 +8,8 @@
         <file>ecran_victoire.png</file>
         <file>forgeron-win.png</file>
         <file>forgeron-loose.png</file>
+        <file>chasseur.png</file>
+        <file>arrow.png</file>
+        <file>lancier.png</file>
     </qresource>
 </RCC>

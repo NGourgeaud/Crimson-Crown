@@ -24,6 +24,9 @@ void PlayerView::setItsTexture(HeroType namePlayer)
     case HeroType::Blacksmith:
         itsTexture = QPixmap(":/forgeron.png");
         break;
+    case HeroType::Hunter:
+        itsTexture = QPixmap(":/chasseur.png");
+        break;
     default:
         break;
     }

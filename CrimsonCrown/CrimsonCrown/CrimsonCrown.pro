@@ -25,6 +25,7 @@ SOURCES += \
     gameoverview.cpp \
     gamewoncontroller.cpp \
     gamewonview.cpp \
+    huntermodel.cpp \
     lordmodel.cpp \
     gameview.cpp \
     main.cpp \
@@ -59,6 +60,7 @@ HEADERS += \
     gameoverview.h \
     gamewoncontroller.h \
     gamewonview.h \
+    huntermodel.h \
     lordmodel.h \
     gameview.h \
     mainwindow.h \
@@ -85,5 +87,4 @@ RESOURCES += \
 macx:QMAKE_CXXFLAGS += -Wno-error=implicit-function-declaration
 macx:QMAKE_CFLAGS += -Wno-error=implicit-function-declaration
 
-DISTFILES += \
-    lancier.png
+DISTFILES +=
