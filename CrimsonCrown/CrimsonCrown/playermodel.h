@@ -64,6 +64,8 @@ public:
     void regen();
 
 
+    HeroType getItsName() const;
+
 signals:
     void death();
 
