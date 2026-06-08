@@ -81,11 +81,11 @@ void GameController::onBossDeath()
 void GameController::onTick()
 {
     if (!isPaused) {
-        itsModel->updateLogic(); // Le jeu s'arrête de calculer si isPaused == true !
+        itsModel->updateLogic(); // The game stops calculating if isPaused == true!
     }
 
     if (itsView != nullptr) {
-        itsView->update(); // On continue de dessiner pour voir l'écran de pause
+        itsView->update(); // We continue drawing to see the pause screen
     }
 }
 

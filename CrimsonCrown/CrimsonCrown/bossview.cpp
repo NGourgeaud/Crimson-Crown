@@ -6,6 +6,11 @@ BossView::BossView(BossType type)
     itsType = type;
 }
 
+///
+/// \brief BossView::draw
+/// \param painter
+/// \param model
+///
 void BossView::draw(QPainter * painter, const BossModel * model)
 {
     if (itsTexTure.isNull()) {
@@ -18,6 +23,9 @@ void BossView::draw(QPainter * painter, const BossModel * model)
     painter->drawPixmap(model->getHitBox().topLeft(), itsTexTure);
 }
 
+///
+/// \brief BossView::setItsTexture
+///
 void BossView::setItsTexture()
 {
     switch (itsType) {

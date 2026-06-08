@@ -4,6 +4,10 @@
 
 EnemyView::EnemyView() {}
 
+///
+/// \brief EnemyView::draw
+/// \param painter
+///
 void EnemyView::draw(QPainter * painter)
 {
     if (itsTexTure.isNull()) {
@@ -16,6 +20,10 @@ void EnemyView::draw(QPainter * painter)
     painter->drawPixmap(itsModel->getHitBox().topLeft(), itsTexTure);
 }
 
+///
+/// \brief EnemyView::setItsTexture
+/// \param type
+///
 void EnemyView::setItsTexture(EnemyType type)
 {
     switch (type) {

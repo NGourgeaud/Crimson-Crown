@@ -44,19 +44,19 @@ void LancerModel::attack(QPointF heroPos)
     QLineF aimLine(itsHitBox.center(), heroPos);
     qreal angle = aimLine.angle(); // Returns the angle in degrees (0 is right, 90 is up)
 
-    // 1. Crée le rectangle d'attaque centré sur 0,0
+    // 1. Create the attack rectangle centered on 0,0
     QRect baseAttackRect(0, -LancerAttackHitboxHeight / 2, LancerAttackHitboxWidth, LancerAttackHitboxHeight);
 
-    // 2. Initialise le QTransform
+    // 2. Initialize the QTransform
     QTransform transform;
 
-    // 3. Translate le centre du système de coordonnées vers ton personnage
+    // 3. Translate the center of the coordinate system towards your character
     transform.translate(itsHitBox.center().x(), itsHitBox.center().y());
 
-    // 4. Applique la rotation
+    // 4. Apply rotation
     transform.rotate(-angle);
 
-    // 5. Génère le polygone final
+    // 5. Generates the final polygon
     QPolygon attackHitbox = transform.mapToPolygon(baseAttackRect);
     emit attacking(attackHitbox, itsAttackDamage);
     canAttack = false;

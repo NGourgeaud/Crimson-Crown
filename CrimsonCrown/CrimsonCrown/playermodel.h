@@ -51,13 +51,13 @@ public:
     QRectF getHitBox() const;
     void setCenter(QPoint centre);
 
-    // Getters pour la caméra
+    // Getters for the caméra
     bool getIsMovingUp() const { return isMovingUp; }
     bool getIsMovingDown() const { return isMovingDown; }
     bool getIsMovingLeft() const { return isMovingLeft; }
     bool getIsMovingRight() const { return isMovingRight; }
 
-    // getters pour le vie
+    // getters pour life
     int getHP();
     int getMaxHP();
 

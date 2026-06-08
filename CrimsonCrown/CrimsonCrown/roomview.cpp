@@ -29,9 +29,9 @@ void RoomView::draw(QPainter &painter, const RoomModel *roomModel, ObstacleView 
     painter.setPen(QPen(Qt::black, 4));
     painter.drawRect(0, 0, roomModel->getWidth(), roomModel->getHeight());
 
-
-    // EFFET VISUEL : PALISSADES EN BOIS
-
+    // ==========================================
+    // VISUAL EFFECT: WOODEN FENCING
+    // ==========================================
     if (roomModel->getIsLocked()) {
         painter.setBrush(Qt::NoBrush);
         painter.setPen(QPen(QColor(139, 69, 19), 12));

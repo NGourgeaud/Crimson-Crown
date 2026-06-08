@@ -5,7 +5,7 @@
 #include "lordmodel.h"
 #include "config.h"
 #include "qpainterpath.h"
-#include <QRandomGenerator> // Pour le spawn aléatoire
+#include <QRandomGenerator> // for random spawn
 
 BossModel *GameModel::getItsBoss() const
 {
@@ -48,7 +48,7 @@ void GameModel::resetGame(HeroType hero)
     }
 
     // ==========================================
-    // GÉNÉRATION DE LA CARTE (SANS LES ENNEMIS GLOBAUX)
+    // MAP GENERATION (WITHOUT GLOBAL ENEMIES)
     // ==========================================
 
     // 1. Spawn
@@ -87,7 +87,7 @@ void GameModel::resetGame(HeroType hero)
     RoomModel* combat4 = new RoomModel(RoomType::Combat, 4000, 1025, 1100, 650);
     allRooms.append(combat4);
 
-    // Joueur
+    // Player
     switch(hero) {
     case HeroType::Blacksmith: {
         BlacksmithModel * newPlayer = new BlacksmithModel();
@@ -233,7 +233,7 @@ void GameModel::spawnEnemies(bool isBoss)
             LancerModel * newEnnemy = new LancerModel(LancerDefaultMaxHp, LancerDefaultSpeed, RoomX(eng), RoomY(eng), LancerDefaultAttackCoolDown, LancerDefaultAttackDamage);
             itsEnemies.append(newEnnemy);
 
-            // Utilisation d'une lambda pour sécuriser le passage de paramètre
+            // Using a lambda to secure parameter passing
             connect(newEnnemy, &LancerModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
             connect(newEnnemy, &LancerModel::attacking, this, [this](QPolygon hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
         }
@@ -251,28 +251,28 @@ void GameModel::spawnEnemies(bool isBoss)
 
 void GameModel::updateLogic()
 {
-    // 1. UPDATE DE L'IA
+    // 1. AI UPDATE
     if (itsPlayer != nullptr) {
-        // A. Mise à jour des Lanciers
+        // A. Lancers Update
         for (int i = itsEnemies.size() - 1; i >= 0; --i) {
             EnemyModel* enemy = itsEnemies.at(i);
             LancerModel* lancer = dynamic_cast<LancerModel*>(enemy);
             if (lancer) lancer->update(itsPlayer->getHitBox().center());
         }
 
-        // B. Mise à jour du Boss (s'il existe sur la map)
+        // B. Boss update (if it exists on the map)
         if (itsBoss != nullptr) {
             LordModel* lord = dynamic_cast<LordModel*>(itsBoss);
             if (lord) lord->update(itsPlayer->getHitBox().center());
         }
     }
 
-    // 2. UPDATE DU JOUEUR & COLLISIONS
+    // 2. PLAYER UPDATE & COLLISIONS
     if (itsPlayer != nullptr) {
         QPointF oldPos = itsPlayer->getHitBox().topLeft();
         itsPlayer->update();
 
-        // --- A. DÉTECTION DE LA SALLE ACTIVE ---
+        // --- A. DETECTION OF THE ACTIVITY ROOM ---
         for (RoomModel* room : allRooms) {
             if (room->getBounds().contains(itsPlayer->getHitBox().center())) {
                 activeRoom = room;
@@ -280,7 +280,7 @@ void GameModel::updateLogic()
             }
         }
 
-        // --- B. DÉCOUVERTE D'UNE NOUVELLE SALLE ET GESTION DES NIVEAUX ---
+        // --- B. DISCOVERY OF A NEW ROOM AND SPAWN OF ENEMIES ---
         if (activeRoom != nullptr) {
             RoomType type = activeRoom->getType();
 
@@ -317,13 +317,13 @@ void GameModel::updateLogic()
                 }
             }
         }
-        // --- C. GESTION DES MURS ---
+
+        // --- C. WALL MANAGEMENT ---
         bool collision = false;
-        bool bossAccess = areAllCombatRoomsCleared(); // A-t-on le droit d'aller au Boss ?
+        bool bossAccess = areAllCombatRoomsCleared();
 
         QPainterPath mapBounds;
         for (RoomModel* room : allRooms) {
-            // Si c'est le boss et qu'on n'a pas accès, on ne dessine pas son sol (ça devient un mur)
             if (room->getType() == RoomType::Boss && !bossAccess) {
                 continue;
             }
@@ -343,7 +343,7 @@ void GameModel::updateLogic()
             }
         }
 
-        // --- D. COLLISIONS CAISSES ---
+        // --- D. COLLISIONS CARRIERS ---
         for (RoomModel* room : allRooms) {
             for (ObstacleModel* obs : room->getItsObstacles()) {
                 QRectF globalObsRect = obs->getHitBox();
@@ -355,7 +355,7 @@ void GameModel::updateLogic()
             }
         }
 
-        // E. APPLICATION DE LA PHYSIQUE
+        // E. APPLICATION OF PHYSICS
         if (collision) {
             itsPlayer->move(oldPos);
         }
@@ -374,14 +374,14 @@ void GameModel::cheatKillEnemies()
     }
     if (!activeRoom) return;
 
-    // Tue les lanciers
+    // Kill the lancers
     for (int i = itsEnemies.size() - 1; i >= 0; --i) {
         if (activeRoom->getBounds().intersects(itsEnemies[i]->getHitBox())) {
             itsEnemies[i]->takeDamage(999999);
         }
     }
 
-    // Tue le boss
+    // Kill the boss
     if (itsBoss != nullptr && activeRoom->getBounds().intersects(itsBoss->getHitBox())) {
         itsBoss->takeDamage(9999999);
     }
@@ -462,7 +462,7 @@ bool GameModel::areAllCombatRoomsCleared() const
 {
     for (RoomModel* room : allRooms) {
         if (room->getType() == RoomType::Combat) {
-            // Si une salle de combat n'a pas encore été visitée OU est encore verrouillée (combat en cours)
+            //If a combat room has not yet been visited OR is still locked (combat in progress)
             if (!room->getIsVisited() || room->getIsLocked()) {
                 return false;
             }
