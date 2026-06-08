@@ -1,5 +1,6 @@
 #include "gamemodel.h"
 #include "blacksmithmodel.h"
+#include "assassinmodel.h"
 #include "lancermodel.h"
 #include "lordmodel.h"
 #include "config.h"
@@ -13,6 +14,7 @@ BossModel *GameModel::getItsBoss() const
 
 GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
 {
+    currentLevel = 1;
     resetGame(HeroType::None);
     itsBoss = nullptr;
     activeRoom = nullptr;
@@ -93,6 +95,12 @@ void GameModel::resetGame(HeroType hero)
         connect(newPlayer, &BlacksmithModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
         break;
         }
+    case HeroType::Assassin: {
+        AssassinModel * newPlayer = new AssassinModel();
+        itsPlayer = newPlayer;
+        connect(newPlayer, &AssassinModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
+        break;
+    }
     default:
         itsPlayer = nullptr;
         break;
@@ -103,11 +111,112 @@ void GameModel::resetGame(HeroType hero)
     }
 
     itsScore = 0;
+    currentLevel = 1;
+    loadLevel(currentLevel);
 }
 
 const QList<RoomModel*>& GameModel::getAllRooms() const { return allRooms; }
 const QList<EnemyModel*>& GameModel::getItsEnemies() const { return itsEnemies; }
 PlayerModel *GameModel::getItsPlayer() const { return itsPlayer; }
+
+
+void GameModel::loadLevel(int levelId)
+{
+    // 1. Nettoyage complet de la carte précédente
+    qDeleteAll(allRooms);
+    allRooms.clear();
+    qDeleteAll(itsEnemies);
+    itsEnemies.clear();
+    if (itsBoss) {
+        delete itsBoss;
+        itsBoss = nullptr;
+    }
+    activeRoom = nullptr;
+
+    // 2. Génération de la carte selon le niveau demandé
+    if (levelId == 1) {
+        // --- MAQUETTE NIVEAU 1 EXACTE ---
+
+        // 1. SPAWN (Tout à gauche)
+        allRooms.append(new RoomModel(RoomType::Spawn, 0, 0, 600, 600));
+        allRooms.append(new RoomModel(RoomType::CorridorHorizontal, 600, 225, 400, 150));
+
+        // 2. COMBAT 1 (En haut à gauche)
+        allRooms.append(new RoomModel(RoomType::Combat, 1000, -25, 1100, 650));
+
+        // Couloir qui descend vers la salle violette
+        allRooms.append(new RoomModel(RoomType::CorridorVertical, 1475, 625, 150, 400));
+
+        // 3. COMBAT 2 (Le carrefour central, encadré en violet sur ta maquette)
+        allRooms.append(new RoomModel(RoomType::Combat, 1000, 1025, 1100, 650));
+
+        // 4. LOOT (Branche du bas)
+        allRooms.append(new RoomModel(RoomType::CorridorVertical, 1475, 1675, 150, 400));
+        allRooms.append(new RoomModel(RoomType::Spawn, 1250, 2075, 600, 600)); // Type Spawn utilisé pour Loot
+
+        // 5. COMBAT 3 (Branche de droite)
+        allRooms.append(new RoomModel(RoomType::CorridorHorizontal, 2100, 1275, 400, 150));
+        allRooms.append(new RoomModel(RoomType::Combat, 2500, 1025, 1100, 650));
+
+        // 6. COMBAT 4 (Branche tout à droite)
+        allRooms.append(new RoomModel(RoomType::CorridorHorizontal, 3600, 1275, 400, 150));
+        allRooms.append(new RoomModel(RoomType::Combat, 4000, 1025, 1100, 650));
+
+        // 7. BOSS (Branche du haut depuis Combat 3)
+        // Le couloir monte : position Y inversée (-400)
+        allRooms.append(new RoomModel(RoomType::CorridorVertical, 2975, 625, 150, 400));
+        allRooms.append(new RoomModel(RoomType::Boss, 2500, -25, 1100, 650));
+
+        // 8. SORTIE (Au-dessus du Boss)
+        allRooms.append(new RoomModel(RoomType::Exit, 2975, -425, 150, 400));
+    }
+    else if (levelId == 2) {
+        // --- NIVEAU 2 (Fidèle à ta nouvelle maquette) ---
+        allRooms.append(new RoomModel(RoomType::Spawn, 0, 0, 600, 600)); // Spawn à droite
+        allRooms.append(new RoomModel(RoomType::CorridorHorizontal, -400, 225, 400, 150));
+
+        allRooms.append(new RoomModel(RoomType::Combat, -1500, -25, 1100, 650)); // Centre principal
+
+        // Branche du HAUT
+        allRooms.append(new RoomModel(RoomType::CorridorVertical, -1025, -425, 150, 400));
+        allRooms.append(new RoomModel(RoomType::Combat, -1500, -1075, 1100, 650));
+        allRooms.append(new RoomModel(RoomType::CorridorHorizontal, -400, -825, 400, 150));
+        allRooms.append(new RoomModel(RoomType::Combat, 0, -1075, 1100, 650));
+        allRooms.append(new RoomModel(RoomType::CorridorHorizontal, -1900, -825, 400, 150));
+        allRooms.append(new RoomModel(RoomType::Combat, -3000, -1075, 1100, 650));
+
+        // Branche GAUCHE (Boss de fin de jeu)
+        allRooms.append(new RoomModel(RoomType::CorridorHorizontal, -1900, 225, 400, 150));
+        allRooms.append(new RoomModel(RoomType::Boss, -3000, -25, 1100, 650));
+
+        // LA PIÈCE "SORTIE" DE TA MAQUETTE SOUS LE BOSS DU LVL 2
+        allRooms.append(new RoomModel(RoomType::Exit, -2525, 625, 150, 400));
+
+        // Branche du BAS
+        allRooms.append(new RoomModel(RoomType::CorridorVertical, -1025, 625, 150, 400));
+        allRooms.append(new RoomModel(RoomType::Combat, -1500, 1025, 1100, 650));
+        allRooms.append(new RoomModel(RoomType::CorridorHorizontal, -400, 1275, 400, 150));
+        allRooms.append(new RoomModel(RoomType::Spawn, 0, 1075, 600, 600)); // Zone Loot droite
+
+        allRooms.append(new RoomModel(RoomType::CorridorVertical, -1025, 1675, 150, 400));
+        allRooms.append(new RoomModel(RoomType::Combat, -1500, 2075, 1100, 650));
+        allRooms.append(new RoomModel(RoomType::CorridorHorizontal, -1900, 2325, 400, 150));
+        allRooms.append(new RoomModel(RoomType::Spawn, -2500, 2100, 600, 600)); // Zone Loot gauche
+        allRooms.append(new RoomModel(RoomType::CorridorHorizontal, -2900, 2325, 400, 150));
+        allRooms.append(new RoomModel(RoomType::Combat, -4000, 2075, 1100, 650));
+    }
+
+    // 3. Repositionner le personnage au centre de la zone de Spawn actuelle
+    if (itsPlayer != nullptr) {
+        for (RoomModel* room : allRooms) {
+            if (room->getType() == RoomType::Spawn) {
+                itsPlayer->move(room->getBounds().center());
+                break;
+            }
+        }
+    }
+}
+
 
 void GameModel::spawnEnemies(bool isBoss)
 {
@@ -174,8 +283,28 @@ void GameModel::updateLogic()
         // --- B. DISCOVERY OF A NEW ROOM AND SPAWN OF ENEMIES ---
         if (activeRoom != nullptr) {
             RoomType type = activeRoom->getType();
+
+            // =========================================================
+            // GESTION DU COULOIR DE SORTIE (TP Niveau 2 OU Victoire)
+            // =========================================================
+            if (type == RoomType::Exit) {
+                if (currentLevel == 1) {
+                    // On passe au niveau 2
+                    currentLevel = 2;
+                    loadLevel(currentLevel); // Charge la nouvelle carte et TP le joueur au spawn du Lvl 2
+                    return; // On quitte la fonction pour ce tick, la nouvelle map est chargée !
+                }
+                else if (currentLevel == 2) {
+                    // Fin du niveau 2 : Le joueur prend la sortie, il a GAGNÉ le jeu !
+                    emit gameWon(itsScore); // Déclenche ton écran de victoire final
+                    return;
+                }
+            }
+
+            // --- Logique classique de combat si la pièce n'a pas encore été visitée ---
             if (!activeRoom->getIsVisited() && activeRoom->getBounds().contains(itsPlayer->getHitBox())){
                 activeRoom->setIsVisited();
+
                 if (type == RoomType::Combat) {
                     spawnEnemies(false);
                     itsScore += 100;
@@ -287,6 +416,9 @@ void GameModel::onEnemyDeath(EnemyModel * model)
 void GameModel::onBossDeath(BossModel * model)
 {
     QObject * qobjBoss = dynamic_cast<QObject*>(model);
+    if (activeRoom != nullptr && activeRoom->getType() == RoomType::Boss) {
+        activeRoom->unlockDoors();
+    }
     if (qobjBoss) disconnect(qobjBoss);
 
     itsBoss = nullptr;
@@ -295,7 +427,8 @@ void GameModel::onBossDeath(BossModel * model)
     // V2
     // currentRoom->unlockDoors();
 
-    emit gameWon(itsScore);
+
+    //emit gameWon(itsScore);
 
     delete model;
 }
