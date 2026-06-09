@@ -3,34 +3,47 @@
 
 AssassinModel::AssassinModel()
     : PlayerModel(18, 18, 12, 7, 0, HeroType::Assassin)
-{}
+{
+    smokeBombTimer = new QTimer(this);
+    smokeBombTimer->setSingleShot(true);
+    isInvisible = false;
+    connect(smokeBombTimer, &QTimer::timeout, this, &AssassinModel::resetInvisibility);
+}
 
 void AssassinModel::attack1() {
     if (canAttack1) {
         int attackDirectionX = 0, attackDirectionY = 0;
 
+        // Détermination de la direction
         switch(itsDirection) {
-        case Left : attackDirectionX = -5; break;
-        case Right: attackDirectionX = 5; break;
-        case Up: attackDirectionY = -5; break;
-        case Down: attackDirectionY = 5; break;
-        case LeftDown: attackDirectionX = -5; attackDirectionY = 5; break;
-        case LeftUp: attackDirectionX = -5; attackDirectionY = -5; break;
-        case RightDown: attackDirectionX = 5; attackDirectionY = 5; break;
-        case RightUp: attackDirectionX = 5; attackDirectionY = -5; break;
+        case Left :     attackDirectionX = -1; break;
+        case Right:     attackDirectionX = 1;  break;
+        case Up:        attackDirectionY = -1; break;
+        case Down:      attackDirectionY = 1;  break;
+        case LeftDown:  attackDirectionX = -1; attackDirectionY = 1;  break;
+        case LeftUp:    attackDirectionX = -1; attackDirectionY = -1; break;
+        case RightDown: attackDirectionX = 1;  attackDirectionY = 1;  break;
+        case RightUp:   attackDirectionX = 1;  attackDirectionY = -1; break;
         default: break;
         }
 
         QLineF aimLine(QPointF(0,0), QPointF(attackDirectionX, attackDirectionY));
-        qreal angle = aimLine.angle();
 
-        QRect baseAttackRect(0, -AssassinAttack1HitboxHeight / 2, AssassinAttack1HitboxWidth, AssassinAttack1HitboxHeight);
-        QTransform transform;
-        transform.translate(itsHitBox.center().x(), itsHitBox.center().y());
-        transform.rotate(-angle);
+        // Hitbox du couteau
+        QRectF knifeHitbox(0, 0, 40, 20);
+        knifeHitbox.moveCenter(itsHitBox.center());
 
-        QPolygon attackHitbox = transform.mapToPolygon(baseAttackRect);
-        emit attackPlayer(attackHitbox, itsAttack1Damage);
+        // Création du projectile Couteau
+        ProjectileModel* knife = new ProjectileModel(
+            knifeHitbox,
+            aimLine,
+            8, // Vitesse de 8 px/tick comme sur ton image
+            itsAttack1Damage, // Dégâts : 7 hp
+            PLAYER,
+            KNIFE
+            );
+
+        emit fireProjectile(knife);
 
         canAttack1 = false;
         itsCooldown1->start(AssassinAttack1Cooldown * 1000);
@@ -38,5 +51,20 @@ void AssassinModel::attack1() {
 }
 
 void AssassinModel::attack2() {
+    if (canAttack2) {
+        isInvisible = true; // Activer l'effet
+        smokeBombTimer->start(5000); // 5 secondes
 
+        canAttack2 = false;
+        itsCooldown2->start(10000); // Cooldown de la compétence (ajustable)
+    }
+}
+
+bool AssassinModel::getIsInvisible() const
+{
+    return isInvisible;
+}
+
+void AssassinModel::resetInvisibility() {
+    isInvisible = false;
 }

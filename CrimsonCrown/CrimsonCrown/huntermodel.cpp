@@ -35,7 +35,7 @@ void HunterModel::attack1()
         ProjectileModel* arrow = new ProjectileModel(
             arrowHitbox,
             aimLine,
-            12, // Vitesse de la flèche (ajustable)
+            10, // Vitesse de la flèche (ajustable)
             itsAttack1Damage,
             PLAYER,
             ARROW

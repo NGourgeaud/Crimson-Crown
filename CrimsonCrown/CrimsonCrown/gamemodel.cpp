@@ -108,6 +108,7 @@ void GameModel::resetGame(HeroType hero)
         AssassinModel * newPlayer = new AssassinModel();
         itsPlayer = newPlayer;
         connect(newPlayer, &AssassinModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
+        connect(newPlayer, &AssassinModel::fireProjectile, this, &GameModel::onNewProjectile);
         break;
     };
     case HeroType::Hunter: {
@@ -324,12 +325,44 @@ void GameModel::updateLogic()
                 break;
             }
 
+        bool isPlayerInvisible = false;
+        AssassinModel* assassin = dynamic_cast<AssassinModel*>(itsPlayer);
+        if (assassin && assassin->getIsInvisible()) {
+            isPlayerInvisible = true;
         }
 
-        // B. Boss update (if it exists on the map)
-        if (itsBoss != nullptr) {
-            LordModel* lord = dynamic_cast<LordModel*>(itsBoss);
-            if (lord) lord->update(itsPlayer->getHitBox().center());
+        // --- NEW LOGIC: Only update enemies if the player is VISIBLE ---
+        if (!isPlayerInvisible) {
+
+            // A. Lancers and Knights Update
+            for (int i = itsEnemies.size() - 1; i >= 0; --i) {
+                EnemyModel* enemy = itsEnemies.at(i);
+
+                switch (enemy->getitsEnemyType()) {
+                case LANCER:
+                {
+                    LancerModel* lancer = dynamic_cast<LancerModel*>(enemy);
+                    if (lancer) lancer->update(itsPlayer->getHitBox().center());
+                    break;
+                }
+                case KNIGHT:
+                {
+                    KnightModel* knight = dynamic_cast<KnightModel*>(enemy);
+                    if (knight) knight->update(itsPlayer->getHitBox().center());
+                    break;
+                }
+                default:
+                    break;
+                }
+            }
+
+            // B. Boss update
+            if (itsBoss != nullptr) {
+                LordModel* lord = dynamic_cast<LordModel*>(itsBoss);
+                if (lord) {
+                    lord->update(itsPlayer->getHitBox().center());
+                }
+            }
         }
     }
 

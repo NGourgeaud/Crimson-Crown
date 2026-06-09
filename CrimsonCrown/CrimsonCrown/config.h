@@ -20,7 +20,6 @@ const QString LABEL_SETTINGS = "REGLAGES";
 const QString LABEL_QUIT = "QUITTER";
 
 const QString LABEL_CHARSELECT_TITLE = "SELECTIONNEZ UN PERSONNAGE";
-const QString LABEL_CONTINUE = "CONTINUER";
 const QString LABEL_BACK = "RETOUR AU MENU";
 
 const int playerWidth = 60;
@@ -34,10 +33,10 @@ const int BlacksmithAttack2HitboxRadius = 80;
 const int BlacksmithAttack1Cooldown = 1;
 const int BlacksmithAttack2Cooldown = 5;
 
-const int AssassinAttack1HitboxWidth = 40;
-const int AssassinAttack1HitboxHeight = 20;
-const float AssassinAttack1Cooldown = 0.3;
-const float AssassinAttack2Cooldown = 3.0;
+const int AssassinAttack1HitboxWidth = 80;
+const int AssassinAttack1HitboxHeight = 30;
+const float AssassinAttack1Cooldown = 0.6;
+const float AssassinAttack2Cooldown = 7.0;
 
 // Hunter Stats
 const int HunterAttack1HitboxWidth = 40;
@@ -141,7 +140,8 @@ enum Team{
 };
 
 enum ProjectileType {
-    ARROW
+    ARROW,
+    KNIFE
 };
 
 // --- STATISTIQUES ET DESCRIPTION DU ASSASSIN (HTML STYLISÉ) ---
@@ -179,12 +179,12 @@ const QString STATS_HUNTER =
 
 
 namespace keyBind {
-    const Qt::Key keyUp = Qt::Key_Z;
-    const Qt::Key keyDown = Qt::Key_S;
-    const Qt::Key keyLeft = Qt::Key_Q;
-    const Qt::Key keyRight = Qt::Key_D;
-    const Qt::Key keyAttaque1 = Qt::Key_K;
-    const Qt::Key keyAttaque2 = Qt::Key_L;
+    inline Qt::Key keyUp = Qt::Key_Z;
+    inline Qt::Key keyDown = Qt::Key_S;
+    inline Qt::Key keyLeft = Qt::Key_Q;
+    inline Qt::Key keyRight = Qt::Key_D;
+    inline Qt::Key keyAttaque1 = Qt::Key_K;
+    inline Qt::Key keyAttaque2 = Qt::Key_L;
 }
 
 const float CAMERA_LERP_SPEED = 0.07f;  // Smoothing speed (0.05 = very smooth, 0.2 = very fast)

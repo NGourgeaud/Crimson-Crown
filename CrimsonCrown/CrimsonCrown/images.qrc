@@ -14,5 +14,6 @@
         <file>chasseur.png</file>
         <file>arrow.png</file>
         <file>lancier.png</file>
+        <file>knife.png</file>
     </qresource>
 </RCC>

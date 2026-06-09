@@ -30,7 +30,7 @@ CharSelectView::CharSelectView(QWidget *parent)
     itsLeftArrow->setGeometry(40, 370, 60, 60);
     connect(itsLeftArrow, &QPushButton::clicked, this, [this]() {
         currentHeroIndex--;
-        if (currentHeroIndex < 0) currentHeroIndex = 1;
+        if (currentHeroIndex < 0) currentHeroIndex = 2;
         updateCarousel();
     });
 
@@ -39,7 +39,7 @@ CharSelectView::CharSelectView(QWidget *parent)
     itsRightArrow->setGeometry(1100, 370, 60, 60);
     connect(itsRightArrow, &QPushButton::clicked, this, [this]() {
         currentHeroIndex++;
-        if (currentHeroIndex > 1) currentHeroIndex = 0;
+        if (currentHeroIndex > 2) currentHeroIndex = 0;
         updateCarousel();
     });
 
@@ -50,8 +50,10 @@ CharSelectView::CharSelectView(QWidget *parent)
     connect(itsHeroCardButton, &QPushButton::clicked, this, [this]() {
         if (currentHeroIndex == 0) {
             emit selectCharacterRequested(HeroType::Blacksmith);
-        } else {
+        } else if (currentHeroIndex == 1) {
             emit selectCharacterRequested(HeroType::Hunter);
+        } else {
+            emit selectCharacterRequested(HeroType::Assassin);
         }
     });
 
@@ -86,11 +88,11 @@ void CharSelectView::updateCarousel() {
         itsHeroCardButton->setIcon(QIcon(":/chasseur.png"));
         itsHeroCardButton->setIconSize(QSize(160, 200));
         itsHeroStatsLabel->setText(STATS_HUNTER);
-    } /*else {
-        itsHeroCardButton->setIcon(QIcon(":/assasin.png"));
+    } else {
+        itsHeroCardButton->setIcon(QIcon(":/assassin.png"));
         itsHeroCardButton->setIconSize(QSize(160, 200));
         itsHeroStatsLabel->setText(STATS_ASSASSIN);
-    }*/
+    }
 }
 
 void CharSelectView::paintEvent(QPaintEvent *event) {
