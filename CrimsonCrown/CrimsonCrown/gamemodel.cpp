@@ -244,8 +244,8 @@ void GameModel::spawnEnemies(bool isBoss)
     if (!isBoss){
         std::random_device rd;
         std::default_random_engine eng(rd());
-        std::uniform_int_distribution<int> RoomX(roomBoundaries.topLeft().rx(),roomBoundaries.topRight().rx());
-        std::uniform_int_distribution<int> RoomY(roomBoundaries.topLeft().ry(),roomBoundaries.bottomLeft().ry());
+        std::uniform_int_distribution<int> RoomX(roomBoundaries.topLeft().rx()+60,roomBoundaries.topRight().rx()-60);
+        std::uniform_int_distribution<int> RoomY(roomBoundaries.topLeft().ry()+60,roomBoundaries.bottomLeft().ry()-60);
         std::uniform_int_distribution<int> Type(LANCER,ARCHER);
 
         if (currentLevel == 2){
