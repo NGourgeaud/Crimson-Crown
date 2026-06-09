@@ -3,13 +3,21 @@
 #include <QColor>
 #include <QPen>
 
-RoomView::RoomView() {}
+RoomView::RoomView()
+{
+    spawnTexture = QPixmap(":/sol-spawn.png");
+
+}
 
 void RoomView::draw(QPainter &painter, const RoomModel *roomModel, ObstacleView &obstacleView)
 {
     if (!roomModel) return;
 
     RoomType type = roomModel->getType();
+
+    if  (type == Spawn){
+        painter.drawPixmap(0, 0, roomModel->getWidth(), roomModel->getHeight(), spawnTexture);
+    }
 
     if (type == Boss) {
         painter.setBrush(QBrush(QColor(80, 20, 20)));

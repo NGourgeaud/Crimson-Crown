@@ -34,6 +34,11 @@ const int BlacksmithAttack2HitboxRadius = 80;
 const int BlacksmithAttack1Cooldown = 1;
 const int BlacksmithAttack2Cooldown = 5;
 
+const int AssassinAttack1HitboxWidth = 40;
+const int AssassinAttack1HitboxHeight = 20;
+const float AssassinAttack1Cooldown = 0.3;
+const float AssassinAttack2Cooldown = 3.0;
+
 // Hunter Stats
 const int HunterAttack1HitboxWidth = 400;
 const int HunterAttack1HitboxHeight = 5;
@@ -42,6 +47,7 @@ const int HunterAttack2HitboxRadius = 200;
 
 const int HunterAttack1Cooldown = 1;
 const int HunterAttack2Cooldown = 5;
+>>>>>>> CrimsonCrown/CrimsonCrown/config.h
 
 const int playerRegen = 20;
 const float playerIframe = 0.5;
@@ -86,6 +92,7 @@ const int LordAttack2HitBoxHeight = 30;
 enum HeroType {
     None,
     Blacksmith,
+    Assassin,
     Hunter
 };
 
@@ -107,6 +114,18 @@ enum Team{
 enum ProjectileType {
     ARROW
 };
+
+// --- STATISTIQUES ET DESCRIPTION DU ASSASSIN (HTML STYLISÉ) ---
+const QString STATS_ASSASSIN =
+    "<p style='font-family: Alagard; font-size: 24px; color: #8A2BE2; margin: 0 0 4px 0;'><b>L'ASSASSIN</b></p>"
+    "<p style='font-family: Alagard; font-size: 14px; color: #DDDDDD; margin: 0 0 12px 0;'>"
+    "Extrêmement rapide et mortel. Il esquive les combats longs mais ne pardonne pas.</p>"
+    "<p style='font-family: Alagard; font-size: 16px; color: white; line-height: 150%; margin: 0;'>"
+    "<span style='color: #BBBBBB;'>Vie :</span> <span style='color: #FF3333;'><b>18 HP</b></span><br>"
+    "<span style='color: #BBBBBB;'>Vitesse :</span> <span style='color: #33FF33;'><b>12 px/tick</b></span><br>"
+    "<span style='color: #BBBBBB;'>Dégâts :</span> <span style='color: #3333FF;'><b>7 HP</b></span>"
+    "</p>";
+
 
 // --- STATISTICS AND DESCRIPTION OF THE BLACKSMITH (STYLISTED HTML) ---
 const QString STATS_BLACKSMITH =

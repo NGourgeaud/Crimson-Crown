@@ -42,6 +42,7 @@ private:
     QPointF currentCameraCenter;
     bool isCameraInitialized;
 
+
     QFrame *pauseMenu;
 
 signals:

@@ -20,6 +20,7 @@ private:
     int itsScore;
     PlayerModel * itsPlayer;
     RoomModel * activeRoom;
+    int currentLevel;
 
 public:
     GameModel();
@@ -42,6 +43,7 @@ public:
 
     BossModel * getItsBoss() const;
 
+    void loadLevel(int levelId);
     QList<ProjectileModel *> getItsProjeciles() const;
 
 signals:

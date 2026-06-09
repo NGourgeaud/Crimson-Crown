@@ -5,7 +5,7 @@
 #include <QRectF>
 #include "obstaclemodel.h"
 
-enum RoomType { Spawn, CorridorHorizontal, CorridorVertical, Combat, Boss };
+enum RoomType { Spawn, CorridorHorizontal, CorridorVertical, Combat, Boss, Exit };
 
 class RoomModel
 {
