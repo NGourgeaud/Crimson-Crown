@@ -8,10 +8,9 @@ class EnemyView
 {
 private:
     QPixmap itsTexTure;
-    const EnemyModel * itsModel;
 public:
     EnemyView();
-    void draw(QPainter * painter);
+    void draw(QPainter * painter, EnemyModel * model);
     void setItsTexture(EnemyType type);
 };
 

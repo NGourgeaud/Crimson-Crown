@@ -10,11 +10,15 @@ GameView::GameView(GameModel *model, QWidget *parent)
 
     itsRoomView = new RoomView();
     itsObstacleView = new ObstacleView();
-    itsBossView = new BossView(LORD);
+    itsBossView = new BossView;
+    itsProjectileView = new ProjectileView;
+    itsEnemyView = new EnemyView;
 
     if (itsModel->getItsPlayer() != nullptr) {
         itsPlayerView = new PlayerView(nullptr, itsModel->getItsPlayer());
-        itsPlayerView->setItsTexture(HeroType::Blacksmith);
+
+        itsPlayerView->setItsTexture(itsModel->getItsPlayer()->getItsName());
+
     } else {
         itsPlayerView = nullptr;
     }
@@ -161,15 +165,20 @@ void GameView::paintEvent(QPaintEvent *event)
         }
     }
 
-    // 2. DRAW ENEMIES (Temporary red squares)
-    painter.setBrush(QColor(220, 20, 60)); // "Monster" red
-    painter.setPen(QPen(Qt::black, 3));
-    for (EnemyModel* enemy : itsModel->getItsEnemies()) {
-        painter.drawRect(enemy->getHitBox());
+    // 2. DRAW ENEMIES
+    if (!itsModel->getItsEnemies().empty()){
+        for (EnemyModel* enemy : itsModel->getItsEnemies()) {
+            itsEnemyView->setItsTexture(enemy->getitsEnemyType());
+            itsEnemyView->draw(&painter, enemy);
+        }
     }
-    const BossModel * boss = itsModel->getItsBoss();
-    if (boss){
-        itsBossView->draw(&painter, boss);
+
+    if(itsModel->getItsBoss()){
+        const BossModel * theBoss = itsModel->getItsBoss();
+        if (theBoss){
+            itsBossView->setItsTexture(theBoss->getItsType());
+            itsBossView->draw(&painter, theBoss);
+        }
     }
 
     // 3. DRAW PLAYER
@@ -185,6 +194,15 @@ void GameView::paintEvent(QPaintEvent *event)
             painter.drawPolygon(area);
         }
         itsAttackAreas.clear();
+    }
+
+    // draw projectile
+    if (!itsModel->getItsProjeciles().empty()){
+        for (ProjectileModel * projectile : itsModel->getItsProjeciles()){
+
+            itsProjectileView->setItsTexture(projectile->getItsType());
+            itsProjectileView->draw(&painter, projectile);
+        }
     }
 
     painter.restore(); // End of camera-managed area

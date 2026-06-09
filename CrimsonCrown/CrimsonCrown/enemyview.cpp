@@ -8,16 +8,16 @@ EnemyView::EnemyView() {}
 /// \brief EnemyView::draw
 /// \param painter
 ///
-void EnemyView::draw(QPainter * painter)
+void EnemyView::draw(QPainter * painter, EnemyModel * model)
 {
     if (itsTexTure.isNull()) {
-        painter->fillRect(itsModel->getHitBox(), QColor(50, 100, 220));
+        painter->fillRect(model->getHitBox(), QColor(50, 100, 220));
         painter->setPen(Qt::red);
-        painter->drawRect(itsModel->getHitBox());
+        painter->drawRect(model->getHitBox());
         return;
     }
 
-    painter->drawPixmap(itsModel->getHitBox().topLeft(), itsTexTure);
+    painter->drawPixmap(model->getHitBox().toRect(), itsTexTure);
 }
 
 ///
@@ -29,6 +29,9 @@ void EnemyView::setItsTexture(EnemyType type)
     switch (type) {
     case LANCER:
         itsTexTure = QPixmap(":/lancier.png");
+        break;
+    case KNIGHT:
+        itsTexTure = QPixmap(":/chevalier.png");
         break;
     default:
         break;

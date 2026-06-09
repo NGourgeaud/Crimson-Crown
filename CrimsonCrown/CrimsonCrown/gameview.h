@@ -9,7 +9,9 @@
 #include <QList>
 #include <QFrame>
 #include "bossview.h"
+#include "enemyview.h"
 #include "gamemodel.h"
+#include "projectileview.h"
 #include "roomview.h"
 #include "obstacleview.h"
 #include "playerview.h"
@@ -33,10 +35,13 @@ private:
     ObstacleView *itsObstacleView;
     PlayerView *itsPlayerView;
     BossView * itsBossView;
+    EnemyView * itsEnemyView;
+    ProjectileView * itsProjectileView;
     QList<QPolygon> itsAttackAreas;
 
     QPointF currentCameraCenter;
     bool isCameraInitialized;
+
 
     QFrame *pauseMenu;
 

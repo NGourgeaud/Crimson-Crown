@@ -1,6 +1,7 @@
 #ifndef BOSSMODEL_H
 #define BOSSMODEL_H
 
+#include "config.h"
 #include "entitymodel.h"
 #include "qtimer.h"
 
@@ -13,6 +14,7 @@ protected:
     int itsAttack2Damage;
     QTimer * IframeTimer;
     bool isInIframe;
+    BossType itsType;
 public:
     BossModel();
     virtual ~BossModel();
@@ -20,6 +22,7 @@ public:
     virtual void attack1(QPointF heroPos) = 0;
     virtual void attack2(QPointF heroPos) = 0;
     virtual bool handleAI(QPointF heroPos) = 0;
+    BossType getItsType() const;
 };
 
 #endif // BOSSMODEL_H
