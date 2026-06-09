@@ -39,13 +39,15 @@ const float AssassinAttack1Cooldown = 0.6;
 const float AssassinAttack2Cooldown = 7.0;
 
 // Hunter Stats
-const int HunterAttack1HitboxWidth = 400;
+const int HunterAttack1HitboxWidth = 40;
 const int HunterAttack1HitboxHeight = 5;
 
 const int HunterAttack2HitboxRadius = 200;
 
 const int HunterAttack1Cooldown = 1;
 const int HunterAttack2Cooldown = 5;
+const float HunterAttack2Duration = 5;
+const float HunterAttack2TickRate = 1;
 
 const int playerRegen = 20;
 const float playerIframe = 0.5;
@@ -66,6 +68,19 @@ const int LancerHeight = 40;
 
 const int LancerAttackHitboxWidth = 50;
 const int LancerAttackHitboxHeight = 20;
+
+// Lancer Stats
+const int KnightDefaultMaxHp = 40;
+const int KnightDefaultSpeed = 1;
+const int KnightDefaultAttackDamage = 8;
+const float KnightDefaultAttackCoolDown = 1;
+const float KnightIframe = 0.2;
+
+const int KnightWidth = 40;
+const int KnightHeight = 40;
+
+const int KnightAttackHitboxWidth = 30;
+const int KnightAttackHitboxHeight = 50;
 
 // Lord Stats
 const int LordDefaultMaxHp = 150;
@@ -96,7 +111,8 @@ enum HeroType {
 
 enum EnemyType{
     NOTDEF,
-    LANCER
+    LANCER,
+    KNIGHT
 };
 
 enum BossType{

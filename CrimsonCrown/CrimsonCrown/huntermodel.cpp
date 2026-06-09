@@ -1,10 +1,14 @@
 #include "huntermodel.h"
 #include <QPainterPath>
 #include "config.h"
+#include "qdebug.h"
 
 HunterModel::HunterModel()
     :PlayerModel(25, 25, 6, 10, 5, HeroType::Hunter)
-{}
+{
+    itsAttack2Timer = new QTimer;
+    connect(itsAttack2Timer, &QTimer::timeout, this, &HunterModel::tickAttack2);
+}
 
 void HunterModel::attack1()
 {
@@ -55,9 +59,25 @@ void HunterModel::attack2()
 
         QPolygon attackHitbox = path.toFillPolygon().toPolygon();
 
-        emit attackPlayer(attackHitbox, itsAttack2Damage);
-
+        itsAttack2Area = attackHitbox;
+        emit attackPlayer(itsAttack2Area, itsAttack2Damage);
+        itsAttack2Time = 0;
+        itsAttack2Timer->start(HunterAttack2TickRate*1000);
         canAttack2 = false;
-        itsCooldown2->start(HunterAttack2Cooldown * 1000);
+
     }
+}
+
+void HunterModel::tickAttack2()
+{
+    if (itsAttack2Time >= HunterAttack2Duration){
+        itsCooldown2->start(HunterAttack2Cooldown * 1000);
+        itsAttack2Timer->stop();
+        return;
+    }
+    emit attackPlayer(itsAttack2Area, itsAttack2Damage);
+    itsAttack2Time += HunterAttack2TickRate;
+    qDebug() << itsAttack2Time;
+    qDebug() << HunterAttack2Duration;
+
 }

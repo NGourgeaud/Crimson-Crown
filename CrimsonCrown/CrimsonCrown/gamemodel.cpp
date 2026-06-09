@@ -1,6 +1,7 @@
 #include "gamemodel.h"
 #include "blacksmithmodel.h"
 #include "assassinmodel.h"
+#include "knightmodel.h"
 #include "lancermodel.h"
 #include "lordmodel.h"
 #include "config.h"
@@ -242,15 +243,35 @@ void GameModel::spawnEnemies(bool isBoss)
         std::uniform_int_distribution<int> EnemiesNb(4,6);
         std::uniform_int_distribution<int> RoomX(roomBoundaries.topLeft().rx(),roomBoundaries.topRight().rx());
         std::uniform_int_distribution<int> RoomY(roomBoundaries.topLeft().ry(),roomBoundaries.bottomLeft().ry());
+        std::uniform_int_distribution<int> Type(LANCER,KNIGHT);
 
         int nbEnemies = EnemiesNb(eng);
         for (int i = 0; i < nbEnemies; i++){
-            LancerModel * newEnnemy = new LancerModel(LancerDefaultMaxHp, LancerDefaultSpeed, RoomX(eng), RoomY(eng), LancerDefaultAttackCoolDown, LancerDefaultAttackDamage);
-            itsEnemies.append(newEnnemy);
+            switch (Type(eng)) {
+            case LANCER:
+            {
+                LancerModel * newEnnemy = new LancerModel(LancerDefaultMaxHp, LancerDefaultSpeed, RoomX(eng), RoomY(eng), LancerDefaultAttackCoolDown, LancerDefaultAttackDamage);
+                itsEnemies.append(newEnnemy);
 
-            // Using a lambda to secure parameter passing
-            connect(newEnnemy, &LancerModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
-            connect(newEnnemy, &LancerModel::attacking, this, [this](QPolygon hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+                // Using a lambda to secure parameter passing
+                connect(newEnnemy, &LancerModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
+                connect(newEnnemy, &LancerModel::attacking, this, [this](QPolygon hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+                break;
+            }
+            case KNIGHT:
+            {
+                KnightModel * newEnnemy = new KnightModel(KnightDefaultMaxHp, KnightDefaultSpeed, RoomX(eng), RoomY(eng), KnightDefaultAttackCoolDown, KnightDefaultAttackDamage);
+                itsEnemies.append(newEnnemy);
+
+                // Using a lambda to secure parameter passing
+                connect(newEnnemy, &KnightModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
+                connect(newEnnemy, &KnightModel::attacking, this, [this](QPolygon hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+                break;
+            }
+            default:
+                break;
+            }
+
         }
     }
     else{
@@ -278,11 +299,22 @@ void GameModel::updateLogic()
         // A. Lancers Update
         for (int i = itsEnemies.size() - 1; i >= 0; --i) {
             EnemyModel* enemy = itsEnemies.at(i);
-            LancerModel* lancer = dynamic_cast<LancerModel*>(enemy);
-            if (lancer) {
-                if (!isPlayerInvisible) {
-                    lancer->update(itsPlayer->getHitBox().center());
-                }
+
+            switch (enemy->getitsEnemyType()) {
+            case LANCER:
+            {
+                LancerModel* lancer = dynamic_cast<LancerModel*>(enemy);
+                lancer->update(itsPlayer->getHitBox().center());
+                break;
+            }
+            case KNIGHT:
+            {
+                KnightModel* knight = dynamic_cast<KnightModel*>(enemy);
+                knight->update(itsPlayer->getHitBox().center());
+                break;
+            }
+            default:
+                break;
             }
         }
 
