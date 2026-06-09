@@ -13,7 +13,7 @@ LancerModel::LancerModel(int maxHp, int speed, int x, int y, float attackCooldow
     itsHitBox = QRectF(x,y,LancerWidth, LancerHeight);
     itsAttackCooldown = attackCooldown;
     itsAttackDamage = attackDamage;
-    canAttack = true;
+    canAttack = false;
     itsCoolDownTimer = new QTimer();
     IframeTimer = new QTimer();
     isInIframe = false;
@@ -21,6 +21,7 @@ LancerModel::LancerModel(int maxHp, int speed, int x, int y, float attackCooldow
 
     connect(itsCoolDownTimer, &QTimer::timeout, this, &LancerModel::resetAttackCooldown);
     connect(IframeTimer, &QTimer::timeout, this, &LancerModel::resetIframe);
+    itsCoolDownTimer->start(1500);
 }
 
 ///

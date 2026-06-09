@@ -21,6 +21,9 @@ private:
     PlayerModel * itsPlayer;
     RoomModel * activeRoom;
     int currentLevel;
+    int minEnemy;
+    int maxEnemy;
+    float statIncreass;
 
 public:
     GameModel();
@@ -38,6 +41,7 @@ public:
     void cheatKillEnemies();
 
     int getItsScore() const;
+    int getCurrentLevel() const;
 
     bool areAllCombatRoomsCleared() const;
 
