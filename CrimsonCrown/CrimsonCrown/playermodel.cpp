@@ -5,6 +5,7 @@ HeroType PlayerModel::getItsName() const
     return itsName;
 }
 
+
 PlayerModel::PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, int aAttack2Damage, HeroType aName)
     :itsDirection(Right), itsHitBox(QRectF(0, 0, playerWidth, playerHeight))
 {
@@ -171,6 +172,26 @@ void PlayerModel::regen()
     else {
         itsHP += playerRegen;
     }
+}
+
+bool PlayerModel::getCanAttack1() const
+{
+    return canAttack1;
+}
+
+bool PlayerModel::getCanAttack2() const
+{
+    return canAttack2;
+}
+
+int PlayerModel::getCooldown1Remaining() const
+{
+    return itsCooldown1->isActive() ? itsCooldown1->remainingTime() : 0;
+}
+
+int PlayerModel::getCooldown2Remaining() const
+{
+    return itsCooldown2->isActive() ? itsCooldown2->remainingTime() : 0;
 }
 
 

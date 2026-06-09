@@ -223,6 +223,15 @@ void GameView::paintEvent(QPaintEvent *event)
     int startX = (this->width() - totalWidth) / 2;
     int topY = 15;
 
+
+    // --- LEVEL ---
+    if (itsModel != nullptr) {
+        painter.setPen(Qt::white);
+        painter.setFont(QFont("Arial", 16, QFont::Bold));
+        QString levelText = "NIVEAU " + QString::number(itsModel->getCurrentLevel());
+        painter.drawText(20, 40, levelText);
+    }
+
     // --- 1. HEALTH BOX (Red) ---
     PlayerModel* player = itsModel->getItsPlayer();
     int currentHP = 0, maxHP = 40;
@@ -253,6 +262,101 @@ void GameView::paintEvent(QPaintEvent *event)
     int enemiesRemaining = itsModel->getItsEnemies().size();
 
     painter.drawText(20, this->height() - 45, QString("Ennemis restants : %1").arg(enemiesRemaining));
+
+    // ==========================================
+    // --- 4. COOLDOWN BAR
+    // ==========================================
+    if (player != nullptr) {
+        int c1Max = 1, c2Max = 1;
+        QString name1 = "Attaque 1", name2 = "Attaque 2";
+
+        switch(player->getItsName()) {
+        case HeroType::Assassin:
+            c1Max = static_cast<int>(AssassinAttack1Cooldown * 1000.0f);
+            c2Max = static_cast<int>(AssassinAttack2Cooldown * 1000.0f);
+            name1 = "Couteau";
+            name2 = "Fumée";
+            break;
+        case HeroType::Hunter:
+            c1Max = static_cast<int>(HunterAttack1Cooldown * 1000.0f);
+            c2Max = static_cast<int>(HunterAttack2Cooldown * 1000.0f);
+            name1 = "Flèche";
+            name2 = "Zone Piège";
+            break;
+        case HeroType::Blacksmith:
+            c1Max = static_cast<int>(BlacksmithAttack1Cooldown * 1000.0f);
+            c2Max = static_cast<int>(BlacksmithAttack2Cooldown * 1000.0f);
+            name1 = "Marteau";
+            name2 = "Fracas";
+            break;
+        default:
+            break;
+        }
+
+        int barWidth = 150;
+        int barHeight = 22;
+        int spacing = 15;
+        int marginRight = 30;
+
+        int totalWidth = (2 * barWidth) + spacing;
+        int hudX = this->width() - totalWidth - marginRight;
+
+        int hudY = this->height() - 45;
+
+        // ------------------------------------------
+        // --- MAIN ATTACK
+        // ------------------------------------------
+        QRect bar1Rect(hudX, hudY, barWidth, barHeight);
+        painter.setBrush(QColor(40, 40, 40, 200));
+        painter.setPen(QPen(Qt::white, 1));
+        painter.drawRect(bar1Rect);
+
+        double progress1 = 1.0;
+        if (!player->getCanAttack1() && c1Max > 0) {
+            double tempsRestant1 = static_cast<double>(player->getCooldown1Remaining());
+            progress1 = 1.0 - (tempsRestant1 / c1Max);
+            if (progress1 < 0.0) progress1 = 0.0;
+            if (progress1 > 1.0) progress1 = 1.0;
+        }
+
+        if (progress1 > 0) {
+            painter.setBrush(QColor(46, 204, 113)); // Green
+            painter.setPen(Qt::NoPen);
+            painter.drawRect(hudX + 1, hudY + 1, static_cast<int>((barWidth - 2) * progress1), barHeight - 2);
+        }
+
+        painter.setPen(Qt::white);
+        painter.setFont(QFont("Arial", 10, QFont::Bold));
+        painter.drawText(bar1Rect, Qt::AlignCenter, name1);
+
+
+        // ------------------------------------------
+        // --- SPECIAL ATTACK
+        // ------------------------------------------
+        int bar2X = hudX + barWidth + spacing;
+
+        QRect bar2Rect(bar2X, hudY, barWidth, barHeight);
+        painter.setBrush(QColor(40, 40, 40, 200));
+        painter.setPen(QPen(Qt::white, 1));
+        painter.drawRect(bar2Rect);
+
+        double progress2 = 1.0;
+        if (!player->getCanAttack2() && c2Max > 0) {
+            double tempsRestant2 = static_cast<double>(player->getCooldown2Remaining());
+            progress2 = 1.0 - (tempsRestant2 / c2Max);
+            if (progress2 < 0.0) progress2 = 0.0;
+            if (progress2 > 1.0) progress2 = 1.0;
+        }
+
+        if (progress2 > 0) {
+            painter.setBrush(QColor(52, 152, 219)); // Blue
+            painter.setPen(Qt::NoPen);
+            painter.drawRect(bar2X + 1, hudY + 1, static_cast<int>((barWidth - 2) * progress2), barHeight - 2);
+        }
+
+        painter.setPen(Qt::white);
+        painter.drawText(bar2Rect, Qt::AlignCenter, name2);
+    }
 }
 
 void GameView::setPauseMenuVisible(bool visible)

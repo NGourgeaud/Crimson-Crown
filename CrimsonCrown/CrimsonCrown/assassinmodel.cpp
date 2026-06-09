@@ -56,7 +56,7 @@ void AssassinModel::attack2() {
         smokeBombTimer->start(5000); // 5 secondes
 
         canAttack2 = false;
-        itsCooldown2->start(10000); // Cooldown de la compétence (ajustable)
+        itsCooldown2->start(AssassinAttack2Cooldown * 1000);
     }
 }
 

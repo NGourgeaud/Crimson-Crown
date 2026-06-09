@@ -36,7 +36,7 @@ const int BlacksmithAttack2Cooldown = 5;
 const int AssassinAttack1HitboxWidth = 80;
 const int AssassinAttack1HitboxHeight = 30;
 const float AssassinAttack1Cooldown = 0.6;
-const float AssassinAttack2Cooldown = 7.0;
+const float AssassinAttack2Cooldown = 7;
 
 // Hunter Stats
 const int HunterAttack1HitboxWidth = 40;
