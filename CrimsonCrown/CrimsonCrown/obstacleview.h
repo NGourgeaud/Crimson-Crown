@@ -7,16 +7,13 @@
 
 class ObstacleView
 {
-
 private:
+    QPixmap obsOubliettes;
 
-    // QPixmap itsSpriteSheet;
 public:
     ObstacleView();
 
-    void draw(QPainter &painter, const ObstacleModel *model);
-
-
+    void draw(QPainter &painter, const ObstacleModel *model, int level);
 };
 
 #endif // OBSTACLEVIEW_H

@@ -43,6 +43,8 @@ public:
 
     BossModel * getItsBoss() const;
 
+    int getCurrentLevel() const { return currentLevel; }
+
     void loadLevel(int levelId);
     QList<ProjectileModel *> getItsProjeciles() const;
 

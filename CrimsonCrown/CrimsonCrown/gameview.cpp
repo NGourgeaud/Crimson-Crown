@@ -145,7 +145,7 @@ void GameView::paintEvent(QPaintEvent *event)
     for (RoomModel* room : itsModel->getAllRooms()) {
         painter.save();
         painter.translate(room->getBounds().x(), room->getBounds().y()); // CORRECTION HERE
-        itsRoomView->draw(painter, room, *itsObstacleView);
+        itsRoomView->draw(painter, room, *itsObstacleView, itsModel->getCurrentLevel());
         painter.restore();
     }
 

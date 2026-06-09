@@ -11,10 +11,11 @@ class RoomView
 public:
     RoomView();
 
-    // Draw the entire room (floor, doors) and its internal obstacles
-    void draw(QPainter &painter, const RoomModel *roomModel, ObstacleView &obstacleView);
+    void draw(QPainter &painter, const RoomModel *roomModel, ObstacleView &obstacleView, int level);
+
 private:
     QPixmap spawnTexture;
+    QPixmap combatTexture;
 };
 
 #endif // ROOMVIEW_H
