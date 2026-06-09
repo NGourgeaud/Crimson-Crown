@@ -299,31 +299,6 @@ void GameModel::updateLogic()
 {
     // 1. AI UPDATE
     if (itsPlayer != nullptr) {
-        // A. Lancers Update
-        for (int i = itsEnemies.size() - 1; i >= 0; --i) {
-            EnemyModel* enemy = itsEnemies.at(i);
-            switch (enemy->getitsEnemyType()) {
-            case LANCER:
-            {
-                LancerModel* lancer = dynamic_cast<LancerModel*>(enemy);
-                lancer->update(itsPlayer->getHitBox().center());
-                break;
-            }
-            case KNIGHT:
-            {
-                KnightModel* knight = dynamic_cast<KnightModel*>(enemy);
-                knight->update(itsPlayer->getHitBox().center());
-                break;
-            }
-            case ARCHER:
-            {
-                ArcherModel* archer = dynamic_cast<ArcherModel*>(enemy);
-                archer->update(itsPlayer->getHitBox().center());
-                break;
-            }
-            default:
-                break;
-            }
 
         bool isPlayerInvisible = false;
         AssassinModel* assassin = dynamic_cast<AssassinModel*>(itsPlayer);
@@ -331,10 +306,10 @@ void GameModel::updateLogic()
             isPlayerInvisible = true;
         }
 
-        // --- NEW LOGIC: Only update enemies if the player is VISIBLE ---
+        // --- On ne met à jour les ennemis que si le joueur est VISIBLE ---
         if (!isPlayerInvisible) {
 
-            // A. Lancers and Knights Update
+            // A. Mise à jour de tous les ennemis
             for (int i = itsEnemies.size() - 1; i >= 0; --i) {
                 EnemyModel* enemy = itsEnemies.at(i);
 
@@ -351,19 +326,25 @@ void GameModel::updateLogic()
                     if (knight) knight->update(itsPlayer->getHitBox().center());
                     break;
                 }
+                case ARCHER:
+                {
+                    ArcherModel* archer = dynamic_cast<ArcherModel*>(enemy);
+                    if (archer) archer->update(itsPlayer->getHitBox().center());
+                    break;
+                }
                 default:
                     break;
                 }
-            }
+            } // <- L'accolade manquante de la boucle 'for' est bien ici !
 
-            // B. Boss update
+            // B. Mise à jour du Boss
             if (itsBoss != nullptr) {
                 LordModel* lord = dynamic_cast<LordModel*>(itsBoss);
                 if (lord) {
                     lord->update(itsPlayer->getHitBox().center());
                 }
             }
-        }
+        } // <- Fin du 'if (!isPlayerInvisible)'
     }
 
     // projectile update
