@@ -68,6 +68,19 @@ const int LancerHeight = 40;
 const int LancerAttackHitboxWidth = 50;
 const int LancerAttackHitboxHeight = 20;
 
+// Lancer Stats
+const int KnightDefaultMaxHp = 40;
+const int KnightDefaultSpeed = 1;
+const int KnightDefaultAttackDamage = 8;
+const float KnightDefaultAttackCoolDown = 1;
+const float KnightIframe = 0.2;
+
+const int KnightWidth = 40;
+const int KnightHeight = 40;
+
+const int KnightAttackHitboxWidth = 30;
+const int KnightAttackHitboxHeight = 50;
+
 // Lord Stats
 const int LordDefaultMaxHp = 150;
 const int LordDefaultSpeed = 1;
@@ -97,7 +110,8 @@ enum HeroType {
 
 enum EnemyType{
     NOTDEF,
-    LANCER
+    LANCER,
+    KNIGHT
 };
 
 enum BossType{

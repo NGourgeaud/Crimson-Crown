@@ -27,6 +27,7 @@ SOURCES += \
     gamewoncontroller.cpp \
     gamewonview.cpp \
     huntermodel.cpp \
+    knightmodel.cpp \
     lordmodel.cpp \
     gameview.cpp \
     main.cpp \
@@ -63,6 +64,7 @@ HEADERS += \
     gamewoncontroller.h \
     gamewonview.h \
     huntermodel.h \
+    knightmodel.h \
     lordmodel.h \
     gameview.h \
     mainwindow.h \
