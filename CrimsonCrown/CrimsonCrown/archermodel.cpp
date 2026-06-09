@@ -10,7 +10,7 @@ ArcherModel::ArcherModel(int maxHp, int speed, int x, int y, float attackCooldow
     itsHitBox = QRectF(x,y,LancerWidth, LancerHeight);
     itsAttackCooldown = attackCooldown;
     itsAttackDamage = attackDamage;
-    canAttack = true;
+    canAttack = false;
     itsCoolDownTimer = new QTimer();
     IframeTimer = new QTimer();
     isInIframe = false;
@@ -18,6 +18,7 @@ ArcherModel::ArcherModel(int maxHp, int speed, int x, int y, float attackCooldow
 
     connect(itsCoolDownTimer, &QTimer::timeout, this, &ArcherModel::resetAttackCooldown);
     connect(IframeTimer, &QTimer::timeout, this, &ArcherModel::resetIframe);
+    itsCoolDownTimer->start(1500);
 }
 
 void ArcherModel::update(QPointF heroPos)

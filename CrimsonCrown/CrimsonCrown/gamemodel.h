@@ -21,6 +21,9 @@ private:
     PlayerModel * itsPlayer;
     RoomModel * activeRoom;
     int currentLevel;
+    int minEnemy;
+    int maxEnemy;
+    float statIncreass;
 
 public:
     GameModel();
