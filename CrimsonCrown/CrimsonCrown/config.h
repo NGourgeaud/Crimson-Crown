@@ -149,12 +149,12 @@ const QString STATS_HUNTER =
 
 
 namespace keyBind {
-    const Qt::Key keyUp = Qt::Key_Z;
-    const Qt::Key keyDown = Qt::Key_S;
-    const Qt::Key keyLeft = Qt::Key_Q;
-    const Qt::Key keyRight = Qt::Key_D;
-    const Qt::Key keyAttaque1 = Qt::Key_K;
-    const Qt::Key keyAttaque2 = Qt::Key_L;
+    inline Qt::Key keyUp = Qt::Key_Z;
+    inline Qt::Key keyDown = Qt::Key_S;
+    inline Qt::Key keyLeft = Qt::Key_Q;
+    inline Qt::Key keyRight = Qt::Key_D;
+    inline Qt::Key keyAttaque1 = Qt::Key_K;
+    inline Qt::Key keyAttaque2 = Qt::Key_L;
 }
 
 const float CAMERA_LERP_SPEED = 0.07f;  // Smoothing speed (0.05 = very smooth, 0.2 = very fast)

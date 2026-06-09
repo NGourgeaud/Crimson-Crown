@@ -41,7 +41,10 @@ SOURCES += \
     projectilemodel.cpp \
     projectileview.cpp \
     roommodel.cpp \
-    roomview.cpp
+    roomview.cpp \
+    settingModel.cpp \
+    settingView.cpp \
+    settingcontroller.cpp
 
 HEADERS += \
     appcontroller.h \
@@ -76,7 +79,10 @@ HEADERS += \
     projectilemodel.h \
     projectileview.h \
     roommodel.h \
-    roomview.h
+    roomview.h \
+    settingModel.h \
+    settingView.h \
+    settingcontroller.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
