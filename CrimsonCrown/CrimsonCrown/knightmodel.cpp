@@ -82,7 +82,7 @@ void KnightModel::takeDamage(int amount)
 
 void KnightModel::move(QPointF pos)
 {
-    itsHitBox.setTopLeft(pos);
+    itsHitBox.moveTo(pos.toPoint());
 }
 
 QRectF KnightModel::getHitBox() const
