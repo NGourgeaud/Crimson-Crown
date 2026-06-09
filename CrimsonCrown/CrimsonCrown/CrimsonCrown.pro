@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     appcontroller.cpp \
+    archermodel.cpp \
     assassinmodel.cpp \
     blacksmithmodel.cpp \
     blacksmithview.cpp \
@@ -46,6 +47,7 @@ SOURCES += \
 
 HEADERS += \
     appcontroller.h \
+    archermodel.h \
     assassinmodel.h \
     blacksmithmodel.h \
     blacksmithview.h \

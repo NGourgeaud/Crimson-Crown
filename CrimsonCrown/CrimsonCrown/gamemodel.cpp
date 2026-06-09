@@ -1,4 +1,5 @@
 #include "gamemodel.h"
+#include "archermodel.h"
 #include "blacksmithmodel.h"
 #include "assassinmodel.h"
 #include "knightmodel.h"
@@ -242,7 +243,7 @@ void GameModel::spawnEnemies(bool isBoss)
         std::uniform_int_distribution<int> EnemiesNb(4,6);
         std::uniform_int_distribution<int> RoomX(roomBoundaries.topLeft().rx(),roomBoundaries.topRight().rx());
         std::uniform_int_distribution<int> RoomY(roomBoundaries.topLeft().ry(),roomBoundaries.bottomLeft().ry());
-        std::uniform_int_distribution<int> Type(LANCER,KNIGHT);
+        std::uniform_int_distribution<int> Type(LANCER,ARCHER);
 
         int nbEnemies = EnemiesNb(eng);
         for (int i = 0; i < nbEnemies; i++){
@@ -266,6 +267,15 @@ void GameModel::spawnEnemies(bool isBoss)
                 connect(newEnnemy, &KnightModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
                 connect(newEnnemy, &KnightModel::attacking, this, [this](QPolygon hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
                 break;
+            }
+            case ARCHER:
+            {
+                ArcherModel * newEnnemy = new ArcherModel(ArcherDefaultMaxHp, ArcherDefaultSpeed, RoomX(eng), RoomY(eng), ArcherDefaultAttackCoolDown, ArcherDefaultAttackDamage);
+                itsEnemies.append(newEnnemy);
+
+                // Using a lambda to secure parameter passing
+                connect(newEnnemy, &ArcherModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
+                connect(newEnnemy, &ArcherModel::attacking, this, &GameModel::onNewProjectile);
             }
             default:
                 break;
@@ -302,6 +312,12 @@ void GameModel::updateLogic()
             {
                 KnightModel* knight = dynamic_cast<KnightModel*>(enemy);
                 knight->update(itsPlayer->getHitBox().center());
+                break;
+            }
+            case ARCHER:
+            {
+                ArcherModel* archer = dynamic_cast<ArcherModel*>(enemy);
+                archer->update(itsPlayer->getHitBox().center());
                 break;
             }
             default:
