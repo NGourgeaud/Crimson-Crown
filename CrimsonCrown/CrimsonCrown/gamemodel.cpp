@@ -259,7 +259,7 @@ void GameModel::spawnEnemies(bool isBoss)
             }
             case KNIGHT:
             {
-                KnightModel * newEnnemy = new KnightModel(LancerDefaultMaxHp, LancerDefaultSpeed, RoomX(eng), RoomY(eng), LancerDefaultAttackCoolDown, LancerDefaultAttackDamage);
+                KnightModel * newEnnemy = new KnightModel(KnightDefaultMaxHp, KnightDefaultSpeed, RoomX(eng), RoomY(eng), KnightDefaultAttackCoolDown, KnightDefaultAttackDamage);
                 itsEnemies.append(newEnnemy);
 
                 // Using a lambda to secure parameter passing
@@ -291,8 +291,23 @@ void GameModel::updateLogic()
         // A. Lancers Update
         for (int i = itsEnemies.size() - 1; i >= 0; --i) {
             EnemyModel* enemy = itsEnemies.at(i);
-            LancerModel* lancer = dynamic_cast<LancerModel*>(enemy);
-            if (lancer) lancer->update(itsPlayer->getHitBox().center());
+            switch (enemy->getitsEnemyType()) {
+            case LANCER:
+            {
+                LancerModel* lancer = dynamic_cast<LancerModel*>(enemy);
+                lancer->update(itsPlayer->getHitBox().center());
+                break;
+            }
+            case KNIGHT:
+            {
+                KnightModel* knight = dynamic_cast<KnightModel*>(enemy);
+                knight->update(itsPlayer->getHitBox().center());
+                break;
+            }
+            default:
+                break;
+            }
+
         }
 
         // B. Boss update (if it exists on the map)
