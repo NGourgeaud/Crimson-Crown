@@ -63,8 +63,14 @@ public:
 
     void regen();
 
+    bool getCanAttack1() const;
+    bool getCanAttack2() const;
+    int getCooldown1Remaining() const;
+    int getCooldown2Remaining() const;
 
     HeroType getItsName() const;
+
+
 
 signals:
     void death();

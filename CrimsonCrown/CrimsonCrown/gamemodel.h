@@ -41,6 +41,7 @@ public:
     void cheatKillEnemies();
 
     int getItsScore() const;
+    int getCurrentLevel() const;
 
     bool areAllCombatRoomsCleared() const;
 

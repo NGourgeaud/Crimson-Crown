@@ -667,3 +667,8 @@ bool GameModel::areAllCombatRoomsCleared() const
     }
     return true;
 }
+
+int GameModel::getCurrentLevel() const
+{
+    return currentLevel;
+}
