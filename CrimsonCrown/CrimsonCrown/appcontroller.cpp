@@ -18,7 +18,8 @@ AppController::AppController(QObject *parent)
     charSelectController(new CharSelectController(mainWindow, this)),
     gameController(new GameController(mainWindow, this)),
     itsGameOverController(new GameOverController()),
-    itsGameWonController(new GameWonController())
+    itsGameWonController(new GameWonController()),
+    settingsController(new SettingController(mainWindow, this))
 {
     mainWindow->setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -36,6 +37,9 @@ AppController::AppController(QObject *parent)
 
     connect(charSelectController, &CharSelectController::backToMenuRequested, this, &AppController::onMenuRequested);
     connect(charSelectController, &CharSelectController::characterSelected, this, &AppController::onGameRequested);
+
+    connect(settingsController, &SettingController::menuRequested, this, &AppController::onMenuRequested);
+    connect(menuController, &MenuController::settingsRequested, this, &AppController::onSettingsRequested);
 
     connect(gameController, &GameController::menuRequested, this, &AppController::onMenuRequested);
     connect(gameController, &GameController::gameOver, this, &AppController::onGameOver);
@@ -85,7 +89,7 @@ void AppController::onLeaderboardRequested() {
 /// \details Slot triggered when the 'SETTINGS' button is clicked.
 ///
 void AppController::onSettingsRequested() {
-    // Next step: settingsController->createView();
+    navigateTo(AppState::Setting);
 }
 
 ///
@@ -127,6 +131,9 @@ void AppController::navigateTo(AppState state) {
     case AppState::Game:
         currentView = gameController->createView(selectedHero);
         break;
+    case AppState::Setting:
+        currentView = settingsController->createView();
+        break;
     default:
         return;
     }
@@ -148,6 +155,8 @@ void AppController::cleanupCurrentView() {
         charSelectController->destroyView();
     } else if (currentState == AppState::Game) {
         gameController->destroyView();
+    } else if (currentState == AppState::Setting) {
+        settingsController->destroyView();
     }
 
     currentView = nullptr;
