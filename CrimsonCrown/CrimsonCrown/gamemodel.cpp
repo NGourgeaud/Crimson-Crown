@@ -296,34 +296,35 @@ void GameModel::updateLogic()
             isPlayerInvisible = true;
         }
 
-        // A. Lancers Update
-        for (int i = itsEnemies.size() - 1; i >= 0; --i) {
-            EnemyModel* enemy = itsEnemies.at(i);
+        // --- NEW LOGIC: Only update enemies if the player is VISIBLE ---
+        if (!isPlayerInvisible) {
 
-            switch (enemy->getitsEnemyType()) {
-            case LANCER:
-            {
-                LancerModel* lancer = dynamic_cast<LancerModel*>(enemy);
-                lancer->update(itsPlayer->getHitBox().center());
-                break;
-            }
-            case KNIGHT:
-            {
-                KnightModel* knight = dynamic_cast<KnightModel*>(enemy);
-                knight->update(itsPlayer->getHitBox().center());
-                break;
-            }
-            default:
-                break;
-            }
-        }
+            // A. Lancers and Knights Update
+            for (int i = itsEnemies.size() - 1; i >= 0; --i) {
+                EnemyModel* enemy = itsEnemies.at(i);
 
-        // B. Boss update
-        if (itsBoss != nullptr) {
-            LordModel* lord = dynamic_cast<LordModel*>(itsBoss);
-            if (lord) {
-                // Idem pour le boss : on le fige s'il ne voit plus rien
-                if (!isPlayerInvisible) {
+                switch (enemy->getitsEnemyType()) {
+                case LANCER:
+                {
+                    LancerModel* lancer = dynamic_cast<LancerModel*>(enemy);
+                    if (lancer) lancer->update(itsPlayer->getHitBox().center());
+                    break;
+                }
+                case KNIGHT:
+                {
+                    KnightModel* knight = dynamic_cast<KnightModel*>(enemy);
+                    if (knight) knight->update(itsPlayer->getHitBox().center());
+                    break;
+                }
+                default:
+                    break;
+                }
+            }
+
+            // B. Boss update
+            if (itsBoss != nullptr) {
+                LordModel* lord = dynamic_cast<LordModel*>(itsBoss);
+                if (lord) {
                     lord->update(itsPlayer->getHitBox().center());
                 }
             }
