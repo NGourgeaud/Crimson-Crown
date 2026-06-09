@@ -74,14 +74,12 @@ bool LancerModel::handleAI(QPointF heroPos)
 {
     // Goes towards the player if it's too far
     if (QLineF(heroPos, itsHitBox.center()).length() > LancerAttackHitboxWidth-5){
-        for (int i = 0; i<itsSpeed; i++){
-            QLineF aimLine = QLineF(itsHitBox.center(), heroPos);
-            qreal angle = aimLine.angle();
 
-            QLineF movementVector = QLineF::fromPolar(1, angle);
+        QLineF aimLine = QLineF(itsHitBox.center(), heroPos);
+        qreal angle = aimLine.angle();
+        QLineF movementVector = QLineF::fromPolar(1, angle);
+        itsHitBox.translate(movementVector.dx(), movementVector.dy());
 
-            itsHitBox.translate(movementVector.dx(), movementVector.dy());
-        }
         return false;
     }
     else{
@@ -126,7 +124,7 @@ void LancerModel::takeDamage(int amount)
 ///
 void LancerModel::move(QPointF pos)
 {
-    itsHitBox.setTopLeft(pos);
+    itsHitBox.moveTo(pos.toPoint());
 }
 
 ///
