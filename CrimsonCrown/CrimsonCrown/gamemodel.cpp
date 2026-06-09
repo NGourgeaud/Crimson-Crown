@@ -105,9 +105,9 @@ void GameModel::resetGame(HeroType hero)
     case HeroType::Assassin: {
         AssassinModel * newPlayer = new AssassinModel();
         itsPlayer = newPlayer;
-        connect(newPlayer, &AssassinModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);}
+        connect(newPlayer, &AssassinModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
         break;
-    });
+    };
     case HeroType::Hunter: {
         HunterModel * newPlayer = new HunterModel();
         itsPlayer = newPlayer;

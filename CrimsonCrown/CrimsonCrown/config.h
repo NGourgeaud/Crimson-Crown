@@ -47,7 +47,6 @@ const int HunterAttack2HitboxRadius = 200;
 
 const int HunterAttack1Cooldown = 1;
 const int HunterAttack2Cooldown = 5;
->>>>>>> CrimsonCrown/CrimsonCrown/config.h
 
 const int playerRegen = 20;
 const float playerIframe = 0.5;
