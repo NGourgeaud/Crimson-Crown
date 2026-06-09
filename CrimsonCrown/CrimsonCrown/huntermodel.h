@@ -11,6 +11,10 @@
 class HunterModel : public PlayerModel
 {
     Q_OBJECT
+private:
+    QTimer * itsAttack2Timer;
+    float itsAttack2Time;
+    QPolygon itsAttack2Area;
 public:
     HunterModel();
     void attack1();
@@ -19,6 +23,9 @@ public:
 signals:
     void attackPlayer(QPolygon attackHitBox, int damage);
     void fireProjectile(ProjectileModel* projectile);
+
+private slots:
+    void tickAttack2();
 };
 
 #endif // HUNTERMODEL_H
