@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "enemymodel.h"
+#include "QPolygon"
 
 class KnightModel : public QObject, public EnemyModel
 {
@@ -16,10 +17,7 @@ public:
     KnightModel(int maxHp, int speed, int x, int y, float attackCooldown, int attackDamage);
     void update(QPointF heroPos);
     void attack(QPointF heroPos);
-    void takeDamage(int amount)
-    {
-
-    }
+    void takeDamage(int amount);
     void move(QPointF pos);
     QRectF getHitBox() const;
 
