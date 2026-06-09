@@ -8,11 +8,10 @@ class BossView
 {
 private:
     QPixmap itsTexTure;
-    BossType itsType;
 public:
-    BossView(BossType type);
+    BossView();
     void draw(QPainter * painter, const BossModel *model);
-    void setItsTexture();
+    void setItsTexture(BossType type);
 };
 
 #endif // BOSSVIEW_H

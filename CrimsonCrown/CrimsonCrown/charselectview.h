@@ -24,9 +24,18 @@ protected:
 
 private:
     QLabel *itsTitle;
-    QPushButton *itsBlacksmithCardButton;
-    QLabel *itsBlacksmithStatsLabel;
+
+    // Éléments du Carrousel
+    QPushButton *itsLeftArrow;
+    QPushButton *itsRightArrow;
+    QPushButton *itsHeroCardButton; // Le bouton central (l'image du perso)
+    QLabel *itsHeroStatsLabel;      // Les stats du perso affiché
+
     QPushButton *itsBackButton;
+
+    // Logique du Carrousel
+    int currentHeroIndex; // 0 = Forgeron, 1 = Chasseur, 2 = Assassin
+    void updateCarousel(); // Fonction pour rafraîchir l'affichage
 };
 
 #endif // CHARSELECTVIEW_H

@@ -26,6 +26,7 @@ SOURCES += \
     gameoverview.cpp \
     gamewoncontroller.cpp \
     gamewonview.cpp \
+    huntermodel.cpp \
     lordmodel.cpp \
     gameview.cpp \
     main.cpp \
@@ -37,6 +38,8 @@ SOURCES += \
     obstaclemodel.cpp \
     obstacleview.cpp \
     playerview.cpp \
+    projectilemodel.cpp \
+    projectileview.cpp \
     roommodel.cpp \
     roomview.cpp
 
@@ -59,6 +62,7 @@ HEADERS += \
     gameoverview.h \
     gamewoncontroller.h \
     gamewonview.h \
+    huntermodel.h \
     lordmodel.h \
     gameview.h \
     mainwindow.h \
@@ -69,6 +73,8 @@ HEADERS += \
     obstaclemodel.h \
     obstacleview.h \
     playerview.h \
+    projectilemodel.h \
+    projectileview.h \
     roommodel.h \
     roomview.h
 
@@ -80,10 +86,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     images.qrc
 
-
-
-DISTFILES += \
-    lancier.png
+DISTFILES +=
 
 macx:QMAKE_CXXFLAGS += -Wno-error=implicit-function-declaration
 

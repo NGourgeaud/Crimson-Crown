@@ -4,12 +4,19 @@
 #include "lancermodel.h"
 #include "lordmodel.h"
 #include "config.h"
+#include "qdebug.h"
 #include "qpainterpath.h"
 #include <QRandomGenerator> // for random spawn
+#include "huntermodel.h"
 
 BossModel *GameModel::getItsBoss() const
 {
     return itsBoss;
+}
+
+QList<ProjectileModel *> GameModel::getItsProjeciles() const
+{
+    return itsProjeciles;
 }
 
 GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
@@ -98,7 +105,14 @@ void GameModel::resetGame(HeroType hero)
     case HeroType::Assassin: {
         AssassinModel * newPlayer = new AssassinModel();
         itsPlayer = newPlayer;
-        connect(newPlayer, &AssassinModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
+        connect(newPlayer, &AssassinModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);}
+        break;
+    });
+    case HeroType::Hunter: {
+        HunterModel * newPlayer = new HunterModel();
+        itsPlayer = newPlayer;
+        connect(newPlayer, &HunterModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
+        connect(newPlayer, &HunterModel::fireProjectile, this, &GameModel::onNewProjectile);
         break;
     }
     default:
@@ -264,6 +278,13 @@ void GameModel::updateLogic()
         if (itsBoss != nullptr) {
             LordModel* lord = dynamic_cast<LordModel*>(itsBoss);
             if (lord) lord->update(itsPlayer->getHitBox().center());
+        }
+    }
+
+    // projectile update
+    if (!itsProjeciles.empty()){
+        for (ProjectileModel * pro : itsProjeciles){
+            pro->update();
         }
     }
 
@@ -455,6 +476,106 @@ void GameModel::onPlayerAttack(QPolygon hitbox, int damage)
         if (hitbox.intersects(itsBoss->getHitBox().toRect())){
             itsBoss->takeDamage(damage);
         }
+    }
+}
+
+void GameModel::onNewProjectile(ProjectileModel * projectile)
+{
+    itsProjeciles.append(projectile);
+    if (projectile->getItsTeam() == ENEMY)
+        connect(projectile, &ProjectileModel::tick, this, &GameModel::onEnemyProjectile);
+    else
+        connect(projectile, &ProjectileModel::tick, this, &GameModel::onplayerProjectile);
+}
+
+void GameModel::onEnemyProjectile(ProjectileModel * projectile)
+{
+    if (projectile->getItsHitbox().intersects(itsPlayer->getHitBox())){
+        itsPlayer->takeDamage(projectile->getItsDamage());
+        disconnect(projectile);
+        itsProjeciles.removeOne(projectile);
+        projectile->deleteLater();
+    }
+
+    if (!activeRoom->getItsObstacles().empty()){
+        for (ObstacleModel * obstacle : activeRoom->getItsObstacles()){
+            // Création d'une Hitbox globale comme pour le joueur
+            QRectF globalObsRect = obstacle->getHitBox();
+            globalObsRect.translate(activeRoom->getBounds().x(), activeRoom->getBounds().y());
+
+            if (projectile->getItsHitbox().intersects(globalObsRect)){
+                disconnect(projectile);
+                itsProjeciles.removeOne(projectile);
+                delete projectile;
+                return;
+            }
+        }
+    }
+
+    // Define the inner area (the hollow space past the border)
+    QMarginsF margins(1, 1, 1, 1);
+    QRectF innerSpace = activeRoom->getBounds().marginsRemoved(margins);
+
+    // If innerSpace fully contains r1, it means r1 safely bypassed the border
+    // and is floating in the middle. Otherwise, it's stuck in the border zone.
+    if (!innerSpace.contains(projectile->getItsHitbox())){
+        disconnect(projectile);
+        itsProjeciles.removeOne(projectile);
+        delete projectile;
+        return;
+    }
+}
+
+void GameModel::onplayerProjectile(ProjectileModel *projectile)
+{
+    if(!itsEnemies.empty()){
+        for (EnemyModel * enemy : itsEnemies){
+            if (projectile->getItsHitbox().intersects(enemy->getHitBox())){
+                enemy->takeDamage(projectile->getItsDamage());
+                disconnect(projectile);
+                itsProjeciles.removeOne(projectile);
+                delete projectile;
+                return;
+            }
+        }
+    }
+    else if (itsBoss){
+        if (projectile->getItsHitbox().intersects(itsBoss->getHitBox())){
+            itsBoss->takeDamage(projectile->getItsDamage());
+            disconnect(projectile);
+            itsProjeciles.removeOne(projectile);
+            delete projectile;
+            return;
+        }
+    }
+
+
+    if (!activeRoom->getItsObstacles().empty()){
+        for (ObstacleModel * obstacle : activeRoom->getItsObstacles()){
+            // Création d'une Hitbox globale
+            QRectF globalObsRect = obstacle->getHitBox();
+            globalObsRect.translate(activeRoom->getBounds().x(), activeRoom->getBounds().y());
+
+            if (projectile->getItsHitbox().intersects(globalObsRect)){
+                disconnect(projectile);
+                itsProjeciles.removeOne(projectile);
+                delete projectile;
+                return;
+            }
+        }
+    }
+
+    // Define the inner area (the hollow space past the border)
+    QMarginsF margins(1, 1, 1, 1);
+    QRectF innerSpace = activeRoom->getBounds().marginsRemoved(margins);
+
+    // If innerSpace fully contains r1, it means r1 safely bypassed the border
+    //    and is floating in the middle. Otherwise, it's stuck in the border zone.
+    if (!innerSpace.contains(projectile->getItsHitbox())){
+        disconnect(projectile);
+       itsProjeciles.removeOne(projectile);
+       delete projectile;
+       return;
     }
 }
 
