@@ -8,6 +8,7 @@
 #include "config.h"
 #include "qpainterpath.h"
 #include <QRandomGenerator> // for random spawn
+#include <QtCore/qdebug.h>
 #include "huntermodel.h"
 
 BossModel *GameModel::getItsBoss() const
@@ -317,7 +318,6 @@ void GameModel::updateLogic()
             isPlayerInvisible = true;
         }
 
-<<<<<<< CrimsonCrown/CrimsonCrown/gamemodel.cpp
         // A. Enemies Update
         for (int i = itsEnemies.size() - 1; i >= 0; --i) {
 
