@@ -106,6 +106,7 @@ void GameModel::resetGame(HeroType hero)
         AssassinModel * newPlayer = new AssassinModel();
         itsPlayer = newPlayer;
         connect(newPlayer, &AssassinModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
+        connect(newPlayer, &AssassinModel::fireProjectile, this, &GameModel::onNewProjectile);
         break;
     };
     case HeroType::Hunter: {
@@ -267,17 +268,33 @@ void GameModel::updateLogic()
 {
     // 1. AI UPDATE
     if (itsPlayer != nullptr) {
+
+        bool isPlayerInvisible = false;
+        AssassinModel* assassin = dynamic_cast<AssassinModel*>(itsPlayer);
+        if (assassin && assassin->getIsInvisible()) {
+            isPlayerInvisible = true;
+        }
+
         // A. Lancers Update
         for (int i = itsEnemies.size() - 1; i >= 0; --i) {
             EnemyModel* enemy = itsEnemies.at(i);
             LancerModel* lancer = dynamic_cast<LancerModel*>(enemy);
-            if (lancer) lancer->update(itsPlayer->getHitBox().center());
+            if (lancer) {
+                if (!isPlayerInvisible) {
+                    lancer->update(itsPlayer->getHitBox().center());
+                }
+            }
         }
 
-        // B. Boss update (if it exists on the map)
+        // B. Boss update
         if (itsBoss != nullptr) {
             LordModel* lord = dynamic_cast<LordModel*>(itsBoss);
-            if (lord) lord->update(itsPlayer->getHitBox().center());
+            if (lord) {
+                // Idem pour le boss : on le fige s'il ne voit plus rien
+                if (!isPlayerInvisible) {
+                    lord->update(itsPlayer->getHitBox().center());
+                }
+            }
         }
     }
 

@@ -20,7 +20,6 @@ const QString LABEL_SETTINGS = "REGLAGES";
 const QString LABEL_QUIT = "QUITTER";
 
 const QString LABEL_CHARSELECT_TITLE = "SELECTIONNEZ UN PERSONNAGE";
-const QString LABEL_CONTINUE = "CONTINUER";
 const QString LABEL_BACK = "RETOUR AU MENU";
 
 const int playerWidth = 60;
@@ -34,10 +33,10 @@ const int BlacksmithAttack2HitboxRadius = 80;
 const int BlacksmithAttack1Cooldown = 1;
 const int BlacksmithAttack2Cooldown = 5;
 
-const int AssassinAttack1HitboxWidth = 40;
-const int AssassinAttack1HitboxHeight = 20;
-const float AssassinAttack1Cooldown = 0.3;
-const float AssassinAttack2Cooldown = 3.0;
+const int AssassinAttack1HitboxWidth = 80;
+const int AssassinAttack1HitboxHeight = 30;
+const float AssassinAttack1Cooldown = 0.6;
+const float AssassinAttack2Cooldown = 7.0;
 
 // Hunter Stats
 const int HunterAttack1HitboxWidth = 400;
@@ -111,7 +110,8 @@ enum Team{
 };
 
 enum ProjectileType {
-    ARROW
+    ARROW,
+    KNIFE
 };
 
 // --- STATISTIQUES ET DESCRIPTION DU ASSASSIN (HTML STYLISÉ) ---
