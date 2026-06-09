@@ -1,5 +1,6 @@
 #include "archermodel.h"
 #include "qline.h"
+#include <random>
 
 
 ArcherModel::ArcherModel(int maxHp, int speed, int x, int y, float attackCooldown, int attackDamage)
@@ -10,14 +11,18 @@ ArcherModel::ArcherModel(int maxHp, int speed, int x, int y, float attackCooldow
     itsHitBox = QRectF(x,y,LancerWidth, LancerHeight);
     itsAttackCooldown = attackCooldown;
     itsAttackDamage = attackDamage;
-    canAttack = true;
+    canAttack = false;
     itsCoolDownTimer = new QTimer();
     IframeTimer = new QTimer();
     isInIframe = false;
     itsType = ARCHER;
+    std::random_device rd;
+    std::default_random_engine eng(rd());
+    std::uniform_real_distribution<float> firstShotTime(1,2);
 
     connect(itsCoolDownTimer, &QTimer::timeout, this, &ArcherModel::resetAttackCooldown);
     connect(IframeTimer, &QTimer::timeout, this, &ArcherModel::resetIframe);
+    itsCoolDownTimer->start(firstShotTime(eng)*1000);
 }
 
 void ArcherModel::update(QPointF heroPos)

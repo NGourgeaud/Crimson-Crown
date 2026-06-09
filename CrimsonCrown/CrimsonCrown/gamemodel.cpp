@@ -27,6 +27,9 @@ GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
     resetGame(HeroType::None);
     itsBoss = nullptr;
     activeRoom = nullptr;
+    minEnemy = 4;
+    maxEnemy = 6;
+    statIncreass = 1;
 }
 
 GameModel::~GameModel()
@@ -241,17 +244,24 @@ void GameModel::spawnEnemies(bool isBoss)
     if (!isBoss){
         std::random_device rd;
         std::default_random_engine eng(rd());
-        std::uniform_int_distribution<int> EnemiesNb(4,6);
-        std::uniform_int_distribution<int> RoomX(roomBoundaries.topLeft().rx(),roomBoundaries.topRight().rx());
-        std::uniform_int_distribution<int> RoomY(roomBoundaries.topLeft().ry(),roomBoundaries.bottomLeft().ry());
+        std::uniform_int_distribution<int> RoomX(roomBoundaries.topLeft().rx()+60,roomBoundaries.topRight().rx()-60);
+        std::uniform_int_distribution<int> RoomY(roomBoundaries.topLeft().ry()+60,roomBoundaries.bottomLeft().ry()-60);
         std::uniform_int_distribution<int> Type(LANCER,ARCHER);
+
+        if (currentLevel == 2){
+            minEnemy = 5;
+            maxEnemy = 7;
+            statIncreass+=0.1;
+            qDebug() << "Level 2";
+        }
+        std::uniform_int_distribution<int> EnemiesNb(minEnemy,maxEnemy);
 
         int nbEnemies = EnemiesNb(eng);
         for (int i = 0; i < nbEnemies; i++){
             switch (Type(eng)) {
             case LANCER:
             {
-                LancerModel * newEnnemy = new LancerModel(LancerDefaultMaxHp, LancerDefaultSpeed, RoomX(eng), RoomY(eng), LancerDefaultAttackCoolDown, LancerDefaultAttackDamage);
+                LancerModel * newEnnemy = new LancerModel(LancerDefaultMaxHp*statIncreass, LancerDefaultSpeed, RoomX(eng), RoomY(eng), LancerDefaultAttackCoolDown, LancerDefaultAttackDamage*statIncreass);
                 itsEnemies.append(newEnnemy);
 
                 // Using a lambda to secure parameter passing

@@ -30,13 +30,14 @@ KnightModel::KnightModel(int maxHp, int speed, int x, int y, float attackCooldow
     itsAttackCooldown = attackCooldown;
     itsAttackDamage = attackDamage;
     itsCoolDownTimer = new QTimer();
-    canAttack = true;
+    canAttack = false;
     IframeTimer = new QTimer();
     isInIframe = false;
     itsType = KNIGHT;
 
     connect(itsCoolDownTimer, &QTimer::timeout, this, &KnightModel::resetAttackCooldown);
     connect(IframeTimer, &QTimer::timeout, this, &KnightModel::resetIframe);
+    itsCoolDownTimer->start(1500);
 }
 
 void KnightModel::update(QPointF heroPos)
