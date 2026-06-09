@@ -2,6 +2,7 @@
 #define ASSASSINMODEL_H
 
 #include "playermodel.h"
+#include "projectilemodel.h"
 #include <QPolygon>
 #include <QLineF>
 #include <QTransform>
@@ -14,8 +15,18 @@ public:
     void attack1() override;
     void attack2() override;
 
+    bool getIsInvisible() const;
+
+private:
+    QTimer* smokeBombTimer; // Gère les 5 secondes
+    bool isInvisible;
+
+private slots:
+    void resetInvisibility();
+
 signals:
     void attackPlayer(QPolygon attackHitBox, int damage);
+    void fireProjectile(ProjectileModel* projectile);
 };
 
 #endif // ASSASSINMODEL_H
