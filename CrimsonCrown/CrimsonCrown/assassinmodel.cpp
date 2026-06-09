@@ -56,7 +56,6 @@ void AssassinModel::attack2() {
         smokeBombTimer->start(5000); // 5 secondes
 
         canAttack2 = false;
-        itsCooldown2->start(AssassinAttack2Cooldown * 1000);
     }
 }
 
@@ -67,4 +66,5 @@ bool AssassinModel::getIsInvisible() const
 
 void AssassinModel::resetInvisibility() {
     isInvisible = false;
+    itsCooldown2->start(AssassinAttack2Cooldown * 1000);
 }
