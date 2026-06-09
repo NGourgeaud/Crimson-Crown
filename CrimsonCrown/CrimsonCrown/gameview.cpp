@@ -87,6 +87,10 @@ void GameView::drawAttackArea(QPolygon hitbox)
 {
     itsAttackAreas.append(hitbox);
     update();
+
+    QTimer::singleShot(100, this, [this, hitbox]() {
+        itsAttackAreas.removeOne(hitbox);
+    });
 }
 
 void GameView::paintEvent(QPaintEvent *event)
@@ -193,7 +197,6 @@ void GameView::paintEvent(QPaintEvent *event)
             painter.setPen(QPen(Qt::red));
             painter.drawPolygon(area);
         }
-        itsAttackAreas.clear();
     }
 
     // draw projectile

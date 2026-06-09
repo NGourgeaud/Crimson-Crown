@@ -40,13 +40,15 @@ const float AssassinAttack1Cooldown = 0.3;
 const float AssassinAttack2Cooldown = 3.0;
 
 // Hunter Stats
-const int HunterAttack1HitboxWidth = 400;
+const int HunterAttack1HitboxWidth = 40;
 const int HunterAttack1HitboxHeight = 5;
 
 const int HunterAttack2HitboxRadius = 200;
 
 const int HunterAttack1Cooldown = 1;
 const int HunterAttack2Cooldown = 5;
+const float HunterAttack2Duration = 5;
+const float HunterAttack2TickRate = 1;
 
 const int playerRegen = 20;
 const float playerIframe = 0.5;
