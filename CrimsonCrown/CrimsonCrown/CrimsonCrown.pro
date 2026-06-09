@@ -43,8 +43,8 @@ SOURCES += \
     projectileview.cpp \
     roommodel.cpp \
     roomview.cpp \
-    settingModel.cpp \
-    settingView.cpp \
+    settingmodel.cpp \
+    settingview.cpp \
     settingcontroller.cpp
 
 HEADERS += \
@@ -82,8 +82,8 @@ HEADERS += \
     projectileview.h \
     roommodel.h \
     roomview.h \
-    settingModel.h \
-    settingView.h \
+    settingmodel.h \
+    settingview.h \
     settingcontroller.h
 
 # Default rules for deployment.
