@@ -735,7 +735,7 @@ void GameModel::onEnemyDeath(EnemyModel * model)
     itsEnemies.removeOne(model);
     itsScore += 10; // +10 Points pour le lancier
 
-    if (itsEnemies.empty()){
+    if (itsEnemies.empty() and !itsBoss){
         activeRoom->unlockDoors();
         itsPlayer->regen();
     }
