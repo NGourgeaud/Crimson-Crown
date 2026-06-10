@@ -13,7 +13,7 @@
 class GameWonView : public QWidget {
     Q_OBJECT
 public:
-    explicit GameWonView(int score, QWidget *parent = nullptr);
+    explicit GameWonView(int score, HeroType hero, QWidget *parent = nullptr);
 
 signals:
     void menuRequested();

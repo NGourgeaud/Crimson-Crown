@@ -9,7 +9,7 @@ class GameWonController : public QObject {
 public:
     explicit GameWonController(QWidget *parentWidget = nullptr, QObject *parent = nullptr);
 
-    QWidget *createView(int score);
+    QWidget* createView(int score, HeroType hero);
     void destroyView();
 
 signals:

@@ -30,6 +30,8 @@ protected:
     Direction itsDirection;
     QRectF itsHitBox;
 
+    bool hasSecretKey = false;
+
     HeroType itsName;
 
 public:
@@ -69,6 +71,11 @@ public:
     int getCooldown2Remaining() const;
 
     HeroType getItsName() const;
+
+    bool getHasSecretKey() const { return hasSecretKey; }
+    void setHasSecretKey(bool hasKey) { hasSecretKey = hasKey; }
+
+    void heal(int amount);
 
 
 

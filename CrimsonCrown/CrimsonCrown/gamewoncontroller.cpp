@@ -3,8 +3,8 @@
 GameWonController::GameWonController(QWidget *parentWidget, QObject *parent)
     : QObject(parent), itsView(nullptr), parentWidget(parentWidget) {}
 
-QWidget* GameWonController::createView(int score) {
-    itsView = new GameWonView(score, parentWidget);
+QWidget* GameWonController::createView(int score, HeroType hero) {
+    itsView = new GameWonView(score, hero, parentWidget);
 
     connect(itsView, &GameWonView::menuRequested, this, &GameWonController::menuRequested);
 

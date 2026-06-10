@@ -1,4 +1,4 @@
-#ifndef GAMEVIEW_H
+ #ifndef GAMEVIEW_H
 #define GAMEVIEW_H
 
 #include <QWidget>
@@ -15,6 +15,7 @@
 #include "roomview.h"
 #include "obstacleview.h"
 #include "playerview.h"
+#include "collectibleview.h"
 
 class GameView : public QWidget
 {
@@ -42,8 +43,11 @@ private:
     QPointF currentCameraCenter;
     bool isCameraInitialized;
 
+    CollectibleView* itsChestView;
 
     QFrame *pauseMenu;
+
+    QPixmap heartTexture;
 
 signals:
     void keyPressed(int key);
