@@ -13,13 +13,15 @@ LancerModel::LancerModel(int maxHp, int speed, int x, int y, float attackCooldow
     itsHitBox = QRectF(x,y,LancerWidth, LancerHeight);
     itsAttackCooldown = attackCooldown;
     itsAttackDamage = attackDamage;
-    canAttack = true;
+    canAttack = false;
     itsCoolDownTimer = new QTimer();
     IframeTimer = new QTimer();
     isInIframe = false;
+    itsType = LANCER;
 
     connect(itsCoolDownTimer, &QTimer::timeout, this, &LancerModel::resetAttackCooldown);
     connect(IframeTimer, &QTimer::timeout, this, &LancerModel::resetIframe);
+    itsCoolDownTimer->start(1500);
 }
 
 ///
@@ -58,7 +60,7 @@ void LancerModel::attack(QPointF heroPos)
 
     // 5. Generates the final polygon
     QPolygon attackHitbox = transform.mapToPolygon(baseAttackRect);
-    emit attacking(attackHitbox, itsAttackDamage);
+    emit attacking(HitZoneModel(attackHitbox, LANCE), itsAttackDamage);
     canAttack = false;
     itsCoolDownTimer->start(itsAttackCooldown*1000);
 }
@@ -71,20 +73,19 @@ void LancerModel::attack(QPointF heroPos)
 bool LancerModel::handleAI(QPointF heroPos)
 {
     // Goes towards the player if it's too far
-    if (QLineF(heroPos, itsHitBox.center()).length() > LancerAttackHitboxWidth-5){
-        for (int i = 0; i<itsSpeed; i++){
+    for (int i = 0; i<itsSpeed; i++){
+        if (QLineF(heroPos, itsHitBox.center()).length() > LancerAttackHitboxWidth-5){
+
             QLineF aimLine = QLineF(itsHitBox.center(), heroPos);
             qreal angle = aimLine.angle();
-
             QLineF movementVector = QLineF::fromPolar(1, angle);
-
             itsHitBox.translate(movementVector.dx(), movementVector.dy());
+
+            if (i == itsSpeed-1)
+                return false;
         }
-        return false;
     }
-    else{
-        return true;
-    }
+    return true;
 }
 
 ///
@@ -124,7 +125,7 @@ void LancerModel::takeDamage(int amount)
 ///
 void LancerModel::move(QPointF pos)
 {
-    itsHitBox.setTopLeft(pos);
+    itsHitBox.moveTo(pos.toPoint());
 }
 
 ///

@@ -17,8 +17,8 @@ LordModel::LordModel(int maxHp, int speed, int x, int y, float attack1Cooldown, 
     itsAttack2Damage = attack2Damage;
     itsCoolDownTimer1 = new QTimer();
     itsCoolDownTimer2 = new QTimer();
-    canAttack1 = true;
-    canAttack2 = true;
+    canAttack1 = false;
+    canAttack2 = false;
     itsDashTimer = new QTimer();
     isDashing = false;
     currentDashStep = 0;
@@ -30,6 +30,8 @@ LordModel::LordModel(int maxHp, int speed, int x, int y, float attack1Cooldown, 
     connect(itsCoolDownTimer2, &QTimer::timeout, this, &LordModel::resetAttack2Cooldown);
     connect(itsDashTimer, &QTimer::timeout, this, &LordModel::dashStep);
     connect(IframeTimer, &QTimer::timeout, this, &LordModel::resetIframe);
+    itsCoolDownTimer1->start(1500);
+    itsCoolDownTimer2->start(1500);
 }
 
 ///
@@ -62,7 +64,7 @@ void LordModel::attack1(QPointF heroPos)
     canAttack1 = false;
     QPolygon attackHitbox = hitboxCercle->toFillPolygon().toPolygon();
     itsCoolDownTimer1->start(itsAttack1Cooldown*1000);
-    emit attacking(attackHitbox, itsAttack1Damage);
+    emit attacking(HitZoneModel(attackHitbox, UNDEFINEDE), itsAttack1Damage);
 }
 
 ///
@@ -184,7 +186,7 @@ void LordModel::dashStep()
     transform.rotate(-angle);
 
     QPolygon attackHitbox = transform.mapToPolygon(baseAttackRect);
-    emit attacking(attackHitbox, itsAttack2Damage);
+    emit attacking(HitZoneModel(attackHitbox, SWORD), itsAttack2Damage);
 
     // We move on to the next step for the next "tick" of the timer.
     currentDashStep++;

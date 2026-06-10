@@ -1,95 +1,100 @@
 #include "charselectview.h"
 #include "config.h"
 
-///
-/// \brief CharSelectView::CharSelectView
-/// \details Builds the character selection screen layout using nested layouts
-/// to position the hero on the bridge and the return button at the bottom right.
-///
 CharSelectView::CharSelectView(QWidget *parent)
-    : QWidget(parent) {
+    : QWidget(parent), currentHeroIndex(0) {
 
-    // Main layout
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    mainLayout->setContentsMargins(LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN);
-    mainLayout->setAlignment(Qt::AlignTop);
-
-    // Screen Title
-    itsTitle = new QLabel(LABEL_CHARSELECT_TITLE);
+    // SCREEB TITLE
+    itsTitle = new QLabel(LABEL_CHARSELECT_TITLE, this);
     QFont titleFont("Alagard");
     titleFont.setPointSize(MENU_TITLE_FONT_SIZE);
     titleFont.setBold(true);
     itsTitle->setFont(titleFont);
     itsTitle->setStyleSheet("color: white; background: transparent;");
-    mainLayout->addWidget(itsTitle, 0, Qt::AlignHCenter);
+    itsTitle->setAlignment(Qt::AlignCenter);
+    itsTitle->setGeometry(0, 60, WINDOW_WIDTH, 50);
 
-    mainLayout->addStretch(3);
+    // --- STYLES ---
+    QString arrowStyle =
+        "QPushButton { background-color: rgba(0, 0, 0, 150); color: white; "
+        "font-family: 'Alagard'; font-size: 30px; font-weight: bold; "
+        "border: 2px solid #555555; border-radius: 5px; }"
+        "QPushButton:hover { background-color: #E30000; border-color: white; }";
 
-    itsBlacksmithCardButton = new QPushButton();
-    itsBlacksmithCardButton->setFixedSize(160, 200);
+    QString cardStyle =
+        "QPushButton { border: none; background-color: transparent; background: none; outline: none; }"
+        "QPushButton:hover { border: 3px solid #E30000; }";
 
-    QIcon blacksmithIcon(":/forgeron.png");
-    itsBlacksmithCardButton->setIcon(blacksmithIcon);
-    itsBlacksmithCardButton->setIconSize(QSize(160, 200));
-
-    QString blacksmithCardStyle =
-        "QPushButton {"
-        "   border: none;"
-        "   background-color: transparent;"
-        "   background: none;"
-        "   outline: none;"
-        "}"
-        "QPushButton:hover {"
-        "   border: 3px solid #E30000;"
-        "}";
-    itsBlacksmithCardButton->setStyleSheet(blacksmithCardStyle);
-
-    connect(itsBlacksmithCardButton, &QPushButton::clicked, this, [this]() {
-        emit selectCharacterRequested(HeroType::Blacksmith);
+    itsLeftArrow = new QPushButton("<", this);
+    itsLeftArrow->setStyleSheet(arrowStyle);
+    itsLeftArrow->setGeometry(40, 370, 60, 60);
+    connect(itsLeftArrow, &QPushButton::clicked, this, [this]() {
+        currentHeroIndex--;
+        if (currentHeroIndex < 0) currentHeroIndex = 2;
+        updateCarousel();
     });
-    mainLayout->addWidget(itsBlacksmithCardButton, 0, Qt::AlignHCenter);
 
-    mainLayout->addSpacing(5);
+    itsRightArrow = new QPushButton(">", this);
+    itsRightArrow->setStyleSheet(arrowStyle);
+    itsRightArrow->setGeometry(1100, 370, 60, 60);
+    connect(itsRightArrow, &QPushButton::clicked, this, [this]() {
+        currentHeroIndex++;
+        if (currentHeroIndex > 2) currentHeroIndex = 0;
+        updateCarousel();
+    });
 
-    itsBlacksmithStatsLabel = new QLabel();
-    itsBlacksmithStatsLabel->setFixedSize(600, 130);
-    itsBlacksmithStatsLabel->setText(STATS_BLACKSMITH);
-    itsBlacksmithStatsLabel->setAlignment(Qt::AlignCenter);
-    itsBlacksmithStatsLabel->setStyleSheet("background: transparent;");
-    mainLayout->addWidget(itsBlacksmithStatsLabel, 0, Qt::AlignHCenter);
+    // THE CHARACTER (Goes down onto the deck)
+    itsHeroCardButton = new QPushButton(this);
+    itsHeroCardButton->setStyleSheet(cardStyle);
+    itsHeroCardButton->setGeometry(520, 350, 160, 200);
+    connect(itsHeroCardButton, &QPushButton::clicked, this, [this]() {
+        if (currentHeroIndex == 0) {
+            emit selectCharacterRequested(HeroType::Blacksmith);
+        } else if (currentHeroIndex == 1) {
+            emit selectCharacterRequested(HeroType::Hunter);
+        } else {
+            emit selectCharacterRequested(HeroType::Assassin);
+        }
+    });
 
-    QHBoxLayout *bottomLayout = new QHBoxLayout();
+    // STATS
+    itsHeroStatsLabel = new QLabel(this);
+    itsHeroStatsLabel->setStyleSheet("background: transparent;");
+    itsHeroStatsLabel->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+    itsHeroStatsLabel->setWordWrap(true);
+    itsHeroStatsLabel->setGeometry(300, 560, 600, 150);
 
-    bottomLayout->addStretch(1);
-
+    // BACK TO MENU BUTTON
     QString backButtonStyle =
-        "QPushButton {"
-        "   background-color: #111111;"
-        "   color: white;"
-        "   border: 2px solid #555555;"
-        "   font-family: 'Alagard';"
-        "   font-size: 15px;"
-        "   font-weight: bold;"
-        "   border-radius: 3px;"
-        "}"
-        "QPushButton:hover {"
-        "   background-color: #E30000;"
-        "   border-color: white;"
-        "}";
+        "QPushButton { background-color: #111111; color: white; border: 2px solid #555555; "
+        "font-family: 'Alagard'; font-size: 15px; font-weight: bold; border-radius: 3px; }"
+        "QPushButton:hover { background-color: #E30000; border-color: white; }";
 
-    itsBackButton = new QPushButton(LABEL_BACK);
-    itsBackButton->setFixedSize(220, BUTTON_HEIGHT);
+    itsBackButton = new QPushButton(LABEL_BACK, this);
     itsBackButton->setStyleSheet(backButtonStyle);
+    itsBackButton->setGeometry(WINDOW_WIDTH - 260, WINDOW_HEIGHT - 90, 220, BUTTON_HEIGHT);
     connect(itsBackButton, &QPushButton::clicked, this, &CharSelectView::backRequested);
 
-    bottomLayout->addWidget(itsBackButton);
-
-    mainLayout->addLayout(bottomLayout);
+    // Initialisation
+    updateCarousel();
 }
 
-///
-/// \brief CharSelectView::paintEvent
-///
+void CharSelectView::updateCarousel() {
+    if (currentHeroIndex == 0) {
+        itsHeroCardButton->setIcon(QIcon(":/forgeron.png"));
+        itsHeroCardButton->setIconSize(QSize(160, 200));
+        itsHeroStatsLabel->setText(STATS_BLACKSMITH);
+    } else if (currentHeroIndex == 1) {
+        itsHeroCardButton->setIcon(QIcon(":/chasseur.png"));
+        itsHeroCardButton->setIconSize(QSize(160, 200));
+        itsHeroStatsLabel->setText(STATS_HUNTER);
+    } else {
+        itsHeroCardButton->setIcon(QIcon(":/assassin.png"));
+        itsHeroCardButton->setIconSize(QSize(160, 200));
+        itsHeroStatsLabel->setText(STATS_ASSASSIN);
+    }
+}
+
 void CharSelectView::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);
     QPainter painter(this);

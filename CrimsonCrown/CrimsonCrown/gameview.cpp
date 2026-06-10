@@ -10,11 +10,20 @@ GameView::GameView(GameModel *model, QWidget *parent)
 
     itsRoomView = new RoomView();
     itsObstacleView = new ObstacleView();
-    itsBossView = new BossView(LORD);
+    itsBossView = new BossView;
+    itsProjectileView = new ProjectileView;
+    itsEnemyView = new EnemyView;
+    itsChestView = new CollectibleView();
+    itsHitZoneView = new HitZoneView;
+
+    heartTexture = QPixmap(":/coeur.png");
+    
 
     if (itsModel->getItsPlayer() != nullptr) {
         itsPlayerView = new PlayerView(nullptr, itsModel->getItsPlayer());
-        itsPlayerView->setItsTexture(HeroType::Blacksmith);
+
+        itsPlayerView->setItsTexture(itsModel->getItsPlayer()->getItsName());
+
     } else {
         itsPlayerView = nullptr;
     }
@@ -79,10 +88,14 @@ GameView::~GameView()
 void GameView::keyPressEvent(QKeyEvent *event) { if (!event->isAutoRepeat()) emit keyPressed(event->key()); }
 void GameView::keyReleaseEvent(QKeyEvent *event) { if (!event->isAutoRepeat()) emit keyReleased(event->key()); }
 
-void GameView::drawAttackArea(QPolygon hitbox)
+void GameView::drawAttackArea(HitZoneModel hitZone)
 {
-    itsAttackAreas.append(hitbox);
+    itsAttackAreas.append(hitZone);
     update();
+
+    QTimer::singleShot(100, this, [this, hitZone]() {
+        itsAttackAreas.removeOne(hitZone);
+    });
 }
 
 void GameView::paintEvent(QPaintEvent *event)
@@ -161,15 +174,46 @@ void GameView::paintEvent(QPaintEvent *event)
         }
     }
 
-    // 2. DRAW ENEMIES (Temporary red squares)
-    painter.setBrush(QColor(220, 20, 60)); // "Monster" red
-    painter.setPen(QPen(Qt::black, 3));
-    for (EnemyModel* enemy : itsModel->getItsEnemies()) {
-        painter.drawRect(enemy->getHitBox());
+    // --- DESSIN DU COFFRE EASTER EGG ---
+    // Le coffre doit être au centre de la salle de loot (qui commence à x=1250, y=2075 et fait 600x600).
+    // Centre = (1250 + 600/2, 2075 + 600/2) = (1550, 2375).
+    // Si ton coffre fait 100x100 pixels, il faut le décaler de la moitié (50, 50).
+    // Coordonnées de départ : (1500, 2325).
+    itsChestView->setBounds(1500, 2325, 100, 100);
+
+    // On dessine le coffre en mode "fermé" (vrai) tant que le joueur n'a pas la clef.
+    // (Puisque dans ton code GameModel::updateLogic(), on supprime la clef quand le coffre s'ouvre)
+    bool isClosed = itsModel->getItsPlayer()->getHasSecretKey();
+    itsChestView->draw(painter, isClosed);
+
+    // --- DESSIN DES COEURS DE SOIN (NIVEAU 2) ---
+    if (itsModel->getCurrentLevel() == 2 && !heartTexture.isNull()) {
+
+        // On dessine le coeur 1 s'il n'est pas ramassé
+        if (!itsModel->getIsHeart1Collected()) {
+            painter.drawPixmap(275, 1350, 50, 50, heartTexture);
+        }
+
+        // On dessine le coeur 2 s'il n'est pas ramassé
+        if (!itsModel->getIsHeart2Collected()) {
+            painter.drawPixmap(-2225, 2375, 50, 50, heartTexture);
+        }
     }
-    const BossModel * boss = itsModel->getItsBoss();
-    if (boss){
-        itsBossView->draw(&painter, boss);
+
+    // 2. DRAW ENEMIES
+    if (!itsModel->getItsEnemies().empty()){
+        for (EnemyModel* enemy : itsModel->getItsEnemies()) {
+            itsEnemyView->setItsTexture(enemy->getitsEnemyType());
+            itsEnemyView->draw(&painter, enemy);
+        }
+    }
+
+    if(itsModel->getItsBoss()){
+        const BossModel * theBoss = itsModel->getItsBoss();
+        if (theBoss){
+            itsBossView->setItsTexture(theBoss->getItsType());
+            itsBossView->draw(&painter, theBoss);
+        }
     }
 
     // 3. DRAW PLAYER
@@ -179,12 +223,18 @@ void GameView::paintEvent(QPaintEvent *event)
 
     // 4 DRAW ATTACK AREAS
     if (!itsAttackAreas.empty()){
-        for (QPolygon area : itsAttackAreas){
-            painter.setBrush(QBrush(Qt::white));
-            painter.setPen(QPen(Qt::red));
-            painter.drawPolygon(area);
+        for (HitZoneModel hitzone : itsAttackAreas){
+            itsHitZoneView->draw(&painter, &hitzone);
         }
-        itsAttackAreas.clear();
+    }
+
+    // draw projectile
+    if (!itsModel->getItsProjeciles().empty()){
+        for (ProjectileModel * projectile : itsModel->getItsProjeciles()){
+
+            itsProjectileView->setItsTexture(projectile->getItsType());
+            itsProjectileView->draw(&painter, projectile);
+        }
     }
 
     painter.restore(); // End of camera-managed area
@@ -201,6 +251,15 @@ void GameView::paintEvent(QPaintEvent *event)
     int totalWidth = (2 * boxWidth) + spacing;
     int startX = (this->width() - totalWidth) / 2;
     int topY = 15;
+
+
+    // --- LEVEL ---
+    if (itsModel != nullptr) {
+        painter.setPen(Qt::white);
+        painter.setFont(QFont("Arial", 16, QFont::Bold));
+        QString levelText = "NIVEAU " + QString::number(itsModel->getCurrentLevel());
+        painter.drawText(20, 40, levelText);
+    }
 
     // --- 1. HEALTH BOX (Red) ---
     PlayerModel* player = itsModel->getItsPlayer();
@@ -232,6 +291,101 @@ void GameView::paintEvent(QPaintEvent *event)
     int enemiesRemaining = itsModel->getItsEnemies().size();
 
     painter.drawText(20, this->height() - 45, QString("Ennemis restants : %1").arg(enemiesRemaining));
+
+    // ==========================================
+    // --- 4. COOLDOWN BAR
+    // ==========================================
+    if (player != nullptr) {
+        int c1Max = 1, c2Max = 1;
+        QString name1 = "Attaque 1", name2 = "Attaque 2";
+
+        switch(player->getItsName()) {
+        case HeroType::Assassin:
+            c1Max = static_cast<int>(AssassinAttack1Cooldown * 1000.0f);
+            c2Max = static_cast<int>(AssassinAttack2Cooldown * 1000.0f);
+            name1 = "Couteau";
+            name2 = "Fumée";
+            break;
+        case HeroType::Hunter:
+            c1Max = static_cast<int>(HunterAttack1Cooldown * 1000.0f);
+            c2Max = static_cast<int>(HunterAttack2Cooldown * 1000.0f);
+            name1 = "Flèche";
+            name2 = "Zone Piège";
+            break;
+        case HeroType::Blacksmith:
+            c1Max = static_cast<int>(BlacksmithAttack1Cooldown * 1000.0f);
+            c2Max = static_cast<int>(BlacksmithAttack2Cooldown * 1000.0f);
+            name1 = "Marteau";
+            name2 = "Fracas";
+            break;
+        default:
+            break;
+        }
+
+        int barWidth = 150;
+        int barHeight = 22;
+        int spacing = 15;
+        int marginRight = 30;
+
+        int totalWidth = (2 * barWidth) + spacing;
+        int hudX = this->width() - totalWidth - marginRight;
+
+        int hudY = this->height() - 45;
+
+        // ------------------------------------------
+        // --- MAIN ATTACK
+        // ------------------------------------------
+        QRect bar1Rect(hudX, hudY, barWidth, barHeight);
+        painter.setBrush(QColor(40, 40, 40, 200));
+        painter.setPen(QPen(Qt::white, 1));
+        painter.drawRect(bar1Rect);
+
+        double progress1 = 1.0;
+        if (!player->getCanAttack1() && c1Max > 0) {
+            double tempsRestant1 = static_cast<double>(player->getCooldown1Remaining());
+            progress1 = 1.0 - (tempsRestant1 / c1Max);
+            if (progress1 < 0.0) progress1 = 0.0;
+            if (progress1 > 1.0) progress1 = 1.0;
+        }
+
+        if (progress1 > 0) {
+            painter.setBrush(QColor(46, 204, 113)); // Green
+            painter.setPen(Qt::NoPen);
+            painter.drawRect(hudX + 1, hudY + 1, static_cast<int>((barWidth - 2) * progress1), barHeight - 2);
+        }
+
+        painter.setPen(Qt::white);
+        painter.setFont(QFont("Arial", 10, QFont::Bold));
+        painter.drawText(bar1Rect, Qt::AlignCenter, name1);
+
+
+        // ------------------------------------------
+        // --- SPECIAL ATTACK
+        // ------------------------------------------
+        int bar2X = hudX + barWidth + spacing;
+
+        QRect bar2Rect(bar2X, hudY, barWidth, barHeight);
+        painter.setBrush(QColor(40, 40, 40, 200));
+        painter.setPen(QPen(Qt::white, 1));
+        painter.drawRect(bar2Rect);
+
+        double progress2 = 1.0;
+        if (!player->getCanAttack2() && c2Max > 0) {
+            double tempsRestant2 = static_cast<double>(player->getCooldown2Remaining());
+            progress2 = 1.0 - (tempsRestant2 / c2Max);
+            if (progress2 < 0.0 or progress2 == 1.0) progress2 = 0.0;
+            if (progress2 > 1.0) progress2 = 1.0;
+        }
+
+        if (progress2 > 0) {
+            painter.setBrush(QColor(52, 152, 219)); // Blue
+            painter.setPen(Qt::NoPen);
+            painter.drawRect(bar2X + 1, hudY + 1, static_cast<int>((barWidth - 2) * progress2), barHeight - 2);
+        }
+
+        painter.setPen(Qt::white);
+        painter.drawText(bar2Rect, Qt::AlignCenter, name2);
+    }
 }
 
 void GameView::setPauseMenuVisible(bool visible)

@@ -28,18 +28,20 @@ GameController::~GameController()
 ///
 QWidget* GameController::createView(HeroType hero)
 {
+    isPaused = false;
+
     itsModel->resetGame(hero);
 
     if (itsModel->getItsPlayer()) {
         connect(itsModel->getItsPlayer(), &PlayerModel::death, this, &GameController::onPlayerDeath);
     }
-    connect(itsModel, &GameModel::gameWon, this, &GameController::gameWon);
+    connect(itsModel, &GameModel::gameWon, this, &GameController::gameWon, Qt::UniqueConnection);
 
     itsView = new GameView(itsModel, parentWidget);
 
     connect(itsView, &GameView::keyPressed, this, &GameController::onKeyPressed);
     connect(itsView, &GameView::keyReleased, this, &GameController::onKeyReleased);
-    connect(itsModel, &GameModel::attack, itsView, &GameView::drawAttackArea);
+    connect(itsModel, &GameModel::attack, itsView, &GameView::drawAttackArea, Qt::UniqueConnection);
 
     connect(itsView, &GameView::quitRequested, this, &GameController::menuRequested);
 
@@ -65,12 +67,12 @@ void GameController::destroyView()
 
 void GameController::onPlayerDeath()
 {
-    emit gameOver(itsModel->getItsScore());
+    emit gameOver(itsModel->getItsScore(), itsModel->getItsPlayer()->getItsName());
 }
 
 void GameController::onBossDeath()
 {
-    emit gameWon(itsModel->getItsScore());
+    emit gameWon(itsModel->getItsScore(), itsModel->getItsPlayer()->getItsName());
 }
 
 
@@ -105,31 +107,26 @@ void GameController::onKeyPressed(int key)
     // Safe guard model verification passes
     if (!itsModel || !itsModel->getItsPlayer()) return;
 
-    switch (key) {
-    case keyBind::keyLeft:
+    if (key == keyBind::keyLeft) {
         itsModel->getItsPlayer()->setMovementLeft(true);
-        break;
-    case keyBind::keyRight:
+    }
+    else if (key == keyBind::keyRight) {
         itsModel->getItsPlayer()->setMovementRight(true);
-        break;
-    case keyBind::keyUp:
+    }
+    else if (key == keyBind::keyUp) {
         itsModel->getItsPlayer()->setMovementUp(true);
-        break;
-    case keyBind::keyDown:
+    }
+    else if (key == keyBind::keyDown) {
         itsModel->getItsPlayer()->setMovementDown(true);
-        break;
-    // Touche de kill ennemis
-    case Qt::Key_T:
+    }
+    else if (key == Qt::Key_T) {
         itsModel->cheatKillEnemies();
-        break;
-    case keyBind::keyAttaque1:
+    }
+    else if (key == keyBind::keyAttaque1) {
         itsModel->getItsPlayer()->setAttack1(true);
-        break;
-    case keyBind::keyAttaque2:
+    }
+    else if (key == keyBind::keyAttaque2) {
         itsModel->getItsPlayer()->setAttack2(true);
-        break;
-    default:
-        break;
     }
 }
 
@@ -140,27 +137,23 @@ void GameController::onKeyReleased(int key)
 {
     if (!itsModel || !itsModel->getItsPlayer()) return;
 
-    switch (key) {
-    case keyBind::keyLeft:
+    if (key == keyBind::keyLeft) {
         itsModel->getItsPlayer()->setMovementLeft(false);
-        break;
-    case keyBind::keyRight:
+    }
+    else if (key == keyBind::keyRight) {
         itsModel->getItsPlayer()->setMovementRight(false);
-        break;
-    case keyBind::keyUp:
+    }
+    else if (key == keyBind::keyUp) {
         itsModel->getItsPlayer()->setMovementUp(false);
-        break;
-    case keyBind::keyDown:
+    }
+    else if (key == keyBind::keyDown) {
         itsModel->getItsPlayer()->setMovementDown(false);
-        break;
-    case keyBind::keyAttaque1:
+    }
+    else if (key == keyBind::keyAttaque1) {
         itsModel->getItsPlayer()->setAttack1(false);
-        break;
-    case keyBind::keyAttaque2:
+    }
+    else if (key == keyBind::keyAttaque2) {
         itsModel->getItsPlayer()->setAttack2(false);
-        break;
-    default:
-        break;
     }
 }
 

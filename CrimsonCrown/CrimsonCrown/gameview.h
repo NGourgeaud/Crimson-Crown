@@ -1,4 +1,4 @@
-#ifndef GAMEVIEW_H
+ #ifndef GAMEVIEW_H
 #define GAMEVIEW_H
 
 #include <QWidget>
@@ -9,10 +9,15 @@
 #include <QList>
 #include <QFrame>
 #include "bossview.h"
+#include "enemyview.h"
 #include "gamemodel.h"
+#include "hitzonemodel.h"
+#include "hitzoneview.h"
+#include "projectileview.h"
 #include "roomview.h"
 #include "obstacleview.h"
 #include "playerview.h"
+#include "collectibleview.h"
 
 class GameView : public QWidget
 {
@@ -33,12 +38,19 @@ private:
     ObstacleView *itsObstacleView;
     PlayerView *itsPlayerView;
     BossView * itsBossView;
-    QList<QPolygon> itsAttackAreas;
+    EnemyView * itsEnemyView;
+    ProjectileView * itsProjectileView;
+    HitZoneView * itsHitZoneView;
+    QList<HitZoneModel> itsAttackAreas;
 
     QPointF currentCameraCenter;
     bool isCameraInitialized;
 
+    CollectibleView* itsChestView;
+
     QFrame *pauseMenu;
+
+    QPixmap heartTexture;
 
 signals:
     void keyPressed(int key);
@@ -46,7 +58,7 @@ signals:
     void quitRequested();
 
 public slots:
-    void drawAttackArea(QPolygon hitbox);
+    void drawAttackArea(HitZoneModel hitZone);
 };
 
 #endif // GAMEVIEW_H

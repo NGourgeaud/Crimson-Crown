@@ -67,7 +67,6 @@ MenuView::MenuView(QWidget *parent)
     settingsBtn->setStyleSheet(buttonStyle);
     connect(settingsBtn, &QPushButton::clicked, this, &MenuView::settingsRequested);
     leftLayout->addWidget(settingsBtn, 0, Qt::AlignHCenter);
-
     leftLayout->addSpacing(10);
 
     QPushButton *quitBtn = new QPushButton(LABEL_QUIT);

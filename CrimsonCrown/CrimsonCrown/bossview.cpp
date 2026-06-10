@@ -1,9 +1,8 @@
 #include "bossview.h"
 #include "qpainter.h"
 
-BossView::BossView(BossType type)
+BossView::BossView()
 {
-    itsType = type;
 }
 
 ///
@@ -20,15 +19,15 @@ void BossView::draw(QPainter * painter, const BossModel * model)
         return;
     }
 
-    painter->drawPixmap(model->getHitBox().topLeft(), itsTexTure);
+    painter->drawPixmap(model->getHitBox().toRect(), itsTexTure);
 }
 
 ///
 /// \brief BossView::setItsTexture
 ///
-void BossView::setItsTexture()
+void BossView::setItsTexture(BossType type)
 {
-    switch (itsType) {
+    switch (type) {
     case LORD:
         itsTexTure = QPixmap(":/lord.png");
         break;

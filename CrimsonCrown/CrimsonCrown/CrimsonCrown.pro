@@ -10,12 +10,15 @@ CONFIG += c++17
 
 SOURCES += \
     appcontroller.cpp \
+    archermodel.cpp \
+    assassinmodel.cpp \
     blacksmithmodel.cpp \
     blacksmithview.cpp \
     bossmodel.cpp \
     bossview.cpp \
     charselectcontroller.cpp \
     charselectview.cpp \
+    collectibleview.cpp \
     enemymodel.cpp \
     enemyview.cpp \
     entitymodel.cpp \
@@ -25,6 +28,10 @@ SOURCES += \
     gameoverview.cpp \
     gamewoncontroller.cpp \
     gamewonview.cpp \
+    hitzonemodel.cpp \
+    hitzoneview.cpp \
+    huntermodel.cpp \
+    knightmodel.cpp \
     lordmodel.cpp \
     gameview.cpp \
     main.cpp \
@@ -36,17 +43,25 @@ SOURCES += \
     obstaclemodel.cpp \
     obstacleview.cpp \
     playerview.cpp \
+    projectilemodel.cpp \
+    projectileview.cpp \
     roommodel.cpp \
-    roomview.cpp
+    roomview.cpp \
+    settingmodel.cpp \
+    settingview.cpp \
+    settingcontroller.cpp
 
 HEADERS += \
     appcontroller.h \
+    archermodel.h \
+    assassinmodel.h \
     blacksmithmodel.h \
     blacksmithview.h \
     bossmodel.h \
     bossview.h \
     charselectcontroller.h \
     charselectview.h \
+    collectibleview.h \
     config.h \
     enemymodel.h \
     enemyview.h \
@@ -57,6 +72,10 @@ HEADERS += \
     gameoverview.h \
     gamewoncontroller.h \
     gamewonview.h \
+    hitzonemodel.h \
+    hitzoneview.h \
+    huntermodel.h \
+    knightmodel.h \
     lordmodel.h \
     gameview.h \
     mainwindow.h \
@@ -67,8 +86,13 @@ HEADERS += \
     obstaclemodel.h \
     obstacleview.h \
     playerview.h \
+    projectilemodel.h \
+    projectileview.h \
     roommodel.h \
-    roomview.h
+    roomview.h \
+    settingmodel.h \
+    settingview.h \
+    settingcontroller.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -78,8 +102,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     images.qrc
 
-macx:QMAKE_CXXFLAGS += -Wno-error=implicit-function-declaration
-macx:QMAKE_CFLAGS += -Wno-error=implicit-function-declaration
+DISTFILES +=
 
-DISTFILES += \
-    lancier.png
+macx:QMAKE_CXXFLAGS += -Wno-error=implicit-function-declaration
+
+macx:QMAKE_CFLAGS += -Wno-error=implicit-function-declaration

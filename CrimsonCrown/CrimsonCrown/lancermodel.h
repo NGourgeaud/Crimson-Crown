@@ -2,6 +2,7 @@
 #define LANCERMODEL_H
 
 #include "enemymodel.h"
+#include "hitzonemodel.h"
 #include "qobject.h"
 #include <QPolygon>
 #include <QTimer>
@@ -25,7 +26,7 @@ private:
 
 signals:
     void death(LancerModel * model);
-    void attacking(QPolygon hitbox, int damage);
+    void attacking(HitZoneModel hitbox, int damage);
 
 private slots:
     void resetAttackCooldown();

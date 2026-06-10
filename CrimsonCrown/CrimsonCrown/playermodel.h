@@ -30,6 +30,8 @@ protected:
     Direction itsDirection;
     QRectF itsHitBox;
 
+    bool hasSecretKey = false;
+
     HeroType itsName;
 
 public:
@@ -62,6 +64,19 @@ public:
     int getMaxHP();
 
     void regen();
+
+    bool getCanAttack1() const;
+    bool getCanAttack2() const;
+    int getCooldown1Remaining() const;
+    int getCooldown2Remaining() const;
+
+    HeroType getItsName() const;
+
+    bool getHasSecretKey() const { return hasSecretKey; }
+    void setHasSecretKey(bool hasKey) { hasSecretKey = hasKey; }
+
+    void heal(int amount);
+
 
 
 signals:
