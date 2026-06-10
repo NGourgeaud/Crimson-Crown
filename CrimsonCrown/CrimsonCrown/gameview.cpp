@@ -13,6 +13,9 @@ GameView::GameView(GameModel *model, QWidget *parent)
     itsBossView = new BossView;
     itsProjectileView = new ProjectileView;
     itsEnemyView = new EnemyView;
+    itsChestView = new CollectibleView();
+
+    heartTexture = QPixmap(":/coeur.png");
 
     if (itsModel->getItsPlayer() != nullptr) {
         itsPlayerView = new PlayerView(nullptr, itsModel->getItsPlayer());
@@ -166,6 +169,32 @@ void GameView::paintEvent(QPaintEvent *event)
 
                 painter.restore();
             }
+        }
+    }
+
+    // --- DESSIN DU COFFRE EASTER EGG ---
+    // Le coffre doit être au centre de la salle de loot (qui commence à x=1250, y=2075 et fait 600x600).
+    // Centre = (1250 + 600/2, 2075 + 600/2) = (1550, 2375).
+    // Si ton coffre fait 100x100 pixels, il faut le décaler de la moitié (50, 50).
+    // Coordonnées de départ : (1500, 2325).
+    itsChestView->setBounds(1500, 2325, 100, 100);
+
+    // On dessine le coffre en mode "fermé" (vrai) tant que le joueur n'a pas la clef.
+    // (Puisque dans ton code GameModel::updateLogic(), on supprime la clef quand le coffre s'ouvre)
+    bool isClosed = itsModel->getItsPlayer()->getHasSecretKey();
+    itsChestView->draw(painter, isClosed);
+
+    // --- DESSIN DES COEURS DE SOIN (NIVEAU 2) ---
+    if (itsModel->getCurrentLevel() == 2 && !heartTexture.isNull()) {
+
+        // On dessine le coeur 1 s'il n'est pas ramassé
+        if (!itsModel->getIsHeart1Collected()) {
+            painter.drawPixmap(275, 1350, 50, 50, heartTexture);
+        }
+
+        // On dessine le coeur 2 s'il n'est pas ramassé
+        if (!itsModel->getIsHeart2Collected()) {
+            painter.drawPixmap(-2225, 2375, 50, 50, heartTexture);
         }
     }
 

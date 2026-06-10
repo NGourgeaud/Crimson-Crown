@@ -24,6 +24,9 @@ private:
     int minEnemy;
     int maxEnemy;
     float statIncreass;
+    bool isEasterEggFound;
+    bool isHeart1Collected;
+    bool isHeart2Collected;
 
 public:
     GameModel();
@@ -50,9 +53,12 @@ public:
     void loadLevel(int levelId);
     QList<ProjectileModel *> getItsProjeciles() const;
 
+    bool getIsHeart1Collected() const { return isHeart1Collected; }
+    bool getIsHeart2Collected() const { return isHeart2Collected; }
+
 signals:
     void roomCleared();
-    void gameWon(int score);
+    void gameWon(int score, HeroType hero);
     void gameOver(int score);
     void attack(QPolygon);
 

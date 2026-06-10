@@ -1,21 +1,29 @@
 #include "gameoverview.h"
 
-GameOverView::GameOverView(int score, QWidget *parent)
+GameOverView::GameOverView(int score, HeroType hero, QWidget *parent)
     : QWidget(parent) {
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN);
 
-    // 1. LARGE SPRING: Pushes everything down
-    mainLayout->addStretch(7);
+    // 1. Remplacer addStretch(7) par un espacement fixe en pixels
+    // Augmente cette valeur pour descendre le perso, diminue-la pour le monter !
+    mainLayout->addSpacing(380);
 
-    // 2. THE BLACKSMITH ON THE BRIDGE
+    // 2. CHOIX DYNAMIQUE DU PERSONNAGE (DÉFAITE)
+    QString imagePath;
+    switch (hero) {
+    case HeroType::Assassin: imagePath = ":/assassin-loose.png"; break;
+    case HeroType::Hunter:   imagePath = ":/chasseur-loose.png"; break;
+    default:                 imagePath = ":/forgeron-loose.png"; break;
+    }
+
     QLabel *characterImage = new QLabel();
     characterImage->setFixedSize(160, 200);
-    QPixmap forgeron(":/forgeron-loose.png");
-    characterImage->setPixmap(forgeron.scaled(160, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    QPixmap spriteDefaite(imagePath);
+    characterImage->setPixmap(spriteDefaite.scaled(160, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     characterImage->setStyleSheet("background: transparent;");
-    mainLayout->addWidget(characterImage, 0, Qt::AlignHCenter);
+    mainLayout->addWidget(characterImage, 0, Qt::AlignHCenter); // Conserve le centrage automatique !
 
     mainLayout->addSpacing(20);
 
@@ -46,7 +54,7 @@ GameOverView::GameOverView(int score, QWidget *parent)
         "   border-radius: 3px;"
         "}"
         "QPushButton:hover {"
-        "   background-color: #E30000;" // Rouge au survol
+        "   background-color: #E30000;"
         "   border-color: white;"
         "}";
 

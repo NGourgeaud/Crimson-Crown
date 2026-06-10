@@ -65,12 +65,12 @@ void GameController::destroyView()
 
 void GameController::onPlayerDeath()
 {
-    emit gameOver(itsModel->getItsScore());
+    emit gameOver(itsModel->getItsScore(), itsModel->getItsPlayer()->getItsName());
 }
 
 void GameController::onBossDeath()
 {
-    emit gameWon(itsModel->getItsScore());
+    emit gameWon(itsModel->getItsScore(), itsModel->getItsPlayer()->getItsName());
 }
 
 

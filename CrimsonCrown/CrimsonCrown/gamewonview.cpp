@@ -1,21 +1,29 @@
 #include "gamewonview.h"
 
-GameWonView::GameWonView(int score, QWidget *parent)
+GameWonView::GameWonView(int score, HeroType hero, QWidget *parent)
     : QWidget(parent) {
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN);
 
-    // 1. LARGE SPRING: Pushes everything down
-    mainLayout->addStretch(6);
+    // 1. Espacement fixe en pixels pour caler les pieds sur le pont
+    // Ajuste cette valeur (ex: 380) pour caler le personnage parfaitement
+    mainLayout->addSpacing(380);
 
-    // 2. THE BLACKSMITH ON THE BRIDGE
+    // 2. CHOIX DYNAMIQUE DU PERSONNAGE (VICTOIRE)
+    QString imagePath;
+    switch (hero) {
+    case HeroType::Assassin: imagePath = ":/assassin-win.png"; break;
+    case HeroType::Hunter:   imagePath = ":/chasseur-win.png"; break;
+    default:                 imagePath = ":/forgeron-win.png"; break;
+    }
+
     QLabel *characterImage = new QLabel();
     characterImage->setFixedSize(160, 200);
-    QPixmap forgeron(":/forgeron-win.png");
-    characterImage->setPixmap(forgeron.scaled(160, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    QPixmap spriteVictoire(imagePath);
+    characterImage->setPixmap(spriteVictoire.scaled(160, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     characterImage->setStyleSheet("background: transparent;");
-    mainLayout->addWidget(characterImage, 0, Qt::AlignHCenter);
+    mainLayout->addWidget(characterImage, 0, Qt::AlignHCenter); // Conserve le centrage automatique !
 
     mainLayout->addSpacing(20);
 

@@ -18,6 +18,7 @@ SOURCES += \
     bossview.cpp \
     charselectcontroller.cpp \
     charselectview.cpp \
+    collectibleview.cpp \
     enemymodel.cpp \
     enemyview.cpp \
     entitymodel.cpp \
@@ -58,6 +59,7 @@ HEADERS += \
     bossview.h \
     charselectcontroller.h \
     charselectview.h \
+    collectibleview.h \
     config.h \
     enemymodel.h \
     enemyview.h \

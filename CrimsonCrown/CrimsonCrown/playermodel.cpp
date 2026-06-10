@@ -195,4 +195,13 @@ int PlayerModel::getCooldown2Remaining() const
 }
 
 
+void PlayerModel::heal(int amount)
+{
+    itsHP += amount;
+    if (itsHP > itsMaxHP) {
+        itsHP = itsMaxHP; // On bloque au maximum de points de vie
+    }
+}
+
+
 

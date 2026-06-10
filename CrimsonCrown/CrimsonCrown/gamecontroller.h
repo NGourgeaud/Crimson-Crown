@@ -18,8 +18,8 @@ public:
 
 signals:
     void menuRequested();
-    void gameOver(int score);
-    void gameWon(int score);
+    void gameOver(int score, HeroType hero);
+    void gameWon(int score, HeroType hero);
 
 private slots:
     void onPlayerDeath();

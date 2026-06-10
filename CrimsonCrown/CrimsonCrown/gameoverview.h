@@ -13,7 +13,7 @@
 class GameOverView : public QWidget {
     Q_OBJECT
 public:
-    explicit GameOverView(int score, QWidget *parent = nullptr);
+    explicit GameOverView(int score, HeroType hero, QWidget *parent = nullptr);
 
 signals:
     void menuRequested();

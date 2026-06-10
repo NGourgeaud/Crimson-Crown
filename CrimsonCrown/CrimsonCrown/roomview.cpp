@@ -13,6 +13,11 @@ void RoomView::draw(QPainter &painter, const RoomModel *roomModel, ObstacleView 
 {
     if (!roomModel) return;
 
+    if (roomModel->getOffsetX() == 2100 && roomModel->getOffsetY() == 225) {
+        return;
+
+    }
+
     RoomType type = roomModel->getType();
 
     if  (type == Spawn){
@@ -37,6 +42,7 @@ void RoomView::draw(QPainter &painter, const RoomModel *roomModel, ObstacleView 
         painter.setPen(QPen(QColor(139, 69, 19), 12));
         painter.drawRect(6, 6, roomModel->getWidth() - 12, roomModel->getHeight() - 12);
     }
+
 
     painter.setPen(QPen(Qt::black, 4));
     for (const ObstacleModel* obstacle : roomModel->getItsObstacles()) {

@@ -25,8 +25,8 @@ private slots:
     void onSettingsRequested();
     void onGameRequested(HeroType type);
     void onQuitRequested();
-    void onGameOver(int score);
-    void onGameWon(int score);
+    void onGameOver(int score, HeroType hero);
+    void onGameWon(int score, HeroType hero);
 
 private:
     void navigateTo(AppState state);

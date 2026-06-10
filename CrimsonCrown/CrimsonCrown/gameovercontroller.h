@@ -9,7 +9,7 @@ class GameOverController : public QObject {
 public:
     explicit GameOverController(QWidget *parentWidget = nullptr, QObject *parent = nullptr);
 
-    QWidget *createView(int score);
+    QWidget* createView(int score, HeroType hero);
     void destroyView();
 
 signals:

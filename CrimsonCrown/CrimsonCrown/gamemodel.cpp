@@ -30,6 +30,7 @@ GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
     minEnemy = 4;
     maxEnemy = 6;
     statIncreass = 1;
+    isEasterEggFound = false;
 }
 
 GameModel::~GameModel()
@@ -43,6 +44,10 @@ GameModel::~GameModel()
 
 void GameModel::resetGame(HeroType hero)
 {
+
+    isHeart1Collected = false;
+    isHeart2Collected = false;
+
     qDeleteAll(allRooms);
     allRooms.clear();
 
@@ -164,6 +169,8 @@ void GameModel::loadLevel(int levelId)
         // 2. COMBAT 1 (En haut à gauche)
         allRooms.append(new RoomModel(RoomType::Combat, 1000, -25, 1100, 650));
 
+        allRooms.append(new RoomModel(RoomType::CorridorHorizontal, 2100, 225, 400, 150));
+
         // Couloir qui descend vers la salle violette
         allRooms.append(new RoomModel(RoomType::CorridorVertical, 1475, 625, 150, 400));
 
@@ -235,6 +242,7 @@ void GameModel::loadLevel(int levelId)
             }
         }
     }
+
 }
 
 
@@ -354,7 +362,7 @@ void GameModel::updateLogic()
                     lord->update(itsPlayer->getHitBox().center());
                 }
             }
-        } // <- Fin du 'if (!isPlayerInvisible)'
+        }
     }
 
     // projectile update
@@ -393,7 +401,7 @@ void GameModel::updateLogic()
                 }
                 else if (currentLevel == 2) {
                     // Fin du niveau 2 : Le joueur prend la sortie, il a GAGNÉ le jeu !
-                    emit gameWon(itsScore); // Déclenche ton écran de victoire final
+                    emit gameWon(itsScore, itsPlayer->getItsName()); // Déclenche ton écran de victoire final
                     return;
                 }
             }
@@ -414,8 +422,73 @@ void GameModel::updateLogic()
                 }
             }
         }
+        // ==========================================
+        // --- LOGIQUE DES COEURS (NIVEAU 2) ---
+        // ==========================================
+        if (currentLevel == 2) {
 
-        // --- C. WALL MANAGEMENT ---
+            // Coeur 1 (Dans la salle de loot de droite, centre = 300, 1375)
+            if (!isHeart1Collected) {
+                QRectF heart1Zone(275, 1350, 50, 50); // Hitbox de 50x50 au centre
+                if (itsPlayer->getHitBox().intersects(heart1Zone)) {
+                    itsPlayer->heal(5); // +5 HP !
+                    isHeart1Collected = true;
+                    qDebug() << "Coeur 1 ramasse !";
+                }
+            }
+
+            // Coeur 2 (Dans la salle de loot tout a gauche, centre = -2200, 2400)
+            if (!isHeart2Collected) {
+                QRectF heart2Zone(-2225, 2375, 50, 50); // Hitbox de 50x50 au centre
+                if (itsPlayer->getHitBox().intersects(heart2Zone)) {
+                    itsPlayer->heal(5); // +5 HP !
+                    isHeart2Collected = true;
+                    qDebug() << "Coeur 2 ramasse !";
+                }
+            }
+        }
+
+        // ==========================================
+        // --- LOGIQUE EASTER EGG & COULOIR SECRET ---
+        // ==========================================
+
+        // 1. Détecter si le boss est mort
+        bool isBossDead = false;
+        for (RoomModel* room : allRooms) {
+            if (room->getType() == RoomType::Boss && room->getIsVisited() && itsBoss == nullptr) {
+                isBossDead = true;
+                break;
+            }
+        }
+
+        if (currentLevel == 1) {
+
+            // --- SÉCURITÉ : ON NE FAIT ÇA QUE SI LE COFFRE N'EST PAS ENCORE OUVERT ---
+            if (!isEasterEggFound) {
+
+                // A. Ramasser la clef
+                QRectF secretKeyZone(2430, 275, 50, 50);
+                if (isBossDead && !itsPlayer->getHasSecretKey() && itsPlayer->getHitBox().intersects(secretKeyZone)) {
+                    itsPlayer->setHasSecretKey(true);
+                    qDebug() << "Clef secrete trouvee dans le couloir invisible !";
+                }
+
+                // B. Ouvrir le coffre
+                QRectF chestZone(1500, 2325, 100, 100);
+                QRectF interactionZone = chestZone.adjusted(-20, -20, 20, 20);
+
+                if (itsPlayer->getHasSecretKey() && itsPlayer->getHitBox().intersects(interactionZone)) {
+                    qDebug() << "COFFRE OUVERT ! EASTER EGG DECOUVERT !";
+                    itsPlayer->setHasSecretKey(false);
+                    itsScore += 200;
+
+                    // ON VERROUILLE L'EASTER EGG POUR LE RESTE DE LA PARTIE
+                    isEasterEggFound = true;
+                }
+            }
+        }
+
+        // --- C. WALL MANAGEMENT (MIS À JOUR POUR LE COULOIR INVISIBLE) ---
         bool collision = false;
         bool bossAccess = areAllCombatRoomsCleared();
 
@@ -424,11 +497,19 @@ void GameModel::updateLogic()
             if (room->getType() == RoomType::Boss && !bossAccess) {
                 continue;
             }
+
+            // --- MODIFICATION COLLISION SECRÈTE ---
+            // Si c'est notre couloir secret et que le boss n'est pas mort, on ne l'ajoute pas.
+            if (room->getOffsetX() == 2100 && room->getOffsetY() == 225 && !isBossDead) {
+                continue;
+            }
+
             mapBounds.addRect(room->getOffsetX(), room->getOffsetY(),
                               room->getWidth(), room->getHeight());
         }
         mapBounds = mapBounds.simplified();
 
+        // 1. Détection des bords de la carte et des portes fermées
         if (activeRoom != nullptr && activeRoom->getIsLocked()) {
             if (!activeRoom->getBounds().contains(itsPlayer->getHitBox())) {
                 collision = true;
@@ -440,7 +521,7 @@ void GameModel::updateLogic()
             }
         }
 
-        // --- D. COLLISIONS CARRIERS ---
+        // --- D. COLLISIONS OBSTACLES (Tonneaux, etc.) ---
         for (RoomModel* room : allRooms) {
             for (ObstacleModel* obs : room->getItsObstacles()) {
                 QRectF globalObsRect = obs->getHitBox();
@@ -452,12 +533,12 @@ void GameModel::updateLogic()
             }
         }
 
-        // E. APPLICATION OF PHYSICS
+        // --- E. APPLICATION DE LA PHYSIQUE ---
         if (collision) {
             itsPlayer->move(oldPos);
         }
-    }
-}
+    } // <-- Fin du grand "if (itsPlayer != nullptr)"
+} // <-- Fin de la fonction updateLogic()
 
 void GameModel::cheatKillEnemies()
 {
