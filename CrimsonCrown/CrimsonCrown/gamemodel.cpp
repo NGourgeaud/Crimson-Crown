@@ -236,6 +236,10 @@ void GameModel::loadLevel(int levelId)
         allRooms.append(new RoomModel(RoomType::Spawn, -2500, 2100, 600, 600)); // Zone Loot gauche
         allRooms.append(new RoomModel(RoomType::CorridorHorizontal, -2900, 2325, 400, 150));
         allRooms.append(new RoomModel(RoomType::Combat, -4000, 2075, 1100, 650));
+
+        minEnemy = 5;
+        maxEnemy = 7;
+        statIncreass=1.1;
     }
 
     // 3. Repositionner le personnage au centre de la zone de Spawn actuelle
@@ -261,12 +265,6 @@ void GameModel::spawnEnemies(bool isBoss)
         std::uniform_int_distribution<int> RoomY(roomBoundaries.topLeft().ry()+60,roomBoundaries.bottomLeft().ry()-60);
         std::uniform_int_distribution<int> Type(LANCER,ARCHER);
 
-        if (currentLevel == 2){
-            minEnemy = 5;
-            maxEnemy = 7;
-            statIncreass+=0.1;
-            qDebug() << "Level 2";
-        }
         std::uniform_int_distribution<int> EnemiesNb(minEnemy,maxEnemy);
 
         int nbEnemies = EnemiesNb(eng);
@@ -886,6 +884,17 @@ void GameModel::onplayerProjectile(ProjectileModel *projectile)
        delete projectile;
        return;
     }
+}
+
+void GameModel::onKingSummon()
+{
+    int oldMinEnemy = minEnemy;
+    int oldMaxEnemy = maxEnemy;
+    minEnemy = 2;
+    maxEnemy = 4;
+    spawnEnemies(false);
+    minEnemy = oldMinEnemy;
+    maxEnemy = oldMaxEnemy;
 }
 
 bool GameModel::areAllCombatRoomsCleared() const

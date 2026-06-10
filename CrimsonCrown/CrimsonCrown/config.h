@@ -119,6 +119,30 @@ const int LordAttack1HitBoxHeight = 100;
 const int LordAttack2HitBoxWidth = 40;
 const int LordAttack2HitBoxHeight = 30;
 
+// King Stats
+const int KingDefaultMaxHp = 200;
+const int KingDefaultSpeed = 1;
+const int KingDefaultAttack1Damage = 0;
+const int KingDefaultAttack2Damage = 5;
+const float KingDefaultAttack1CoolDown = 5;
+const float KingDefaultAttack2CoolDown = 5;
+const float KingIframe = 0.2;
+
+
+const int KingWidth = 60;
+const int KingHeight = 60;
+
+const int KingAttack2HitBoxWidth = 100;
+const int KingAttack2HitBoxHeight = 100;
+
+const int KingAttack2SpikeHitBoxWidth = 70;
+const int KingAttack2SpikeHitBoxHeight = 70;
+
+const float KingAttack1Duration = 1.5;
+const float KingJumpDuration = 1;
+const float KingAttack2Step2Delay = 0.5;
+
+
 
 enum HeroType {
     None,
