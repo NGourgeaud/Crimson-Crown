@@ -18,7 +18,7 @@ public:
     bool getIsInvisible() const;
 
 private:
-    QTimer* smokeBombTimer; // Gère les 5 secondes
+    QTimer * smokeBombTimer; // Gère les 5 secondes
     bool isInvisible;
 
 private slots:
