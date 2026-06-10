@@ -2,7 +2,7 @@
 #include "config.h"
 
 AssassinModel::AssassinModel()
-    : PlayerModel(18, 18, 12, 7, 0, HeroType::Assassin)
+    : PlayerModel(18, 18, 12, 6, 0, HeroType::Assassin)
 {
     smokeBombTimer = new QTimer(this);
     smokeBombTimer->setSingleShot(true);
@@ -53,7 +53,7 @@ void AssassinModel::attack1() {
 void AssassinModel::attack2() {
     if (canAttack2) {
         isInvisible = true; // Activer l'effet
-        smokeBombTimer->start(5000); // 5 secondes
+        smokeBombTimer->start(AssassinAttack2Duration * 1000);
 
         canAttack2 = false;
     }
