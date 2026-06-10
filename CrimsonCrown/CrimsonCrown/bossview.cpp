@@ -23,13 +23,13 @@ void BossView::draw(QPainter * painter, const BossModel * model)
             painter->fillRect(model->getHitBox(), QColor(Qt::yellow));
             painter->setPen(Qt::blue);
             painter->drawRect(model->getHitBox());
+            break;
         default:
             painter->fillRect(model->getHitBox(), Qt::white);
             painter->setPen(Qt::white);
             painter->drawRect(model->getHitBox());
             break;
         }
-
         return;
     }
 
