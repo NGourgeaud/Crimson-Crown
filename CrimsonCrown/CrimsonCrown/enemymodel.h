@@ -18,7 +18,9 @@ public:
     ~EnemyModel() = default;
     virtual void attack(QPointF heroPos) = 0;
     virtual bool handleAI(QPointF heroPos) = 0;
+    virtual void update(QPointF heroPos) = 0;
     EnemyType getitsEnemyType();
+    float getitsSpeed();
 };
 
 #endif // ENEMYMODEL_H

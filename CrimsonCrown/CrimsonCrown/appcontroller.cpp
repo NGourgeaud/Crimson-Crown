@@ -166,10 +166,14 @@ void AppController::onGameOver(int score, HeroType hero)
 {
     gameController->destroyView();
     mainWindow->setCentralWidget(itsGameOverController->createView(score, hero));
+    currentView = itsGameWonController->createView(score);
+
 }
 
 void AppController::onGameWon(int score, HeroType hero)
 {
     gameController->destroyView();
     mainWindow->setCentralWidget(itsGameWonController->createView(score, hero));
+    currentView = itsGameOverController->createView(score);
+ 
 }

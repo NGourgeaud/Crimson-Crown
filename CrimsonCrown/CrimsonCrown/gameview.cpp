@@ -373,7 +373,7 @@ void GameView::paintEvent(QPaintEvent *event)
         if (!player->getCanAttack2() && c2Max > 0) {
             double tempsRestant2 = static_cast<double>(player->getCooldown2Remaining());
             progress2 = 1.0 - (tempsRestant2 / c2Max);
-            if (progress2 < 0.0) progress2 = 0.0;
+            if (progress2 < 0.0 or progress2 == 1.0) progress2 = 0.0;
             if (progress2 > 1.0) progress2 = 1.0;
         }
 

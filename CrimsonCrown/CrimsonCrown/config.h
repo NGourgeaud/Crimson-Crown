@@ -25,17 +25,22 @@ const QString LABEL_BACK = "RETOUR AU MENU";
 const int playerWidth = 60;
 const int playerHeight = 60;
 
-const int BlacksmithAttack1HitboxWidth = 50;
-const int BlacksmithAttack1HitboxHeight = 20;
+// Blacksmith Stats
+const int BlacksmithAttack1HitboxWidth = 60;
+const int BlacksmithAttack1HitboxHeight = 30;
 
 const int BlacksmithAttack2HitboxRadius = 80;
 
-const int BlacksmithAttack1Cooldown = 1;
+const float BlacksmithAttack1Cooldown = 0.7;
 const int BlacksmithAttack2Cooldown = 5;
 
+// Assassins Stats
 const int AssassinAttack1HitboxWidth = 80;
 const int AssassinAttack1HitboxHeight = 30;
+
 const float AssassinAttack1Cooldown = 0.6;
+
+const float AssassinAttack2Duration = 2;
 const float AssassinAttack2Cooldown = 7;
 
 // Hunter Stats
@@ -57,7 +62,7 @@ const float playerIframe = 0.5;
 // ==========================================
 
 // Lancer Stats
-const int LancerDefaultMaxHp = 18;
+const int LancerDefaultMaxHp = 25;
 const int LancerDefaultSpeed = 2;
 const int LancerDefaultAttackDamage = 3;
 const float LancerDefaultAttackCoolDown = 0.5;
@@ -83,7 +88,7 @@ const int KnightAttackHitboxWidth = 30;
 const int KnightAttackHitboxHeight = 50;
 
 // Archer Stats
-const int ArcherDefaultMaxHp = 25;
+const int ArcherDefaultMaxHp = 18;
 const int ArcherDefaultSpeed = 3;
 const int ArcherDefaultAttackDamage = 5;
 const float ArcherDefaultAttackCoolDown = 1;

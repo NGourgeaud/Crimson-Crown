@@ -7,3 +7,7 @@ EnemyType EnemyModel::getitsEnemyType()
     return itsType;
 }
 
+float EnemyModel::getitsSpeed()
+{
+    return itsSpeed;
+}
