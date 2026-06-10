@@ -28,18 +28,20 @@ GameController::~GameController()
 ///
 QWidget* GameController::createView(HeroType hero)
 {
+    isPaused = false;
+
     itsModel->resetGame(hero);
 
     if (itsModel->getItsPlayer()) {
         connect(itsModel->getItsPlayer(), &PlayerModel::death, this, &GameController::onPlayerDeath);
     }
-    connect(itsModel, &GameModel::gameWon, this, &GameController::gameWon);
+    connect(itsModel, &GameModel::gameWon, this, &GameController::gameWon, Qt::UniqueConnection);
 
     itsView = new GameView(itsModel, parentWidget);
 
     connect(itsView, &GameView::keyPressed, this, &GameController::onKeyPressed);
     connect(itsView, &GameView::keyReleased, this, &GameController::onKeyReleased);
-    connect(itsModel, &GameModel::attack, itsView, &GameView::drawAttackArea);
+    connect(itsModel, &GameModel::attack, itsView, &GameView::drawAttackArea, Qt::UniqueConnection);
 
     connect(itsView, &GameView::quitRequested, this, &GameController::menuRequested);
 

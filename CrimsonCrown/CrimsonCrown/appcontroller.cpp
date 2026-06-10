@@ -165,11 +165,13 @@ void AppController::cleanupCurrentView() {
 void AppController::onGameOver(int score)
 {
     gameController->destroyView();
+    currentView = itsGameWonController->createView(score);
     mainWindow->setCentralWidget(itsGameOverController->createView(score));
 }
 
 void AppController::onGameWon(int score)
 {
     gameController->destroyView();
+    currentView = itsGameOverController->createView(score);
     mainWindow->setCentralWidget(itsGameWonController->createView(score));
 }

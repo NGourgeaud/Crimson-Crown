@@ -49,6 +49,9 @@ void GameModel::resetGame(HeroType hero)
     qDeleteAll(itsEnemies);
     itsEnemies.clear();
 
+    qDeleteAll(itsProjeciles);
+    itsProjeciles.clear();
+
     if (itsBoss != nullptr) {
         delete itsBoss;
         itsBoss = nullptr;
@@ -293,7 +296,6 @@ void GameModel::spawnEnemies(bool isBoss)
             default:
                 break;
             }
-
         }
     }
     else{
@@ -322,6 +324,8 @@ void GameModel::updateLogic()
 
             // A. Enemies Update
             for (int i = itsEnemies.size() - 1; i >= 0; --i) {
+
+                bool isCollision = false;
 
                 EnemyModel* enemy = itsEnemies.at(i);
 
@@ -385,6 +389,8 @@ void GameModel::updateLogic()
 
                         // On applique la répulsion pour qu'ils ne se superposent pas
                         enemy->move(newPos);
+
+                        isCollision = true;
                     }
                 }
 
@@ -485,12 +491,18 @@ void GameModel::updateLogic()
 
                             // APPLICATION DU DEPLACEMENT
                             enemy->move(newPos);
+
+                            isCollision = true;
                         }
                     }
                 }
+                if(!isCollision){
+                    enemy->update(itsPlayer->getHitBox().center());
+                }
             }
-        } // <- Fin du 'if (!isPlayerInvisible)'
+        }
     }
+
     // projectile update
     if (!itsProjeciles.empty()){
         for (ProjectileModel * pro : itsProjeciles){
