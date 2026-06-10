@@ -23,6 +23,7 @@ void EnemyView::draw(QPainter * painter, EnemyModel * model)
         case ARCHER:
             painter->fillRect(model->getHitBox(), QColor(100, 50, 100));
             painter->setPen(Qt::red);
+            break;
         default:
             painter->fillRect(model->getHitBox(), QColor(255, 255, 255));
             painter->setPen(Qt::red);
