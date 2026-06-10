@@ -15,6 +15,8 @@ public:
     void move(QPointF pos);
     QRectF getHitBox() const;
 
+    void setCanSummon(bool newCanSummon);
+
 private:
     QTimer * itsCoolDownTimer1;
     QTimer * itsCoolDownTimer2;
@@ -28,6 +30,7 @@ private:
     void attack2(QPointF heroPos);
     bool isSummoning;
     bool isJumping;
+    bool canSummon;
 
 signals:
     void death(BossModel * Boss);

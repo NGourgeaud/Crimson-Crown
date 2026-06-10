@@ -2,6 +2,7 @@
 #include "archermodel.h"
 #include "blacksmithmodel.h"
 #include "assassinmodel.h"
+#include "kingmodel.h"
 #include "knightmodel.h"
 #include "lancermodel.h"
 #include "lordmodel.h"
@@ -306,12 +307,20 @@ void GameModel::spawnEnemies(bool isBoss)
         }
     }
     else{
-        LordModel * newLord = new LordModel(LordDefaultMaxHp, LordDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
+        /*LordModel * newLord = new LordModel(LordDefaultMaxHp, LordDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
                                            LordDefaultAttack1CoolDown, LordDefaultAttack2CoolDown, LordDefaultAttack1Damage, LordDefaultAttack2Damage);
         itsBoss = newLord;
 
         connect(newLord, &LordModel::death, this, &GameModel::onBossDeath);
-        connect(newLord, &LordModel::attacking, this, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+        connect(newLord, &LordModel::attacking, this, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});*/
+
+        KingModel * newKing = new KingModel(KingDefaultMaxHp, KingDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
+                                           KingDefaultAttack1CoolDown, KingDefaultAttack2CoolDown, KingDefaultAttack1Damage, KingDefaultAttack2Damage);
+        itsBoss = newKing;
+
+        connect(newKing, &KingModel::death, this, &GameModel::onBossDeath);
+        connect(newKing, &KingModel::attacking, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+        connect(newKing, &KingModel::spawnEnemies, this, &GameModel::onKingSummon);
     }
 
 }
@@ -739,6 +748,13 @@ void GameModel::onEnemyDeath(EnemyModel * model)
         delete model;
     }
 
+    if (itsBoss){
+        if (itsEnemies.count() <2){
+            KingModel * king = dynamic_cast<KingModel*>(itsBoss);
+            king->setCanSummon(true);
+        }
+    }
+
 }
 
 void GameModel::onBossDeath(BossModel * model)
@@ -846,7 +862,7 @@ void GameModel::onplayerProjectile(ProjectileModel *projectile)
             }
         }
     }
-    else if (itsBoss){
+    if (itsBoss){
         if (projectile->getItsHitbox().intersects(itsBoss->getHitBox())){
             itsBoss->takeDamage(projectile->getItsDamage());
             disconnect(projectile);
@@ -890,11 +906,15 @@ void GameModel::onKingSummon()
 {
     int oldMinEnemy = minEnemy;
     int oldMaxEnemy = maxEnemy;
-    minEnemy = 2;
-    maxEnemy = 4;
+    minEnemy = 1;
+    maxEnemy = 2;
     spawnEnemies(false);
     minEnemy = oldMinEnemy;
     maxEnemy = oldMaxEnemy;
+    if (itsEnemies.count() >=3){
+        KingModel * king = dynamic_cast<KingModel*>(itsBoss);
+        king->setCanSummon(false);
+    }
 }
 
 bool GameModel::areAllCombatRoomsCleared() const
