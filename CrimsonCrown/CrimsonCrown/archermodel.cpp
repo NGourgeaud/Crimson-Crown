@@ -38,7 +38,7 @@ void ArcherModel::attack(QPointF heroPos)
                                      3, ArcherDefaultAttackDamage, ENEMY, ARROW);
     emit attacking(projectile);
     canAttack = false;
-    itsCoolDownTimer->start(ArcherDefaultAttackDamage*1000);
+    itsCoolDownTimer->start(ArcherDefaultAttackCoolDown*1000);
 }
 
 void ArcherModel::takeDamage(int amount)
@@ -53,7 +53,7 @@ void ArcherModel::takeDamage(int amount)
 
 void ArcherModel::move(QPointF pos)
 {
-    itsHitBox.setTopLeft(pos);
+    itsHitBox.moveTo(pos);
 }
 
 QRectF ArcherModel::getHitBox() const
