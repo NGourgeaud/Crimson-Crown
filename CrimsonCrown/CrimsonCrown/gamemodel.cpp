@@ -292,6 +292,7 @@ void GameModel::spawnEnemies(bool isBoss)
                 // Using a lambda to secure parameter passing
                 connect(newEnnemy, &ArcherModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
                 connect(newEnnemy, &ArcherModel::attacking, this, &GameModel::onNewProjectile);
+                break;
             }
             default:
                 break;

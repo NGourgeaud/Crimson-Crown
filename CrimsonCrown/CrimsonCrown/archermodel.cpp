@@ -38,7 +38,7 @@ void ArcherModel::attack(QPointF heroPos)
                                      3, ArcherDefaultAttackDamage, ENEMY, ARROW);
     emit attacking(projectile);
     canAttack = false;
-    itsCoolDownTimer->start(ArcherDefaultAttackDamage*1000);
+    itsCoolDownTimer->start(ArcherDefaultAttackCoolDown*1000);
 }
 
 void ArcherModel::takeDamage(int amount)
@@ -53,7 +53,7 @@ void ArcherModel::takeDamage(int amount)
 
 void ArcherModel::move(QPointF pos)
 {
-    itsHitBox.setTopLeft(pos);
+    itsHitBox.moveTo(pos);
 }
 
 QRectF ArcherModel::getHitBox() const
@@ -64,6 +64,19 @@ QRectF ArcherModel::getHitBox() const
 // TODO
 bool ArcherModel::handleAI(QPointF heroPos)
 {
+    // Goes away the player if it's too close
+    for (int i = 0; i<itsSpeed; i++){
+        if (QLineF(heroPos, itsHitBox.center()).length() < 200){
+
+            QLineF aimLine = QLineF(itsHitBox.center(), heroPos);
+            qreal angle = aimLine.angle();
+            QLineF movementVector = QLineF::fromPolar(-1, angle);
+            itsHitBox.translate(movementVector.dx(), movementVector.dy());
+
+            if (i == itsSpeed-1)
+                return false;
+        }
+    }
     return true;
 }
 
