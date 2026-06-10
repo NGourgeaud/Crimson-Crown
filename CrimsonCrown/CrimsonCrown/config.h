@@ -113,11 +113,30 @@ const float LordIframe = 0.2;
 const int LordWidth = 50;
 const int LordHeight = 50;
 
-const int LordAttack1HitBoxWidth = 100;
-const int LordAttack1HitBoxHeight = 100;
+const int LordAttack1HitBoxWidth = 60;
+const int LordAttack1HitBoxHeight = 30;
 
 const int LordAttack2HitBoxWidth = 40;
 const int LordAttack2HitBoxHeight = 30;
+
+// Clergy Stats
+const int ClergyDefaultMaxHp = 150;
+const int ClergyDefaultSpeed = 1;
+const int ClergyDefaultAttack1Damage = 10;
+const int ClergyDefaultAttack2Damage = 10;
+const float ClergyDefaultAttack1CoolDown = 1;
+const float ClergyDefaultAttack2CoolDown = 5;
+const float ClergyIframe = 0.2;
+
+
+const int ClergyWidth = 50;
+const int ClergyHeight = 50;
+
+const int ClergyAttack1HitBoxWidth = 100;
+const int ClergyAttack1HitBoxHeight = 100;
+
+const int ClergyAttack2HitBoxWidth = 40;
+const int ClergyAttack2HitBoxHeight = 30;
 
 
 enum HeroType {
@@ -146,7 +165,8 @@ enum Team{
 
 enum ProjectileType {
     ARROW,
-    KNIFE
+    KNIFE,
+    RADIUS
 };
 
 enum AttackZoneType {

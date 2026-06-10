@@ -2,6 +2,7 @@
 #include "archermodel.h"
 #include "blacksmithmodel.h"
 #include "assassinmodel.h"
+#include "clergymodel.h"
 #include "knightmodel.h"
 #include "lancermodel.h"
 #include "lordmodel.h"
@@ -307,13 +308,13 @@ void GameModel::spawnEnemies(bool isBoss)
             }
         }
     }
-    else{
-        LordModel * newLord = new LordModel(LordDefaultMaxHp, LordDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
-                                           LordDefaultAttack1CoolDown, LordDefaultAttack2CoolDown, LordDefaultAttack1Damage, LordDefaultAttack2Damage);
-        itsBoss = newLord;
+    else {
+        clergyModel * newClergy = new clergyModel(ClergyDefaultMaxHp, ClergyDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
+                                                 ClergyDefaultAttack1CoolDown, ClergyDefaultAttack2CoolDown, ClergyDefaultAttack1Damage, ClergyDefaultAttack2Damage);
+        itsBoss = newClergy;
 
-        connect(newLord, &LordModel::death, this, &GameModel::onBossDeath);
-        connect(newLord, &LordModel::attacking, this, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+        connect(newClergy, &clergyModel::death, this, &GameModel::onBossDeath);
+        connect(newClergy, &clergyModel::attacking, this, &GameModel::onNewProjectile);
     }
 
 }
@@ -514,7 +515,34 @@ void GameModel::updateLogic()
     }
 
     if (itsBoss){
-        itsBoss->update(itsPlayer->getHitBox().center());
+        bool collision = false;
+        QPointF newPosMap = itsBoss->getHitBox().topLeft();
+        QRectF roomBounds = activeRoom->getBounds();
+
+        if (newPosMap.x() < roomBounds.left()) {
+            newPosMap.setX(roomBounds.left());
+            collision = true;
+        }
+        else if (newPosMap.x() + itsBoss->getHitBox().width() > roomBounds.right()) {
+            newPosMap.setX(roomBounds.right() - itsBoss->getHitBox().width());
+            collision = true;
+        }
+
+        if (newPosMap.y() < roomBounds.top()) {
+            newPosMap.setY(roomBounds.top());
+            collision = true;
+        }
+        else if (newPosMap.y() + itsBoss->getHitBox().height() > roomBounds.bottom()) {
+            newPosMap.setY(roomBounds.bottom() - itsBoss->getHitBox().height());
+            collision = true;
+        }
+
+        if(collision){
+            itsBoss->move(newPosMap);
+        }
+        else{
+            itsBoss->update(itsPlayer->getHitBox().center());
+        }
     }
 
     // projectile update
@@ -689,8 +717,8 @@ void GameModel::updateLogic()
         if (collision) {
             itsPlayer->move(oldPos);
         }
-    } // <-- Fin du grand "if (itsPlayer != nullptr)"
-} // <-- Fin de la fonction updateLogic()
+    }
+}
 
 void GameModel::cheatKillEnemies()
 {

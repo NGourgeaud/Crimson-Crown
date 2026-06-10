@@ -20,5 +20,6 @@
         <file>chasseur-loose.png</file>
         <file>chasseur-win.png</file>
         <file>coeur.png</file>
+        <file>rayon.png</file>
     </qresource>
 </RCC>
