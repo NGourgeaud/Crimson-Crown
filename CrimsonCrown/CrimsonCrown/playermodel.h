@@ -32,6 +32,10 @@ protected:
 
     HeroType itsName;
 
+    QTimer* animationTimer;
+    int currentFrame;
+    int maxFrames;
+
 public:
     PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, int aAttack2Damage, HeroType aName);
     virtual void attack1() = 0;
@@ -70,7 +74,10 @@ public:
 
     HeroType getItsName() const;
 
-
+    // sprite
+    Direction getItsDirection() const;
+    int getCurrentFrame() const;
+    bool isMoving() const;
 
 signals:
     void death();
@@ -79,6 +86,9 @@ private slots:
     void resetAttackCooldown1();
     void resetAttackCooldown2();
     void resetIframe();
+
+    // sprite
+    void nextFrame();
 };
 
 #endif // PLAYERMODEL_H

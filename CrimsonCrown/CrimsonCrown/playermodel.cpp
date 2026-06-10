@@ -6,6 +6,21 @@ HeroType PlayerModel::getItsName() const
 }
 
 
+Direction PlayerModel::getItsDirection() const
+{
+    return itsDirection;
+}
+
+int PlayerModel::getCurrentFrame() const
+{
+    return currentFrame;
+}
+
+bool PlayerModel::isMoving() const
+{
+    return isMovingUp || isMovingDown || isMovingLeft || isMovingRight;
+}
+
 PlayerModel::PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, int aAttack2Damage, HeroType aName)
     :itsDirection(Right), itsHitBox(QRectF(0, 0, playerWidth, playerHeight))
 {
@@ -32,6 +47,12 @@ PlayerModel::PlayerModel(int aHp, int aMaxHP, int aSpeed, int aAttack1Damage, in
     connect(itsCooldown1, &QTimer::timeout, this, &PlayerModel::resetAttackCooldown1);
     connect(itsCooldown2, &QTimer::timeout, this, &PlayerModel::resetAttackCooldown2);
     connect(IframeTimer, &QTimer::timeout, this, &PlayerModel::resetIframe);
+
+    currentFrame = 0;
+    maxFrames = 4; // Tous tes spritesheets ont 4 frames de marche
+    animationTimer = new QTimer(this);
+    connect(animationTimer, &QTimer::timeout, this, &PlayerModel::nextFrame);
+    animationTimer->start(150);
 }
 
 void PlayerModel::update()
@@ -194,5 +215,13 @@ int PlayerModel::getCooldown2Remaining() const
     return itsCooldown2->isActive() ? itsCooldown2->remainingTime() : 0;
 }
 
+void PlayerModel::nextFrame()
+{
+    if (isMoving()) {
+        currentFrame = (currentFrame + 1) % maxFrames; // Boucle de 0 à 3
+    } else {
+        currentFrame = 0; // Si le joueur ne bouge pas, on force la position fixe
+    }
+}
 
 

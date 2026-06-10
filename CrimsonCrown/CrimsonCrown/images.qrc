@@ -15,5 +15,8 @@
         <file>arrow.png</file>
         <file>lancier.png</file>
         <file>knife.png</file>
+        <file>assassin_sprite.png</file>
+        <file>forgeron_sprite.png</file>
+        <file>chasseur_sprite.png</file>
     </qresource>
 </RCC>

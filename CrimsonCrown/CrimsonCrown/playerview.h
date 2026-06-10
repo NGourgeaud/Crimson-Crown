@@ -16,4 +16,5 @@ public:
     void setItsTexture(HeroType namePlayer);
 };
 
+
 #endif // PLAYERVIEW_H
