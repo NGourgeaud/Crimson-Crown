@@ -504,6 +504,10 @@ void GameModel::updateLogic()
         }
     }
 
+    if (itsBoss){
+        itsBoss->update(itsPlayer->getHitBox().center());
+    }
+
     // projectile update
     if (!itsProjeciles.empty()){
         for (ProjectileModel * pro : itsProjeciles){
