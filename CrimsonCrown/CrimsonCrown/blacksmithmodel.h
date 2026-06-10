@@ -1,6 +1,7 @@
 #ifndef BLACKSMITHMODEL_H
 #define BLACKSMITHMODEL_H
 
+#include "hitzonemodel.h"
 #include "playermodel.h"
 #include <QPolygon>
 #include <QLineF>
@@ -16,7 +17,7 @@ public:
     void attack2();
 
 signals:
-    void attackPlayer(QPolygon attackHitBox, int damage);
+    void attackPlayer(HitZoneModel attackHitBox, int damage);
 };
 
 #endif // BLACKSMITHMODEL_H

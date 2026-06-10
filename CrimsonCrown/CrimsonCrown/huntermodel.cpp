@@ -60,7 +60,7 @@ void HunterModel::attack2()
         QPolygon attackHitbox = path.toFillPolygon().toPolygon();
 
         itsAttack2Area = attackHitbox;
-        emit attackPlayer(itsAttack2Area, itsAttack2Damage);
+        emit attackPlayer(HitZoneModel(attackHitbox, UNDEFINEDP), itsAttack2Damage);
         itsAttack2Time = 0;
         itsAttack2Timer->start(HunterAttack2TickRate*1000);
         canAttack2 = false;
@@ -75,7 +75,7 @@ void HunterModel::tickAttack2()
         itsAttack2Timer->stop();
         return;
     }
-    emit attackPlayer(itsAttack2Area, itsAttack2Damage);
+    emit attackPlayer(HitZoneModel(itsAttack2Area, UNDEFINEDP), itsAttack2Damage);
     itsAttack2Time += HunterAttack2TickRate;
     qDebug() << itsAttack2Time;
     qDebug() << HunterAttack2Duration;

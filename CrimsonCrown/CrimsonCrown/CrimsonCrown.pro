@@ -28,6 +28,8 @@ SOURCES += \
     gameoverview.cpp \
     gamewoncontroller.cpp \
     gamewonview.cpp \
+    hitzonemodel.cpp \
+    hitzoneview.cpp \
     huntermodel.cpp \
     knightmodel.cpp \
     lordmodel.cpp \
@@ -70,6 +72,8 @@ HEADERS += \
     gameoverview.h \
     gamewoncontroller.h \
     gamewonview.h \
+    hitzonemodel.h \
+    hitzoneview.h \
     huntermodel.h \
     knightmodel.h \
     lordmodel.h \

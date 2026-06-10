@@ -66,7 +66,7 @@ void BlacksmithModel::attack1()
         // 4. Zone generation
         QPolygon attackHitbox = transform.mapToPolygon(baseAttackRect);
 
-        emit attackPlayer(attackHitbox, itsAttack1Damage);
+        emit attackPlayer(HitZoneModel(attackHitbox, HAMMER), itsAttack1Damage);
 
         canAttack1 = false;
         itsCooldown1->start(BlacksmithAttack1Cooldown*1000);
@@ -93,7 +93,7 @@ void BlacksmithModel::attack2()
         QPolygon attackHitbox = path.toFillPolygon().toPolygon();
 
         // Transmit the signal with the new attack zone
-        emit attackPlayer(attackHitbox, itsAttack2Damage);
+        emit attackPlayer(HitZoneModel(attackHitbox, UNDEFINEDP), itsAttack2Damage);
 
         canAttack2 = false;
         itsCooldown2->start(BlacksmithAttack2Cooldown*1000);

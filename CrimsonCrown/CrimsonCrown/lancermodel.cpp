@@ -60,7 +60,7 @@ void LancerModel::attack(QPointF heroPos)
 
     // 5. Generates the final polygon
     QPolygon attackHitbox = transform.mapToPolygon(baseAttackRect);
-    emit attacking(attackHitbox, itsAttackDamage);
+    emit attacking(HitZoneModel(attackHitbox, LANCE), itsAttackDamage);
     canAttack = false;
     itsCoolDownTimer->start(itsAttackCooldown*1000);
 }

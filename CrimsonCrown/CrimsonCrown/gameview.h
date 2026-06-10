@@ -11,6 +11,8 @@
 #include "bossview.h"
 #include "enemyview.h"
 #include "gamemodel.h"
+#include "hitzonemodel.h"
+#include "hitzoneview.h"
 #include "projectileview.h"
 #include "roomview.h"
 #include "obstacleview.h"
@@ -38,7 +40,8 @@ private:
     BossView * itsBossView;
     EnemyView * itsEnemyView;
     ProjectileView * itsProjectileView;
-    QList<QPolygon> itsAttackAreas;
+    HitZoneView * itsHitZoneView;
+    QList<HitZoneModel> itsAttackAreas;
 
     QPointF currentCameraCenter;
     bool isCameraInitialized;
@@ -55,7 +58,7 @@ signals:
     void quitRequested();
 
 public slots:
-    void drawAttackArea(QPolygon hitbox);
+    void drawAttackArea(HitZoneModel hitZone);
 };
 
 #endif // GAMEVIEW_H

@@ -14,8 +14,10 @@ GameView::GameView(GameModel *model, QWidget *parent)
     itsProjectileView = new ProjectileView;
     itsEnemyView = new EnemyView;
     itsChestView = new CollectibleView();
+    itsHitZoneView = new HitZoneView;
 
     heartTexture = QPixmap(":/coeur.png");
+    
 
     if (itsModel->getItsPlayer() != nullptr) {
         itsPlayerView = new PlayerView(nullptr, itsModel->getItsPlayer());
@@ -86,13 +88,13 @@ GameView::~GameView()
 void GameView::keyPressEvent(QKeyEvent *event) { if (!event->isAutoRepeat()) emit keyPressed(event->key()); }
 void GameView::keyReleaseEvent(QKeyEvent *event) { if (!event->isAutoRepeat()) emit keyReleased(event->key()); }
 
-void GameView::drawAttackArea(QPolygon hitbox)
+void GameView::drawAttackArea(HitZoneModel hitZone)
 {
-    itsAttackAreas.append(hitbox);
+    itsAttackAreas.append(hitZone);
     update();
 
-    QTimer::singleShot(100, this, [this, hitbox]() {
-        itsAttackAreas.removeOne(hitbox);
+    QTimer::singleShot(100, this, [this, hitZone]() {
+        itsAttackAreas.removeOne(hitZone);
     });
 }
 
@@ -221,10 +223,8 @@ void GameView::paintEvent(QPaintEvent *event)
 
     // 4 DRAW ATTACK AREAS
     if (!itsAttackAreas.empty()){
-        for (QPolygon area : itsAttackAreas){
-            painter.setBrush(QBrush(Qt::white));
-            painter.setPen(QPen(Qt::red));
-            painter.drawPolygon(area);
+        for (HitZoneModel hitzone : itsAttackAreas){
+            itsHitZoneView->draw(&painter, &hitzone);
         }
     }
 

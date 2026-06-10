@@ -4,6 +4,7 @@
 #include <QObject>
 #include "bossmodel.h"
 #include <QPolygon>
+#include "hitzonemodel.h"
 #include "qline.h"
 #include "qtimer.h"
 
@@ -34,7 +35,7 @@ private:
 
 signals:
     void death(BossModel * Boss);
-    void attacking(QPolygon hitbox, int damage);
+    void attacking(HitZoneModel hitbox, int damage);
 
 private slots:
     void resetAttack1Cooldown();
