@@ -1,6 +1,7 @@
 #ifndef HUNTERMODEL_H
 #define HUNTERMODEL_H
 
+#include "hitzonemodel.h"
 #include "playermodel.h"
 #include "projectilemodel.h"
 #include <QPolygon>
@@ -21,7 +22,7 @@ public:
     void attack2();
 
 signals:
-    void attackPlayer(QPolygon attackHitBox, int damage);
+    void attackPlayer(HitZoneModel attackHitBox, int damage);
     void fireProjectile(ProjectileModel* projectile);
 
 private slots:

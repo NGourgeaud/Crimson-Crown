@@ -144,6 +144,14 @@ enum ProjectileType {
     KNIFE
 };
 
+enum AttackZoneType {
+    UNDEFINEDE,
+    UNDEFINEDP,
+    HAMMER,
+    LANCE,
+    SWORD
+};
+
 // --- STATISTIQUES ET DESCRIPTION DU ASSASSIN (HTML STYLISÉ) ---
 const QString STATS_ASSASSIN =
     "<p style='font-family: Alagard; font-size: 24px; color: #8A2BE2; margin: 0 0 4px 0;'><b>L'ASSASSIN</b></p>"

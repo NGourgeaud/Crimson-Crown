@@ -4,6 +4,7 @@
 #include <QObject>
 #include "enemymodel.h"
 #include "QPolygon"
+#include "hitzonemodel.h"
 
 class KnightModel : public QObject, public EnemyModel
 {
@@ -23,7 +24,7 @@ public:
 
 signals:
     void death(KnightModel * model);
-    void attacking(QPolygon hitbox, int damage);
+    void attacking(HitZoneModel hitbox, int damage);
 
 private slots:
     void resetAttackCooldown();

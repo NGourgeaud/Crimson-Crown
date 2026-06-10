@@ -107,20 +107,20 @@ void GameModel::resetGame(HeroType hero)
     case HeroType::Blacksmith: {
         BlacksmithModel * newPlayer = new BlacksmithModel();
         itsPlayer = newPlayer;
-        connect(newPlayer, &BlacksmithModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
+        connect(newPlayer, &BlacksmithModel::attackPlayer, this, [this](HitZoneModel hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
         break;
         }
     case HeroType::Assassin: {
         AssassinModel * newPlayer = new AssassinModel();
         itsPlayer = newPlayer;
-        connect(newPlayer, &AssassinModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
+        connect(newPlayer, &AssassinModel::attackPlayer, this, [this](HitZoneModel hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
         connect(newPlayer, &AssassinModel::fireProjectile, this, &GameModel::onNewProjectile);
         break;
     };
     case HeroType::Hunter: {
         HunterModel * newPlayer = new HunterModel();
         itsPlayer = newPlayer;
-        connect(newPlayer, &HunterModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
+        connect(newPlayer, &HunterModel::attackPlayer, this, [this](HitZoneModel hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
         connect(newPlayer, &HunterModel::fireProjectile, this, &GameModel::onNewProjectile);
         break;
     }
@@ -271,7 +271,7 @@ void GameModel::spawnEnemies(bool isBoss)
 
                 // Using a lambda to secure parameter passing
                 connect(newEnnemy, &LancerModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
-                connect(newEnnemy, &LancerModel::attacking, this, [this](QPolygon hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+                connect(newEnnemy, &LancerModel::attacking, this, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
                 break;
             }
             case KNIGHT:
@@ -281,7 +281,7 @@ void GameModel::spawnEnemies(bool isBoss)
 
                 // Using a lambda to secure parameter passing
                 connect(newEnnemy, &KnightModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
-                connect(newEnnemy, &KnightModel::attacking, this, [this](QPolygon hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+                connect(newEnnemy, &KnightModel::attacking, this, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
                 break;
             }
             case ARCHER:
@@ -305,7 +305,7 @@ void GameModel::spawnEnemies(bool isBoss)
         itsBoss = newLord;
 
         connect(newLord, &LordModel::death, this, &GameModel::onBossDeath);
-        connect(newLord, &LordModel::attacking, this, [this](QPolygon hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+        connect(newLord, &LordModel::attacking, this, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
     }
 
 }
@@ -681,26 +681,26 @@ void GameModel::onBossDeath(BossModel * model)
     delete model;
 }
 
-void GameModel::onEnemyAttack(QPolygon hitbox, int damage)
+void GameModel::onEnemyAttack(HitZoneModel hitbox, int damage)
 {
     emit attack(hitbox);
-    if (hitbox.intersects(itsPlayer->getHitBox().toRect())){
+    if (hitbox.getItsPolygon().intersects(itsPlayer->getHitBox().toRect())){
         itsPlayer->takeDamage(damage);
     }
 }
 
-void GameModel::onPlayerAttack(QPolygon hitbox, int damage)
+void GameModel::onPlayerAttack(HitZoneModel hitbox, int damage)
 {
     emit attack(hitbox);
     if (!itsEnemies.empty()){
         for (EnemyModel* enemy : itsEnemies){
-            if (hitbox.intersects(enemy->getHitBox().toRect())){
+            if (hitbox.getItsPolygon().intersects(enemy->getHitBox().toRect())){
                 enemy->takeDamage(damage);
             }
         }
     }
     else if(itsBoss){
-        if (hitbox.intersects(itsBoss->getHitBox().toRect())){
+        if (hitbox.getItsPolygon().intersects(itsBoss->getHitBox().toRect())){
             itsBoss->takeDamage(damage);
         }
     }

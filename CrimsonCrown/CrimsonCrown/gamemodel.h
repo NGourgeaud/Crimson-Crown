@@ -3,6 +3,7 @@
 #include <QObject>
 #include "bossmodel.h"
 #include "enemymodel.h"
+#include "hitzonemodel.h"
 #include "projectilemodel.h"
 #include "roommodel.h"
 #include "playermodel.h"
@@ -54,13 +55,13 @@ signals:
     void roomCleared();
     void gameWon(int score);
     void gameOver(int score);
-    void attack(QPolygon);
+    void attack(HitZoneModel);
 
 private slots:
     void onEnemyDeath(EnemyModel * model);
     void onBossDeath(BossModel * model);
-    void onEnemyAttack(QPolygon hitbox, int damage);
-    void onPlayerAttack(QPolygon hitbox, int damage);
+    void onEnemyAttack(HitZoneModel hitbox, int damage);
+    void onPlayerAttack(HitZoneModel hitbox, int damage);
     void onNewProjectile(ProjectileModel * projectile);
     void onEnemyProjectile(ProjectileModel * projectile);
     void onplayerProjectile(ProjectileModel * projectile);

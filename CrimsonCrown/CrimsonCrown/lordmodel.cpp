@@ -64,7 +64,7 @@ void LordModel::attack1(QPointF heroPos)
     canAttack1 = false;
     QPolygon attackHitbox = hitboxCercle->toFillPolygon().toPolygon();
     itsCoolDownTimer1->start(itsAttack1Cooldown*1000);
-    emit attacking(attackHitbox, itsAttack1Damage);
+    emit attacking(HitZoneModel(attackHitbox, UNDEFINEDE), itsAttack1Damage);
 }
 
 ///
@@ -186,7 +186,7 @@ void LordModel::dashStep()
     transform.rotate(-angle);
 
     QPolygon attackHitbox = transform.mapToPolygon(baseAttackRect);
-    emit attacking(attackHitbox, itsAttack2Damage);
+    emit attacking(HitZoneModel(attackHitbox, SWORD), itsAttack2Damage);
 
     // We move on to the next step for the next "tick" of the timer.
     currentDashStep++;
