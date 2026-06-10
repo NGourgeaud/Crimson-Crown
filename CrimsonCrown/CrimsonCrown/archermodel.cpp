@@ -64,6 +64,19 @@ QRectF ArcherModel::getHitBox() const
 // TODO
 bool ArcherModel::handleAI(QPointF heroPos)
 {
+    // Goes away the player if it's too close
+    for (int i = 0; i<itsSpeed; i++){
+        if (QLineF(heroPos, itsHitBox.center()).length() < 200){
+
+            QLineF aimLine = QLineF(itsHitBox.center(), heroPos);
+            qreal angle = aimLine.angle();
+            QLineF movementVector = QLineF::fromPolar(-1, angle);
+            itsHitBox.translate(movementVector.dx(), movementVector.dy());
+
+            if (i == itsSpeed-1)
+                return false;
+        }
+    }
     return true;
 }
 
