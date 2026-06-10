@@ -13,9 +13,23 @@ BossView::BossView()
 void BossView::draw(QPainter * painter, const BossModel * model)
 {
     if (itsTexTure.isNull()) {
-        painter->fillRect(model->getHitBox(), QColor(0, 0, 200));
-        painter->setPen(Qt::blue);
-        painter->drawRect(model->getHitBox());
+        switch (model->getItsType()) {
+        case LORD:
+            painter->fillRect(model->getHitBox(), QColor(150, 150, 200));
+            painter->setPen(Qt::blue);
+            painter->drawRect(model->getHitBox());
+            break;
+        case KING:
+            painter->fillRect(model->getHitBox(), QColor(Qt::yellow));
+            painter->setPen(Qt::blue);
+            painter->drawRect(model->getHitBox());
+        default:
+            painter->fillRect(model->getHitBox(), Qt::white);
+            painter->setPen(Qt::white);
+            painter->drawRect(model->getHitBox());
+            break;
+        }
+
         return;
     }
 
@@ -31,6 +45,8 @@ void BossView::setItsTexture(BossType type)
     case LORD:
         itsTexTure = QPixmap(":/lord.png");
         break;
+    case KING:
+        itsTexTure = QPixmap(":/king.png");
     default:
         break;
     }

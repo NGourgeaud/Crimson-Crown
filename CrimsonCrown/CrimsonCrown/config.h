@@ -160,7 +160,8 @@ enum EnemyType{
 
 enum BossType{
     UNDEF,
-    LORD
+    LORD,
+    KING
 };
 
 enum Team{

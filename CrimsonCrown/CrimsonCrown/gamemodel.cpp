@@ -307,13 +307,15 @@ void GameModel::spawnEnemies(bool isBoss)
         }
     }
     else{
-        /*LordModel * newLord = new LordModel(LordDefaultMaxHp, LordDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
+        LordModel * newLord = new LordModel(LordDefaultMaxHp, LordDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
                                            LordDefaultAttack1CoolDown, LordDefaultAttack2CoolDown, LordDefaultAttack1Damage, LordDefaultAttack2Damage);
         itsBoss = newLord;
 
         connect(newLord, &LordModel::death, this, &GameModel::onBossDeath);
-        connect(newLord, &LordModel::attacking, this, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});*/
+        connect(newLord, &LordModel::attacking, this, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
 
+        // method to spawn the king
+        /*
         KingModel * newKing = new KingModel(KingDefaultMaxHp, KingDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
                                            KingDefaultAttack1CoolDown, KingDefaultAttack2CoolDown, KingDefaultAttack1Damage, KingDefaultAttack2Damage);
         itsBoss = newKing;
@@ -321,6 +323,7 @@ void GameModel::spawnEnemies(bool isBoss)
         connect(newKing, &KingModel::death, this, &GameModel::onBossDeath);
         connect(newKing, &KingModel::attacking, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
         connect(newKing, &KingModel::spawnEnemies, this, &GameModel::onKingSummon);
+        */
     }
 
 }

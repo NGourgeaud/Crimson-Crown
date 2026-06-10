@@ -25,6 +25,7 @@ KingModel::KingModel(int maxHp, int speed, int x, int y, float attack1Cooldown, 
     itsAttack2Step2Timer = new QTimer;
     isJumping = false;
     canSummon = true;
+    itsType = KING;
 
     connect(itsCoolDownTimer1, &QTimer::timeout, this, &KingModel::resetAttack1Cooldown);
     connect(itsCoolDownTimer2, &QTimer::timeout, this, &KingModel::resetAttack2Cooldown);
@@ -46,7 +47,7 @@ void KingModel::update(QPointF heroPos)
                 qDebug() << "Attack2 Requested";
             }
         }
-        if(QLineF(heroPos, itsHitBox.center()).length() > 180 and canAttack1 and canSummon){
+        if(QLineF(heroPos, itsHitBox.center()).length() > 200 and canAttack1 and canSummon){
             attack1(heroPos);
             qDebug() << "Attack1 Requested";
         }
