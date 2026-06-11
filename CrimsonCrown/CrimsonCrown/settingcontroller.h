@@ -17,6 +17,7 @@ public:
 
 signals:
     void menuRequested();
+    void globalVolumeChanged(int volume);
 
 private slots:
     void onBackRequested();

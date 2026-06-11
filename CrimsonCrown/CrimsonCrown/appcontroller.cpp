@@ -71,6 +71,11 @@ AppController::AppController(QObject *parent)
     connect(leaderboardController, &LeaderboardController::menuRequested, this, &AppController::onMenuRequested);
     connect(menuController, &MenuController::leaderboardRequested, this, &AppController::onLeaderboardRequested);
 
+    connect(settingsController, &SettingController::globalVolumeChanged, this, [this](int volume) {
+        // Convertit 0-100 (du slider) en 0.0-1.0 (pour QAudioOutput)
+        audioOutput->setVolume(volume / 100.0f);
+    });
+
     start();
 }
 
@@ -144,15 +149,20 @@ void AppController::navigateTo(AppState state) {
 
     cleanupCurrentView();
 
-    // --- CORRECTION : CHANGEMENT DE MUSIQUE SELON L'ÉTAT ---
     if (state == AppState::Menu) {
-        // Se lance à chaque fois qu'on est sur un menu (au démarrage ou au retour)
-        musicPlayer->setSource(QUrl("qrc:/menu-music.mp3"));
-        musicPlayer->play();
+        QUrl menuSource("qrc:/menu-music.mp3");
+        // The file is only reloaded if it's not already the one being used.
+        if (musicPlayer->source() != menuSource) {
+            musicPlayer->setSource(menuSource);
+            musicPlayer->play();
+        }
     }
     else if (state == AppState::Game) {
-        musicPlayer->setSource(QUrl("qrc:/combat-music.mp3"));
-        musicPlayer->play();
+        QUrl combatSource("qrc:/combat-music.mp3");
+        if (musicPlayer->source() != combatSource) {
+            musicPlayer->setSource(combatSource);
+            musicPlayer->play();
+        }
     }
 
     switch (state) {

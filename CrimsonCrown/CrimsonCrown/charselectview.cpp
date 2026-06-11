@@ -76,20 +76,28 @@ CharSelectView::CharSelectView(QWidget *parent)
 
     mainLayout->addLayout(selectionLayout);
 
-    mainLayout->addSpacing(0);
 
     // CHARACTER STATISTICS
     itsHeroStatsLabel = new QLabel(this);
-    itsHeroStatsLabel->setStyleSheet("background: transparent; color: white; font-family: 'Alagard'; font-size: 16px;");
+    itsHeroStatsLabel->setStyleSheet(
+        "background-color: rgba(0, 0, 0, 160); "
+        "color: white; "
+        "font-family: 'Alagard'; "
+        "font-size: 16px; "
+        "padding: 5px; "
+        "border-radius: 8px;"
+        );
     itsHeroStatsLabel->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
     itsHeroStatsLabel->setWordWrap(true);
     itsHeroStatsLabel->setFixedWidth(600);
+
+    itsHeroStatsLabel->setMinimumHeight(110);
 
     QHBoxLayout *statsLayout = new QHBoxLayout();
     statsLayout->addWidget(itsHeroStatsLabel, 0, Qt::AlignCenter);
     mainLayout->addLayout(statsLayout);
 
-    mainLayout->addSpacing(5);
+    mainLayout->addSpacing(10);
 
     // BACK BUTTON
     QHBoxLayout *bottomLayout = new QHBoxLayout();
@@ -106,7 +114,7 @@ CharSelectView::CharSelectView(QWidget *parent)
     connect(itsBackButton, &QPushButton::clicked, this, &CharSelectView::backRequested);
 
     bottomLayout->addWidget(itsBackButton);
-    bottomLayout->setContentsMargins(0, 0, 40, 0);
+    bottomLayout->setContentsMargins(0, 0, 40, 20);
 
     mainLayout->addLayout(bottomLayout);
 
