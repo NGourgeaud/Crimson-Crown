@@ -250,11 +250,10 @@ void GameView::paintEvent(QPaintEvent *event)
     int boxHeight = 40;
     int spacing = 20;
 
-    // Calculation to perfectly center the 2 boxes at the top of the screen
-    int totalWidth = (2 * boxWidth) + spacing;
+    // Calcul pour centrer parfaitement 3 boîtes en haut de l'écran (Vie, Score, Or)
+    int totalWidth = (3 * boxWidth) + (2 * spacing);
     int startX = (this->width() - totalWidth) / 2;
     int topY = 15;
-
 
     // --- LEVEL ---
     if (itsModel != nullptr) {
@@ -264,7 +263,7 @@ void GameView::paintEvent(QPaintEvent *event)
         painter.drawText(20, 40, levelText);
     }
 
-    // --- 1. HEALTH BOX (Red) ---
+    // --- 1. HEALTH BOX (Rouge) ---
     PlayerModel* player = itsModel->getItsPlayer();
     int currentHP = 0, maxHP = 40;
     if (player != nullptr) {
@@ -278,17 +277,27 @@ void GameView::paintEvent(QPaintEvent *event)
     painter.setPen(Qt::NoPen);
     painter.drawRect(hpRect);
     painter.setPen(Qt::white);
+    painter.setFont(QFont("Arial", 14, QFont::Bold));
     painter.drawText(hpRect, Qt::AlignCenter, QString("♥ %1 / %2").arg(currentHP).arg(maxHP));
 
-    // --- 2. SCORE BOX (Dark gray with Gold/White text) ---
+    // --- 2. SCORE BOX  ---
     QRect scoreRect(startX + boxWidth + spacing, topY, boxWidth, boxHeight);
     painter.setBrush(QColor(40, 40, 40));
     painter.setPen(Qt::NoPen);
     painter.drawRect(scoreRect);
-    painter.setPen(QColor(255, 215, 0)); // Gold color text to make the score stand out
+    painter.setPen(QColor(255, 215, 0));
     painter.drawText(scoreRect, Qt::AlignCenter, QString("SCORE : %1").arg(itsModel->getItsScore()));
 
-    // --- 3. REMAINING ENEMIES (Bottom left) ---
+    // --- 3. GOLD BOX  ---
+    QRect goldRect(startX + 2 * (boxWidth + spacing), topY, boxWidth, boxHeight);
+    painter.setBrush(QColor(239, 191, 4));
+    painter.setPen(Qt::NoPen);
+    painter.drawRect(goldRect);
+    painter.setPen(Qt::white);
+    painter.drawText(goldRect, Qt::AlignCenter, QString("OR : %1").arg(itsModel->getGoldAmount()));
+
+
+    // --- 4. REMAINING ENEMIES ---
     painter.setPen(Qt::white);
     painter.setFont(QFont("Alagard", 18));
     int enemiesRemaining = itsModel->getItsEnemies().size();
@@ -296,7 +305,7 @@ void GameView::paintEvent(QPaintEvent *event)
     painter.drawText(20, this->height() - 45, QString("Ennemis restants : %1").arg(enemiesRemaining));
 
     // ==========================================
-    // --- 4. COOLDOWN BAR
+    //  5. COOLDOWN BAR
     // ==========================================
     if (player != nullptr) {
         int c1Max = 1, c2Max = 1;

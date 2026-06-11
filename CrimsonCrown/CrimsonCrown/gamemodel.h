@@ -54,6 +54,7 @@ public:
 
     int getItsScore() const;
     int getCurrentLevel() const;
+    int getGoldAmount() const;
 
     bool areAllCombatRoomsCleared() const;
 
