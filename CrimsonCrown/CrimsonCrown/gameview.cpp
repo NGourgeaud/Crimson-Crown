@@ -6,7 +6,6 @@
 GameView::GameView(GameModel *model, QWidget *parent)
     : QWidget(parent), itsModel(model), isCameraInitialized(false)
 {
-    setFocusPolicy(Qt::StrongFocus);
 
     itsRoomView = new RoomView();
     itsObstacleView = new ObstacleView();
@@ -33,10 +32,11 @@ GameView::GameView(GameModel *model, QWidget *parent)
     // PAUSE MENU (Hidden by default)
     // ==========================================
     pauseMenu = new QFrame(this);
-    // Center it on the 1200x800 window
-    pauseMenu->setGeometry((WINDOW_WIDTH - 300) / 2, (WINDOW_HEIGHT - 350) / 2, 300, 350);
+
+    pauseMenu->setFixedSize(300, 350);
     pauseMenu->setStyleSheet("QFrame { background-color: rgba(20, 20, 20, 220); border: 2px solid #555555; border-radius: 10px; }");
 
+    // --- LE LAYOUT INTERNE DU MENU (Inchangé) ---
     QVBoxLayout *pauseLayout = new QVBoxLayout(pauseMenu);
     pauseLayout->setContentsMargins(30, 30, 30, 30);
     pauseLayout->setSpacing(20);
@@ -63,18 +63,27 @@ GameView::GameView(GameModel *model, QWidget *parent)
         "   border-color: white;"
         "}";
 
-    QPushButton *resumeBtn = new QPushButton("RESUME");
+    QPushButton *resumeBtn = new QPushButton("REPRENDRE");
     resumeBtn->setStyleSheet(btnStyle);
-    // Trick: Clicking "Resume" simulates pressing Escape to remove the pause!
     connect(resumeBtn, &QPushButton::clicked, this, [this]() { emit keyPressed(Qt::Key_Escape); });
     pauseLayout->addWidget(resumeBtn);
 
-    QPushButton *quitBtn = new QPushButton("QUIT GAME");
+    QPushButton *quitBtn = new QPushButton("QUIITER");
     quitBtn->setStyleSheet(btnStyle);
     connect(quitBtn, &QPushButton::clicked, this, &GameView::quitRequested);
     pauseLayout->addWidget(quitBtn);
 
-    pauseMenu->hide(); // Hide it at startup
+    pauseMenu->hide();
+
+    QVBoxLayout *overlayLayout = new QVBoxLayout(this);
+
+    overlayLayout->addWidget(pauseMenu, 0, Qt::AlignCenter);
+}
+
+void GameView::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+    this->setFocus();
 }
 
 GameView::~GameView()

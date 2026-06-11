@@ -25,6 +25,7 @@ LordModel::LordModel(int maxHp, int speed, int x, int y, float attack1Cooldown, 
     maxDashSteps = 0;
     IframeTimer = new QTimer();
     isInIframe = false;
+    itsType = LORD;
 
     connect(itsCoolDownTimer1, &QTimer::timeout, this, &LordModel::resetAttack1Cooldown);
     connect(itsCoolDownTimer2, &QTimer::timeout, this, &LordModel::resetAttack2Cooldown);

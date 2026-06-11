@@ -73,6 +73,7 @@ private slots:
     void onNewProjectile(ProjectileModel * projectile);
     void onEnemyProjectile(ProjectileModel * projectile);
     void onplayerProjectile(ProjectileModel * projectile);
+    void onKingSummon();
 };
 
 #endif // GAMEMODEL_H

@@ -1,10 +1,17 @@
 #include "charselectview.h"
 #include "config.h"
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QSpacerItem>
+#include <QPainter>
 
 CharSelectView::CharSelectView(QWidget *parent)
     : QWidget(parent), currentHeroIndex(0) {
 
-    // SCREEB TITLE
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(0, 60, 0, 10);
+
+    // TITLE
     itsTitle = new QLabel(LABEL_CHARSELECT_TITLE, this);
     QFont titleFont("Alagard");
     titleFont.setPointSize(MENU_TITLE_FONT_SIZE);
@@ -12,41 +19,39 @@ CharSelectView::CharSelectView(QWidget *parent)
     itsTitle->setFont(titleFont);
     itsTitle->setStyleSheet("color: white; background: transparent;");
     itsTitle->setAlignment(Qt::AlignCenter);
-    itsTitle->setGeometry(0, 60, WINDOW_WIDTH, 50);
+    mainLayout->addWidget(itsTitle);
 
-    // --- STYLES ---
+    mainLayout->addStretch(1);
+
+    // SELECTION
+    QHBoxLayout *selectionLayout = new QHBoxLayout();
+    selectionLayout->setContentsMargins(50, 0, 50, 0);
+
     QString arrowStyle =
         "QPushButton { background-color: rgba(0, 0, 0, 150); color: white; "
         "font-family: 'Alagard'; font-size: 30px; font-weight: bold; "
         "border: 2px solid #555555; border-radius: 5px; }"
         "QPushButton:hover { background-color: #E30000; border-color: white; }";
 
-    QString cardStyle =
-        "QPushButton { border: none; background-color: transparent; background: none; outline: none; }"
-        "QPushButton:hover { border: 3px solid #E30000; }";
-
     itsLeftArrow = new QPushButton("<", this);
     itsLeftArrow->setStyleSheet(arrowStyle);
-    itsLeftArrow->setGeometry(40, 370, 60, 60);
+    itsLeftArrow->setFixedSize(60, 60);
     connect(itsLeftArrow, &QPushButton::clicked, this, [this]() {
         currentHeroIndex--;
         if (currentHeroIndex < 0) currentHeroIndex = 2;
         updateCarousel();
     });
+    selectionLayout->addWidget(itsLeftArrow, 0, Qt::AlignVCenter);
 
-    itsRightArrow = new QPushButton(">", this);
-    itsRightArrow->setStyleSheet(arrowStyle);
-    itsRightArrow->setGeometry(1100, 370, 60, 60);
-    connect(itsRightArrow, &QPushButton::clicked, this, [this]() {
-        currentHeroIndex++;
-        if (currentHeroIndex > 2) currentHeroIndex = 0;
-        updateCarousel();
-    });
+    selectionLayout->addStretch();
 
-    // THE CHARACTER (Goes down onto the deck)
+    QString cardStyle =
+        "QPushButton { border: none; background-color: transparent; background: none; outline: none; }"
+        "QPushButton:hover { border: 3px solid #E30000; }";
+
     itsHeroCardButton = new QPushButton(this);
     itsHeroCardButton->setStyleSheet(cardStyle);
-    itsHeroCardButton->setGeometry(520, 350, 160, 200);
+    itsHeroCardButton->setFixedSize(160, 200);
     connect(itsHeroCardButton, &QPushButton::clicked, this, [this]() {
         if (currentHeroIndex == 0) {
             emit selectCharacterRequested(HeroType::Blacksmith);
@@ -56,15 +61,40 @@ CharSelectView::CharSelectView(QWidget *parent)
             emit selectCharacterRequested(HeroType::Assassin);
         }
     });
+    selectionLayout->addWidget(itsHeroCardButton, 0, Qt::AlignBottom);
+    selectionLayout->addStretch();
 
-    // STATS
+    itsRightArrow = new QPushButton(">", this);
+    itsRightArrow->setStyleSheet(arrowStyle);
+    itsRightArrow->setFixedSize(60, 60);
+    connect(itsRightArrow, &QPushButton::clicked, this, [this]() {
+        currentHeroIndex++;
+        if (currentHeroIndex > 2) currentHeroIndex = 0;
+        updateCarousel();
+    });
+    selectionLayout->addWidget(itsRightArrow, 0, Qt::AlignVCenter);
+
+    mainLayout->addLayout(selectionLayout);
+
+    mainLayout->addSpacing(0);
+
+    // CHARACTER STATISTICS
     itsHeroStatsLabel = new QLabel(this);
-    itsHeroStatsLabel->setStyleSheet("background: transparent;");
+    itsHeroStatsLabel->setStyleSheet("background: transparent; color: white; font-family: 'Alagard'; font-size: 16px;");
     itsHeroStatsLabel->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
     itsHeroStatsLabel->setWordWrap(true);
-    itsHeroStatsLabel->setGeometry(300, 560, 600, 150);
+    itsHeroStatsLabel->setFixedWidth(600);
 
-    // BACK TO MENU BUTTON
+    QHBoxLayout *statsLayout = new QHBoxLayout();
+    statsLayout->addWidget(itsHeroStatsLabel, 0, Qt::AlignCenter);
+    mainLayout->addLayout(statsLayout);
+
+    mainLayout->addSpacing(5);
+
+    // BACK BUTTON
+    QHBoxLayout *bottomLayout = new QHBoxLayout();
+    bottomLayout->addStretch();
+
     QString backButtonStyle =
         "QPushButton { background-color: #111111; color: white; border: 2px solid #555555; "
         "font-family: 'Alagard'; font-size: 15px; font-weight: bold; border-radius: 3px; }"
@@ -72,10 +102,14 @@ CharSelectView::CharSelectView(QWidget *parent)
 
     itsBackButton = new QPushButton(LABEL_BACK, this);
     itsBackButton->setStyleSheet(backButtonStyle);
-    itsBackButton->setGeometry(WINDOW_WIDTH - 260, WINDOW_HEIGHT - 90, 220, BUTTON_HEIGHT);
+    itsBackButton->setFixedSize(220, BUTTON_HEIGHT);
     connect(itsBackButton, &QPushButton::clicked, this, &CharSelectView::backRequested);
 
-    // Initialisation
+    bottomLayout->addWidget(itsBackButton);
+    bottomLayout->setContentsMargins(0, 0, 40, 0);
+
+    mainLayout->addLayout(bottomLayout);
+
     updateCarousel();
 }
 
