@@ -235,39 +235,22 @@ void AppController::onGameOver(int score, HeroType hero)
 
 void AppController::onGameWon(int score, HeroType hero)
 {
+    // 1. Sécurité anti-double déclenchement
     if (currentState != AppState::Game) return;
     currentState = AppState::Menu;
 
+    // 2. Nettoyage de l'écran de jeu
     gameController->destroyView();
-    mainWindow->setCentralWidget(itsGameWonController->createView(score, hero));
-    currentView = itsGameOverController->createView(score, hero);
- 
-}
 
-void AppController::onBossEncountered()
-{
-    musicPlayer->setSource(QUrl("qrc:/boss-music.mp3"));
-    musicPlayer->play();
-}
-
-void AppController::onBossKilled()
-{
-    // OPTION A : Remettre la musique calme du donjon pendant que le joueur marche vers la sortie
-    musicPlayer->setSource(QUrl("qrc:/combat-music.mp3"));
-    musicPlayer->play();
-
-    // OPTION B : Si tu préfères le silence absolu à la place, décommente la ligne ci-dessous et commente l'Option A :
-    // musicPlayer->stop();
-}
-=======
-
+    // 3. Affichage de l'écran de victoire
     currentView = itsGameWonController->createView(score, hero);
     mainWindow->setCentralWidget(currentView);
 
+    // 4. On détache la vue et on force l'affichage
     currentView = nullptr;
-
     QCoreApplication::processEvents();
 
+    // 5. Boîte de dialogue pour le prénom
     bool ok;
     QString playerName = QInputDialog::getText(mainWindow,
                                                "Victoire !",
@@ -281,5 +264,19 @@ void AppController::onBossKilled()
         playerName = playerName.trimmed();
     }
 
+    // 6. Sauvegarde du score
     leaderboardController->submitScore(playerName, score);
+}
+
+void AppController::onBossEncountered()
+{
+    musicPlayer->setSource(QUrl("qrc:/boss-music.mp3"));
+    musicPlayer->play();
+}
+
+void AppController::onBossKilled()
+{
+    // Remettre la musique calme du donjon pendant que le joueur marche vers la sortie
+    musicPlayer->setSource(QUrl("qrc:/combat-music.mp3"));
+    musicPlayer->play();
 }

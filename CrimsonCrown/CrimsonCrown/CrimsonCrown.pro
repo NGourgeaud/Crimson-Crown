@@ -128,4 +128,4 @@ macx:QMAKE_CFLAGS += -Wno-error=implicit-function-declaration
 macx: ICON = logo.icns
 
 # Pour le fichier .exe sur Windows
-win32: RC_ICONS = logo.ico
+# win32: RC_ICONS = logo.ico
