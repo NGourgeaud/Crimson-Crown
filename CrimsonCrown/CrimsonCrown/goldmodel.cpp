@@ -1,4 +1,5 @@
 #include "goldmodel.h"
+#include "qdebug.h"
 
 int GoldModel::getItsGold() const
 {
@@ -8,6 +9,8 @@ int GoldModel::getItsGold() const
 void GoldModel::addGold(int ammount)
 {
     itsGold += ammount;
+    qDebug() << "added " <<ammount << "gold";
+    qDebug() << "Current Gold : " << itsGold;
 }
 
 void GoldModel::removeGold(int ammount)

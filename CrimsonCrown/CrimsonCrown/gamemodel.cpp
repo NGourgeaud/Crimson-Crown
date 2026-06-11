@@ -21,14 +21,19 @@ QList<ProjectileModel *> GameModel::getItsProjeciles() const
     return itsProjeciles;
 }
 
+QList<ItemModel *> GameModel::getItsItems() const
+{
+    return itsItems;
+}
+
 GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
 {
     currentLevel = 1;
-    resetGame(HeroType::None);
     itsBoss = nullptr;
     activeRoom = nullptr;
     isEasterEggFound = false;
     itsGoldModel = new GoldModel;
+    resetGame(HeroType::None);
 }
 
 GameModel::~GameModel()
@@ -596,10 +601,12 @@ void GameModel::updateLogic()
                         itsPlayer->heal(5);
                         break;
                     case GOLD:
-                        itsGoldModel->addGold(itsGoldWorth*(1.4*currentLevel-1));
+                        itsGoldModel->addGold(itsGoldWorth+itsGoldWorth*(1.4*currentLevel-1));
                     default:
                         break;
                     }
+                    itsItems.removeOne(item);
+                    delete item;
                 }
             }
         }

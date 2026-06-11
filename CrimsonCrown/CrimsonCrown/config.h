@@ -120,7 +120,8 @@ const int LordAttack2HitBoxWidth = 40;
 const int LordAttack2HitBoxHeight = 30;
 
 // Drops stats
-const int DropSize = 50;
+const int DropSize = 20;
+
 enum HeroType {
     None,
     Blacksmith,

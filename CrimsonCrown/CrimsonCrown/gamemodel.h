@@ -57,9 +57,7 @@ public:
 
     void loadLevel(int levelId);
     QList<ProjectileModel *> getItsProjeciles() const;
-
-    bool getIsHeart1Collected() const { return isHeart1Collected; }
-    bool getIsHeart2Collected() const { return isHeart2Collected; }
+    QList<ItemModel *> getItsItems() const;
 
 signals:
     void roomCleared();
