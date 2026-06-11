@@ -2,6 +2,7 @@
 #include "archermodel.h"
 #include "blacksmithmodel.h"
 #include "assassinmodel.h"
+#include "kingmodel.h"
 #include "knightmodel.h"
 #include "lancermodel.h"
 #include "lordmodel.h"
@@ -236,6 +237,10 @@ void GameModel::loadLevel(int levelId)
         allRooms.append(new RoomModel(RoomType::Spawn, -2500, 2100, 600, 600)); // Zone Loot gauche
         allRooms.append(new RoomModel(RoomType::CorridorHorizontal, -2900, 2325, 400, 150));
         allRooms.append(new RoomModel(RoomType::Combat, -4000, 2075, 1100, 650));
+
+        minEnemy = 5;
+        maxEnemy = 7;
+        statIncreass=1.1;
     }
 
     // 3. Repositionner le personnage au centre de la zone de Spawn actuelle
@@ -261,12 +266,6 @@ void GameModel::spawnEnemies(bool isBoss)
         std::uniform_int_distribution<int> RoomY(roomBoundaries.topLeft().ry()+60,roomBoundaries.bottomLeft().ry()-60);
         std::uniform_int_distribution<int> Type(LANCER,ARCHER);
 
-        if (currentLevel == 2){
-            minEnemy = 5;
-            maxEnemy = 7;
-            statIncreass+=0.1;
-            qDebug() << "Level 2";
-        }
         std::uniform_int_distribution<int> EnemiesNb(minEnemy,maxEnemy);
 
         int nbEnemies = EnemiesNb(eng);
@@ -308,12 +307,26 @@ void GameModel::spawnEnemies(bool isBoss)
         }
     }
     else{
+        // method to spawn the lord
+
         LordModel * newLord = new LordModel(LordDefaultMaxHp, LordDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
                                            LordDefaultAttack1CoolDown, LordDefaultAttack2CoolDown, LordDefaultAttack1Damage, LordDefaultAttack2Damage);
         itsBoss = newLord;
 
         connect(newLord, &LordModel::death, this, &GameModel::onBossDeath);
         connect(newLord, &LordModel::attacking, this, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+
+
+        // method to spawn the king
+        /*
+        KingModel * newKing = new KingModel(KingDefaultMaxHp, KingDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
+                                           KingDefaultAttack1CoolDown, KingDefaultAttack2CoolDown, KingDefaultAttack1Damage, KingDefaultAttack2Damage);
+        itsBoss = newKing;
+
+        connect(newKing, &KingModel::death, this, &GameModel::onBossDeath);
+        connect(newKing, &KingModel::attacking, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+        connect(newKing, &KingModel::spawnEnemies, this, &GameModel::onKingSummon);
+        */
     }
 
 }
@@ -728,7 +741,7 @@ void GameModel::onEnemyDeath(EnemyModel * model)
     itsEnemies.removeOne(model);
     itsScore += 10; // +10 Points pour le lancier
 
-    if (itsEnemies.empty()){
+    if (itsEnemies.empty() and !itsBoss){
         activeRoom->unlockDoors();
         itsPlayer->regen();
     }
@@ -739,6 +752,13 @@ void GameModel::onEnemyDeath(EnemyModel * model)
     }
     else {
         delete model;
+    }
+
+    if (itsBoss){
+        if (itsEnemies.count() <2){
+            KingModel * king = dynamic_cast<KingModel*>(itsBoss);
+            king->setCanSummon(true);
+        }
     }
 
 }
@@ -848,7 +868,7 @@ void GameModel::onplayerProjectile(ProjectileModel *projectile)
             }
         }
     }
-    else if (itsBoss){
+    if (itsBoss){
         if (projectile->getItsHitbox().intersects(itsBoss->getHitBox())){
             itsBoss->takeDamage(projectile->getItsDamage());
             disconnect(projectile);
@@ -885,6 +905,21 @@ void GameModel::onplayerProjectile(ProjectileModel *projectile)
        itsProjeciles.removeOne(projectile);
        delete projectile;
        return;
+    }
+}
+
+void GameModel::onKingSummon()
+{
+    int oldMinEnemy = minEnemy;
+    int oldMaxEnemy = maxEnemy;
+    minEnemy = 1;
+    maxEnemy = 2;
+    spawnEnemies(false);
+    minEnemy = oldMinEnemy;
+    maxEnemy = oldMaxEnemy;
+    if (itsEnemies.count() >=3){
+        KingModel * king = dynamic_cast<KingModel*>(itsBoss);
+        king->setCanSummon(false);
     }
 }
 
