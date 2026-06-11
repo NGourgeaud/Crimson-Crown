@@ -206,4 +206,15 @@ void PlayerModel::increaseDamage(double percentage)
     itsAttack2Damage += static_cast<int>(itsAttack2Damage * percentage);
 }
 
+void PlayerModel::increaseMaxHP(int amount)
+{
+    itsMaxHP += amount;
+    itsHP += amount;
+}
+
+void PlayerModel::increaseSpeed(int amount)
+{
+    itsSpeed += amount;
+}
+
 

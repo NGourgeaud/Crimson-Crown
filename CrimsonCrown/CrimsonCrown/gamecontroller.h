@@ -31,12 +31,17 @@ private slots:
     void onKeyReleased(int key);
     void togglePause();
 
+    void onLevelCompleted(int nextLevelId);
+    void onBuyUpgradeRequested(QString type);
+    void onNextLevelRequested();
+
 private:
     GameModel *itsModel;
     GameView *itsView;
     QWidget *parentWidget;
     QTimer *itsTimer;
     bool isPaused = false;
+    int levelToLoadPending;
 };
 
 #endif // GAMECONTROLLER_H

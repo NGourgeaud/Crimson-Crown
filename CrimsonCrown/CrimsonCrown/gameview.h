@@ -7,7 +7,9 @@
 #include <QPointF>
 #include <QPolygon>
 #include <QList>
+#include <QLabel>
 #include <QFrame>
+#include <QPushbutton>
 #include "bossview.h"
 #include "enemyview.h"
 #include "gamemodel.h"
@@ -27,12 +29,15 @@ public:
     explicit GameView(GameModel *model, QWidget *parent = nullptr);
     ~GameView();
     void setPauseMenuVisible(bool visible);
+    void setShopMenuVisible(bool visible);
+    void updateShopGold(int amount);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
     void showEvent(QShowEvent *event) override;
+    void setupShopMenu();
 
 private:
     GameModel *itsModel;
@@ -55,10 +60,19 @@ private:
 
     QPixmap heartTexture;
 
+    QFrame *shopMenu;
+    QLabel *shopGoldLabel;
+
+    QPushButton *btnHP;
+    QPushButton *btnDmg;
+    QPushButton *btnSpeed;
+
 signals:
     void keyPressed(int key);
     void keyReleased(int key);
     void quitRequested();
+    void buyUpgradeRequested(QString type);
+    void nextLevelRequested();
 
 public slots:
     void drawAttackArea(HitZoneModel hitZone);

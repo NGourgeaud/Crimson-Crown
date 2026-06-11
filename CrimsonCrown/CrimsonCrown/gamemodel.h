@@ -67,6 +67,8 @@ public:
     QList<ProjectileModel *> getItsProjeciles() const;
     QList<ItemModel *> getItsItems() const;
 
+    bool spendGold(int amount);
+
 signals:
     void roomCleared();
     void gameWon(int score, HeroType hero);
@@ -76,6 +78,8 @@ signals:
     void showPopup(QString message);
     void bossSpawned();
     void bossKilled();
+
+    void levelCompleted(int nextLevelId);
 
 private slots:
     void onEnemyDeath(EnemyModel * model);

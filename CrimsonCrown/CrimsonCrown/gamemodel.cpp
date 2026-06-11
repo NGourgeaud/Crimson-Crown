@@ -9,8 +9,8 @@
 #include "lordmodel.h"
 #include "config.h"
 #include "qpainterpath.h"
-#include <QRandomGenerator> 
-#include <QtCore/qdebug.h>
+#include <QRandomGenerator>
+#include <QDebug>
 #include "huntermodel.h"
 
 BossModel *GameModel::getItsBoss() const
@@ -488,17 +488,15 @@ void GameModel::updateLogic()
             if (type == RoomType::Exit) {
                 if (currentLevel == 1) {
                     currentLevel = 2;
-                    loadLevel(currentLevel);
+                    emit levelCompleted(currentLevel); // On prévient le contrôleur
                     return;
                 }
                 else if (currentLevel == 2) {
-                    // CORRECTION : Au lieu de gagner, on charge le niveau 3 !
                     currentLevel = 3;
-                    loadLevel(currentLevel);
+                    emit levelCompleted(currentLevel);
                     return;
                 }
                 else if (currentLevel == 3) {
-                    // CORRECTION : C'est ici, à la fin du niveau 3, qu'on gagne !
                     emit gameWon(itsScore, itsPlayer->getItsName());
                     return;
                 }
@@ -856,9 +854,6 @@ void GameModel::collisionEnemy(EnemyModel * enemy){
 void GameModel::collisionBoss(BossModel * enemy){
     // A. Enemies Update
     bool isCollision = false;
-
-    // 1. MISE À JOUR DE L'IA (L'ennemi calcule sa trajectoire et avance vers le joueur en premier)
-    enemy->update(itsPlayer->getHitBox().center());
 
     // 2. Collisions avec les autres ennemis
     for (int j = 0; j < itsEnemies.size(); ++j) {
@@ -1264,4 +1259,13 @@ int GameModel::getGoldAmount() const
         return itsGoldModel->getItsGold();
     }
     return 0;
+}
+
+bool GameModel::spendGold(int amount) {
+    // Si tu n'as pas de fonction removeGold dans GoldModel, ajoute-la.
+    if (getGoldAmount() >= amount) {
+        itsGoldModel->removeGold(amount);
+        return true;
+    }
+    return false;
 }
