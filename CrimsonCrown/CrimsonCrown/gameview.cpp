@@ -6,7 +6,6 @@
 GameView::GameView(GameModel *model, QWidget *parent)
     : QWidget(parent), itsModel(model), isCameraInitialized(false)
 {
-    setFocusPolicy(Qt::StrongFocus);
 
     itsRoomView = new RoomView();
     itsObstacleView = new ObstacleView();
@@ -14,8 +13,11 @@ GameView::GameView(GameModel *model, QWidget *parent)
     itsProjectileView = new ProjectileView;
     itsEnemyView = new EnemyView;
     itsChestView = new CollectibleView();
+    itsHitZoneView = new HitZoneView;
+    itsItemView = new ItemView;
 
     heartTexture = QPixmap(":/coeur.png");
+    
 
     if (itsModel->getItsPlayer() != nullptr) {
         itsPlayerView = new PlayerView(nullptr, itsModel->getItsPlayer());
@@ -30,10 +32,11 @@ GameView::GameView(GameModel *model, QWidget *parent)
     // PAUSE MENU (Hidden by default)
     // ==========================================
     pauseMenu = new QFrame(this);
-    // Center it on the 1200x800 window
-    pauseMenu->setGeometry((WINDOW_WIDTH - 300) / 2, (WINDOW_HEIGHT - 350) / 2, 300, 350);
+
+    pauseMenu->setFixedSize(300, 350);
     pauseMenu->setStyleSheet("QFrame { background-color: rgba(20, 20, 20, 220); border: 2px solid #555555; border-radius: 10px; }");
 
+    // --- LE LAYOUT INTERNE DU MENU (Inchangé) ---
     QVBoxLayout *pauseLayout = new QVBoxLayout(pauseMenu);
     pauseLayout->setContentsMargins(30, 30, 30, 30);
     pauseLayout->setSpacing(20);
@@ -60,18 +63,27 @@ GameView::GameView(GameModel *model, QWidget *parent)
         "   border-color: white;"
         "}";
 
-    QPushButton *resumeBtn = new QPushButton("RESUME");
+    QPushButton *resumeBtn = new QPushButton("REPRENDRE");
     resumeBtn->setStyleSheet(btnStyle);
-    // Trick: Clicking "Resume" simulates pressing Escape to remove the pause!
     connect(resumeBtn, &QPushButton::clicked, this, [this]() { emit keyPressed(Qt::Key_Escape); });
     pauseLayout->addWidget(resumeBtn);
 
-    QPushButton *quitBtn = new QPushButton("QUIT GAME");
+    QPushButton *quitBtn = new QPushButton("QUIITER");
     quitBtn->setStyleSheet(btnStyle);
     connect(quitBtn, &QPushButton::clicked, this, &GameView::quitRequested);
     pauseLayout->addWidget(quitBtn);
 
-    pauseMenu->hide(); // Hide it at startup
+    pauseMenu->hide();
+
+    QVBoxLayout *overlayLayout = new QVBoxLayout(this);
+
+    overlayLayout->addWidget(pauseMenu, 0, Qt::AlignCenter);
+}
+
+void GameView::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+    this->setFocus();
 }
 
 GameView::~GameView()
@@ -86,13 +98,13 @@ GameView::~GameView()
 void GameView::keyPressEvent(QKeyEvent *event) { if (!event->isAutoRepeat()) emit keyPressed(event->key()); }
 void GameView::keyReleaseEvent(QKeyEvent *event) { if (!event->isAutoRepeat()) emit keyReleased(event->key()); }
 
-void GameView::drawAttackArea(QPolygon hitbox)
+void GameView::drawAttackArea(HitZoneModel hitZone)
 {
-    itsAttackAreas.append(hitbox);
+    itsAttackAreas.append(hitZone);
     update();
 
-    QTimer::singleShot(100, this, [this, hitbox]() {
-        itsAttackAreas.removeOne(hitbox);
+    QTimer::singleShot(100, this, [this, hitZone]() {
+        itsAttackAreas.removeOne(hitZone);
     });
 }
 
@@ -185,16 +197,9 @@ void GameView::paintEvent(QPaintEvent *event)
     itsChestView->draw(painter, isClosed);
 
     // --- DESSIN DES COEURS DE SOIN (NIVEAU 2) ---
-    if (itsModel->getCurrentLevel() == 2 && !heartTexture.isNull()) {
-
-        // On dessine le coeur 1 s'il n'est pas ramassé
-        if (!itsModel->getIsHeart1Collected()) {
-            painter.drawPixmap(275, 1350, 50, 50, heartTexture);
-        }
-
-        // On dessine le coeur 2 s'il n'est pas ramassé
-        if (!itsModel->getIsHeart2Collected()) {
-            painter.drawPixmap(-2225, 2375, 50, 50, heartTexture);
+    if (!itsModel->getItsItems().empty()){
+        for (ItemModel * item : itsModel->getItsItems()){
+            itsItemView->draw(&painter, item);
         }
     }
 
@@ -221,10 +226,8 @@ void GameView::paintEvent(QPaintEvent *event)
 
     // 4 DRAW ATTACK AREAS
     if (!itsAttackAreas.empty()){
-        for (QPolygon area : itsAttackAreas){
-            painter.setBrush(QBrush(Qt::white));
-            painter.setPen(QPen(Qt::red));
-            painter.drawPolygon(area);
+        for (HitZoneModel hitzone : itsAttackAreas){
+            itsHitZoneView->draw(&painter, &hitzone);
         }
     }
 

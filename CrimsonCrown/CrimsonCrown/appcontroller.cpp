@@ -1,6 +1,7 @@
 #include "appcontroller.h"
 #include <QApplication>
 #include <QFontDatabase>
+#include <QInputDialog>
 
 
 ///
@@ -20,9 +21,9 @@ AppController::AppController(QObject *parent)
     gameController(new GameController(mainWindow, this)),
     itsGameOverController(new GameOverController()),
     itsGameWonController(new GameWonController()),
-    settingsController(new SettingController(mainWindow, this))
+    settingsController(new SettingController(mainWindow, this)),
+    leaderboardController(new LeaderboardController(mainWindow, this))
 {
-    mainWindow->setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // Police
     int fontId = QFontDatabase::addApplicationFont(":/alagard.ttf");
@@ -65,7 +66,10 @@ AppController::AppController(QObject *parent)
     connect(itsGameWonController, &GameWonController::menuRequested, this, &AppController::onMenuRequested);
 
     connect(gameController, &GameController::bossEncountered, this, &AppController::onBossEncountered);
-    connect(gameController, &GameController::bossKilled, this, &AppController::onBossKilled); // <-- AJOUTE CETTE LIGNE
+    connect(gameController, &GameController::bossKilled, this, &AppController::onBossKilled); 
+
+    connect(leaderboardController, &LeaderboardController::menuRequested, this, &AppController::onMenuRequested);
+    connect(menuController, &MenuController::leaderboardRequested, this, &AppController::onLeaderboardRequested);
 
     start();
 }
@@ -100,7 +104,7 @@ void AppController::onCharSelectRequested() {
 /// \details Slot triggered when the 'LEADERBOARD' button is clicked.
 ///
 void AppController::onLeaderboardRequested() {
-    // Next step: scoresController->createView();
+    navigateTo(AppState::Leaderboard);
 }
 
 ///
@@ -164,6 +168,9 @@ void AppController::navigateTo(AppState state) {
     case AppState::Setting:
         currentView = settingsController->createView();
         break;
+    case AppState::Leaderboard:
+        currentView = leaderboardController->createView();
+        break;
     default:
         return;
     }
@@ -187,6 +194,8 @@ void AppController::cleanupCurrentView() {
         gameController->destroyView();
     } else if (currentState == AppState::Setting) {
         settingsController->destroyView();
+    } else if (currentState == AppState::Leaderboard) {
+        leaderboardController->destroyView();
     }
 
     currentView = nullptr;
@@ -194,14 +203,41 @@ void AppController::cleanupCurrentView() {
 
 void AppController::onGameOver(int score, HeroType hero)
 {
-    gameController->destroyView();
-    mainWindow->setCentralWidget(itsGameOverController->createView(score, hero));
-    currentView = itsGameWonController->createView(score, hero);
 
+    if (currentState != AppState::Game) return;
+    currentState = AppState::Menu; // Blocks other loop ticks
+
+    gameController->destroyView();
+
+    currentView = itsGameOverController->createView(score, hero);
+    mainWindow->setCentralWidget(currentView);
+
+    currentView = nullptr;
+
+    QCoreApplication::processEvents();
+
+    bool ok;
+    QString playerName = QInputDialog::getText(mainWindow,
+                                               "Game Over",
+                                               "Entrez votre prénom pour le Leaderboard :",
+                                               QLineEdit::Normal,
+                                               "Joueur", &ok);
+
+    if (!ok || playerName.trimmed().isEmpty()) {
+        playerName = "Anonyme";
+    } else {
+        playerName = playerName.trimmed();
+    }
+
+    // Saved score in the Leaderboard
+    leaderboardController->submitScore(playerName, score);
 }
 
 void AppController::onGameWon(int score, HeroType hero)
 {
+    if (currentState != AppState::Game) return;
+    currentState = AppState::Menu;
+
     gameController->destroyView();
     mainWindow->setCentralWidget(itsGameWonController->createView(score, hero));
     currentView = itsGameOverController->createView(score, hero);
@@ -222,4 +258,28 @@ void AppController::onBossKilled()
 
     // OPTION B : Si tu préfères le silence absolu à la place, décommente la ligne ci-dessous et commente l'Option A :
     // musicPlayer->stop();
+}
+=======
+
+    currentView = itsGameWonController->createView(score, hero);
+    mainWindow->setCentralWidget(currentView);
+
+    currentView = nullptr;
+
+    QCoreApplication::processEvents();
+
+    bool ok;
+    QString playerName = QInputDialog::getText(mainWindow,
+                                               "Victoire !",
+                                               "Félicitations ! Entrez votre prénom :",
+                                               QLineEdit::Normal,
+                                               "Joueur", &ok);
+
+    if (!ok || playerName.trimmed().isEmpty()) {
+        playerName = "Anonyme";
+    } else {
+        playerName = playerName.trimmed();
+    }
+
+    leaderboardController->submitScore(playerName, score);
 }

@@ -2,12 +2,13 @@
 #include "archermodel.h"
 #include "blacksmithmodel.h"
 #include "assassinmodel.h"
+#include "kingmodel.h"
 #include "knightmodel.h"
 #include "lancermodel.h"
 #include "lordmodel.h"
 #include "config.h"
 #include "qpainterpath.h"
-#include <QRandomGenerator> // for random spawn
+#include <QRandomGenerator> 
 #include <QtCore/qdebug.h>
 #include "huntermodel.h"
 
@@ -21,16 +22,19 @@ QList<ProjectileModel *> GameModel::getItsProjeciles() const
     return itsProjeciles;
 }
 
+QList<ItemModel *> GameModel::getItsItems() const
+{
+    return itsItems;
+}
+
 GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
 {
     currentLevel = 1;
-    resetGame(HeroType::None);
     itsBoss = nullptr;
     activeRoom = nullptr;
-    minEnemy = 4;
-    maxEnemy = 6;
-    statIncreass = 1;
     isEasterEggFound = false;
+    itsGoldModel = new GoldModel;
+    resetGame(HeroType::None);
 }
 
 GameModel::~GameModel()
@@ -44,9 +48,7 @@ GameModel::~GameModel()
 
 void GameModel::resetGame(HeroType hero)
 {
-
-    isHeart1Collected = false;
-    isHeart2Collected = false;
+    itsGoldModel->resetGold();
 
     qDeleteAll(allRooms);
     allRooms.clear();
@@ -57,6 +59,9 @@ void GameModel::resetGame(HeroType hero)
     qDeleteAll(itsProjeciles);
     itsProjeciles.clear();
 
+    qDeleteAll(itsItems);
+    itsItems.clear();
+
     if (itsBoss != nullptr) {
         delete itsBoss;
         itsBoss = nullptr;
@@ -66,6 +71,12 @@ void GameModel::resetGame(HeroType hero)
         delete itsPlayer;
         itsPlayer = nullptr;
     }
+
+    minEnemy = 4;
+    maxEnemy = 6;
+    statIncreass = 1;
+    itsDropChance = 10;
+    itsGoldWorth = 3;
 
     // ==========================================
     // MAP GENERATION (WITHOUT GLOBAL ENEMIES)
@@ -112,20 +123,20 @@ void GameModel::resetGame(HeroType hero)
     case HeroType::Blacksmith: {
         BlacksmithModel * newPlayer = new BlacksmithModel();
         itsPlayer = newPlayer;
-        connect(newPlayer, &BlacksmithModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
+        connect(newPlayer, &BlacksmithModel::attackPlayer, this, [this](HitZoneModel hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
         break;
         }
     case HeroType::Assassin: {
         AssassinModel * newPlayer = new AssassinModel();
         itsPlayer = newPlayer;
-        connect(newPlayer, &AssassinModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
+        connect(newPlayer, &AssassinModel::attackPlayer, this, [this](HitZoneModel hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
         connect(newPlayer, &AssassinModel::fireProjectile, this, &GameModel::onNewProjectile);
         break;
     };
     case HeroType::Hunter: {
         HunterModel * newPlayer = new HunterModel();
         itsPlayer = newPlayer;
-        connect(newPlayer, &HunterModel::attackPlayer, this, [this](QPolygon hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
+        connect(newPlayer, &HunterModel::attackPlayer, this, [this](HitZoneModel hitbox, int damage) {this->onPlayerAttack(hitbox, damage);});
         connect(newPlayer, &HunterModel::fireProjectile, this, &GameModel::onNewProjectile);
         break;
     }
@@ -155,6 +166,8 @@ void GameModel::loadLevel(int levelId)
     allRooms.clear();
     qDeleteAll(itsEnemies);
     itsEnemies.clear();
+    qDeleteAll(itsItems);
+    itsItems.clear();
     if (itsBoss) {
         delete itsBoss;
         itsBoss = nullptr;
@@ -236,6 +249,15 @@ void GameModel::loadLevel(int levelId)
         allRooms.append(new RoomModel(RoomType::Spawn, -2500, 2100, 600, 600)); // Zone Loot gauche
         allRooms.append(new RoomModel(RoomType::CorridorHorizontal, -2900, 2325, 400, 150));
         allRooms.append(new RoomModel(RoomType::Combat, -4000, 2075, 1100, 650));
+
+        // ajout des coeurs
+        itsItems.append(new ItemModel(QPointF(275, 1350), HEART));
+        itsItems.append(new ItemModel(QPointF(-2225, 2375), HEART));
+
+        // modification des variables
+        minEnemy = 5;
+        maxEnemy = 7;
+        statIncreass=1.1;
     }
     else if (levelId == 3) {
         // 1. SPAWN (Tout en haut au centre)
@@ -324,12 +346,6 @@ void GameModel::spawnEnemies(bool isBoss)
         std::uniform_int_distribution<int> RoomY(roomBoundaries.topLeft().ry()+60,roomBoundaries.bottomLeft().ry()-60);
         std::uniform_int_distribution<int> Type(LANCER,ARCHER);
 
-        if (currentLevel == 2){
-            minEnemy = 5;
-            maxEnemy = 7;
-            statIncreass+=0.1;
-            qDebug() << "Level 2";
-        }
         std::uniform_int_distribution<int> EnemiesNb(minEnemy,maxEnemy);
 
         int nbEnemies = EnemiesNb(eng);
@@ -342,7 +358,7 @@ void GameModel::spawnEnemies(bool isBoss)
 
                 // Using a lambda to secure parameter passing
                 connect(newEnnemy, &LancerModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
-                connect(newEnnemy, &LancerModel::attacking, this, [this](QPolygon hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+                connect(newEnnemy, &LancerModel::attacking, this, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
                 break;
             }
             case KNIGHT:
@@ -352,7 +368,7 @@ void GameModel::spawnEnemies(bool isBoss)
 
                 // Using a lambda to secure parameter passing
                 connect(newEnnemy, &KnightModel::death, this, [this, newEnnemy]() {this->onEnemyDeath(newEnnemy);});
-                connect(newEnnemy, &KnightModel::attacking, this, [this](QPolygon hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+                connect(newEnnemy, &KnightModel::attacking, this, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
                 break;
             }
             case ARCHER:
@@ -371,6 +387,8 @@ void GameModel::spawnEnemies(bool isBoss)
         }
     }
     else{
+        // method to spawn the lord
+
         LordModel * newLord = new LordModel(LordDefaultMaxHp, LordDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
                                            LordDefaultAttack1CoolDown, LordDefaultAttack2CoolDown, LordDefaultAttack1Damage, LordDefaultAttack2Damage);
         itsBoss = newLord;
@@ -378,7 +396,19 @@ void GameModel::spawnEnemies(bool isBoss)
         emit bossSpawned();
 
         connect(newLord, &LordModel::death, this, &GameModel::onBossDeath);
-        connect(newLord, &LordModel::attacking, this, [this](QPolygon hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+        connect(newLord, &LordModel::attacking, this, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+
+
+        // method to spawn the king
+        /*
+        KingModel * newKing = new KingModel(KingDefaultMaxHp, KingDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
+                                           KingDefaultAttack1CoolDown, KingDefaultAttack2CoolDown, KingDefaultAttack1Damage, KingDefaultAttack2Damage);
+        itsBoss = newKing;
+
+        connect(newKing, &KingModel::death, this, &GameModel::onBossDeath);
+        connect(newKing, &KingModel::attacking, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+        connect(newKing, &KingModel::spawnEnemies, this, &GameModel::onKingSummon);
+        */
     }
 
 }
@@ -645,31 +675,25 @@ void GameModel::updateLogic()
             }
         }
         // ==========================================
-        // --- LOGIQUE DES COEURS (NIVEAU 2) ---
+        // --- LOGIQUE DES ITEMS ---
         // ==========================================
-        if (currentLevel == 2) {
-
-            // Coeur 1 (Dans la salle de loot de droite, centre = 300, 1375)
-            if (!isHeart1Collected) {
-                QRectF heart1Zone(275, 1350, 50, 50); // Hitbox de 50x50 au centre
-                if (itsPlayer->getHitBox().intersects(heart1Zone)) {
-                    itsPlayer->heal(5); // +5 HP !
-                    isHeart1Collected = true;
-                    qDebug() << "Coeur 1 ramasse !";
-                }
-            }
-
-            // Coeur 2 (Dans la salle de loot tout a gauche, centre = -2200, 2400)
-            if (!isHeart2Collected) {
-                QRectF heart2Zone(-2225, 2375, 50, 50); // Hitbox de 50x50 au centre
-                if (itsPlayer->getHitBox().intersects(heart2Zone)) {
-                    itsPlayer->heal(5); // +5 HP !
-                    isHeart2Collected = true;
-                    qDebug() << "Coeur 2 ramasse !";
+        if (!itsItems.empty()){
+            for (ItemModel * item : itsItems){
+                if (itsPlayer->getHitBox().intersects(item->getItsHitbox())){
+                    switch (item->getItsType()) {
+                    case HEART:
+                        itsPlayer->heal(5);
+                        break;
+                    case GOLD:
+                        itsGoldModel->addGold(itsGoldWorth+itsGoldWorth*(1.4*currentLevel-1));
+                    default:
+                        break;
+                    }
+                    itsItems.removeOne(item);
+                    delete item;
                 }
             }
         }
-
         // ==========================================
         // --- LOGIQUE BONUS CACHÉ (NIVEAU 3) ---
         // ==========================================
@@ -816,9 +840,26 @@ void GameModel::onEnemyDeath(EnemyModel * model)
     itsEnemies.removeOne(model);
     itsScore += 10; // +10 Points pour le lancier
 
-    if (itsEnemies.empty()){
+    if (itsEnemies.empty() and !itsBoss){
         activeRoom->unlockDoors();
-        itsPlayer->regen();
+    }
+
+    std::random_device rd;
+    std::default_random_engine eng(rd());
+    std::uniform_int_distribution<int> dropChance(1,100);
+    std::uniform_int_distribution<int> dropType(HEART,GOLD);
+    if (dropChance(eng) < itsDropChance){
+        switch (dropType(eng)) {
+        case HEART:
+            itsItems.append(new ItemModel(model->getHitBox().center(), HEART));
+            break;
+        case GOLD:
+            itsItems.append(new ItemModel(model->getHitBox().center(), GOLD));
+            break;
+        default:
+            break;
+        }
+
     }
 
     QObject * qobjEnemy = dynamic_cast<QObject*>(model);
@@ -827,6 +868,13 @@ void GameModel::onEnemyDeath(EnemyModel * model)
     }
     else {
         delete model;
+    }
+
+    if (itsBoss){
+        if (itsEnemies.count() <2){
+            KingModel * king = dynamic_cast<KingModel*>(itsBoss);
+            king->setCanSummon(true);
+        }
     }
 
 }
@@ -843,30 +891,33 @@ void GameModel::onBossDeath(BossModel * model)
     itsScore += 150;
 
     emit bossKilled();
+    itsPlayer->regen();
+
+    //emit gameWon(itsScore);
 
     delete model;
 }
 
-void GameModel::onEnemyAttack(QPolygon hitbox, int damage)
+void GameModel::onEnemyAttack(HitZoneModel hitbox, int damage)
 {
     emit attack(hitbox);
-    if (hitbox.intersects(itsPlayer->getHitBox().toRect())){
+    if (hitbox.getItsPolygon().intersects(itsPlayer->getHitBox().toRect())){
         itsPlayer->takeDamage(damage);
     }
 }
 
-void GameModel::onPlayerAttack(QPolygon hitbox, int damage)
+void GameModel::onPlayerAttack(HitZoneModel hitbox, int damage)
 {
     emit attack(hitbox);
     if (!itsEnemies.empty()){
         for (EnemyModel* enemy : itsEnemies){
-            if (hitbox.intersects(enemy->getHitBox().toRect())){
+            if (hitbox.getItsPolygon().intersects(enemy->getHitBox().toRect())){
                 enemy->takeDamage(damage);
             }
         }
     }
     else if(itsBoss){
-        if (hitbox.intersects(itsBoss->getHitBox().toRect())){
+        if (hitbox.getItsPolygon().intersects(itsBoss->getHitBox().toRect())){
             itsBoss->takeDamage(damage);
         }
     }
@@ -932,7 +983,7 @@ void GameModel::onplayerProjectile(ProjectileModel *projectile)
             }
         }
     }
-    else if (itsBoss){
+    if (itsBoss){
         if (projectile->getItsHitbox().intersects(itsBoss->getHitBox())){
             itsBoss->takeDamage(projectile->getItsDamage());
             disconnect(projectile);
@@ -969,6 +1020,21 @@ void GameModel::onplayerProjectile(ProjectileModel *projectile)
        itsProjeciles.removeOne(projectile);
        delete projectile;
        return;
+    }
+}
+
+void GameModel::onKingSummon()
+{
+    int oldMinEnemy = minEnemy;
+    int oldMaxEnemy = maxEnemy;
+    minEnemy = 1;
+    maxEnemy = 2;
+    spawnEnemies(false);
+    minEnemy = oldMinEnemy;
+    maxEnemy = oldMaxEnemy;
+    if (itsEnemies.count() >=3){
+        KingModel * king = dynamic_cast<KingModel*>(itsBoss);
+        king->setCanSummon(false);
     }
 }
 

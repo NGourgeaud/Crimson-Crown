@@ -28,8 +28,17 @@ SOURCES += \
     gameoverview.cpp \
     gamewoncontroller.cpp \
     gamewonview.cpp \
+    goldmodel.cpp \
+    hitzonemodel.cpp \
+    hitzoneview.cpp \
     huntermodel.cpp \
+    itemmodel.cpp \
+    itemview.cpp \
+    kingmodel.cpp \
     knightmodel.cpp \
+    leaderboardcontroller.cpp \
+    leaderboardmodel.cpp \
+    leaderboardview.cpp \
     lordmodel.cpp \
     gameview.cpp \
     main.cpp \
@@ -70,8 +79,17 @@ HEADERS += \
     gameoverview.h \
     gamewoncontroller.h \
     gamewonview.h \
+    goldmodel.h \
+    hitzonemodel.h \
+    hitzoneview.h \
     huntermodel.h \
+    itemmodel.h \
+    itemview.h \
+    kingmodel.h \
     knightmodel.h \
+    leaderboardcontroller.h \
+    leaderboardmodel.h \
+    leaderboardview.h \
     lordmodel.h \
     gameview.h \
     mainwindow.h \

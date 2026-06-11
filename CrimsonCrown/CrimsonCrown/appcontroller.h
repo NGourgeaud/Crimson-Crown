@@ -13,8 +13,9 @@
 #include <QAudioOutput>
 #include <QUrl>
 #include <QIcon>
+#include "leaderboardcontroller.h"
 
-enum class AppState { Menu, CharSelect, Game, Setting };
+enum class AppState { Menu, CharSelect, Game, Setting, Leaderboard };
 
 class AppController : public QObject {
     Q_OBJECT
@@ -48,7 +49,8 @@ private:
     GameOverController * itsGameOverController;
     GameWonController * itsGameWonController;
     SettingController * settingsController;
-
+    LeaderboardController* leaderboardController;
+    
     QMediaPlayer* musicPlayer;
     QAudioOutput* audioOutput;
 };

@@ -1,6 +1,7 @@
 #ifndef ASSASSINMODEL_H
 #define ASSASSINMODEL_H
 
+#include "hitzonemodel.h"
 #include "playermodel.h"
 #include "projectilemodel.h"
 #include <QPolygon>
@@ -25,7 +26,7 @@ private slots:
     void resetInvisibility();
 
 signals:
-    void attackPlayer(QPolygon attackHitBox, int damage);
+    void attackPlayer(HitZoneModel attackHitBox, int damage);
     void fireProjectile(ProjectileModel* projectile);
 };
 
