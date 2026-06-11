@@ -3,7 +3,9 @@
 #include <QObject>
 #include "bossmodel.h"
 #include "enemymodel.h"
+#include "goldmodel.h"
 #include "hitzonemodel.h"
+#include "itemmodel.h"
 #include "projectilemodel.h"
 #include "roommodel.h"
 #include "playermodel.h"
@@ -17,17 +19,23 @@ private:
     QList<RoomModel*> allRooms;
     QList<EnemyModel*> itsEnemies;
     QList<ProjectileModel*> itsProjeciles;
+    QList<ItemModel*> itsItems;
     BossModel * itsBoss;
     int itsScore;
     PlayerModel * itsPlayer;
     RoomModel * activeRoom;
+    GoldModel * itsGoldModel;
     int currentLevel;
     int minEnemy;
     int maxEnemy;
+    int itsDropChance;
+    int itsGoldWorth;
     float statIncreass;
     bool isEasterEggFound;
+
     bool isHeart1Collected;
     bool isHeart2Collected;
+    bool isLevel3BonusCollected;
 
 public:
     GameModel();
@@ -56,15 +64,17 @@ public:
 
     void loadLevel(int levelId);
     QList<ProjectileModel *> getItsProjeciles() const;
-
-    bool getIsHeart1Collected() const { return isHeart1Collected; }
-    bool getIsHeart2Collected() const { return isHeart2Collected; }
+    QList<ItemModel *> getItsItems() const;
 
 signals:
     void roomCleared();
     void gameWon(int score, HeroType hero);
     void gameOver(int score);
     void attack(HitZoneModel);
+
+    void showPopup(QString message);
+    void bossSpawned();
+    void bossKilled();
 
 private slots:
     void onEnemyDeath(EnemyModel * model);
@@ -74,6 +84,7 @@ private slots:
     void onNewProjectile(ProjectileModel * projectile);
     void onEnemyProjectile(ProjectileModel * projectile);
     void onplayerProjectile(ProjectileModel * projectile);
+    void onKingSummon();
 };
 
 #endif // GAMEMODEL_H

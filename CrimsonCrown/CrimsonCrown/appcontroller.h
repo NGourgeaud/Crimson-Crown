@@ -9,8 +9,13 @@
 #include "charselectcontroller.h"
 #include "gamecontroller.h"
 #include "settingcontroller.h"
+#include <QMediaPlayer>
+#include <QAudioOutput>
+#include <QUrl>
+#include <QIcon>
+#include "leaderboardcontroller.h"
 
-enum class AppState { Menu, CharSelect, Game, Setting };
+enum class AppState { Menu, CharSelect, Game, Setting, Leaderboard };
 
 class AppController : public QObject {
     Q_OBJECT
@@ -27,7 +32,9 @@ private slots:
     void onQuitRequested();
     void onGameOver(int score, HeroType hero);
     void onGameWon(int score, HeroType hero);
-
+public slots:
+    void onBossEncountered();
+    void onBossKilled();
 private:
     void navigateTo(AppState state);
     void cleanupCurrentView();
@@ -42,6 +49,10 @@ private:
     GameOverController * itsGameOverController;
     GameWonController * itsGameWonController;
     SettingController * settingsController;
+    LeaderboardController* leaderboardController;
+    
+    QMediaPlayer* musicPlayer;
+    QAudioOutput* audioOutput;
 };
 
 #endif // APPCONTROLLER_H

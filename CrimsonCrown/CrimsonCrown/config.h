@@ -138,6 +138,31 @@ const int ClergyAttack1HitBoxHeight = 100;
 const int ClergyAttack2HitBoxWidth = 40;
 const int ClergyAttack2HitBoxHeight = 30;
 
+// King Stats
+const int KingDefaultMaxHp = 200;
+const int KingDefaultSpeed = 1;
+const int KingDefaultAttack1Damage = 0;
+const int KingDefaultAttack2Damage = 5;
+const float KingDefaultAttack1CoolDown = 5;
+const float KingDefaultAttack2CoolDown = 5;
+const float KingIframe = 0.2;
+
+
+const int KingWidth = 60;
+const int KingHeight = 60;
+
+const int KingAttack2HitBoxWidth = 100;
+const int KingAttack2HitBoxHeight = 100;
+
+const int KingAttack2SpikeHitBoxWidth = 70;
+const int KingAttack2SpikeHitBoxHeight = 70;
+
+const float KingAttack1Duration = 1.5;
+const float KingJumpDuration = 1;
+const float KingAttack2Step2Delay = 0.5;
+
+// Drops stats
+const int DropSize = 20;
 
 enum HeroType {
     None,
@@ -155,7 +180,8 @@ enum EnemyType{
 
 enum BossType{
     UNDEF,
-    LORD
+    LORD,
+    KING
 };
 
 enum Team{
@@ -175,6 +201,11 @@ enum AttackZoneType {
     HAMMER,
     LANCE,
     SWORD
+};
+
+enum ItemType {
+    HEART,
+    GOLD
 };
 
 // --- STATISTIQUES ET DESCRIPTION DU ASSASSIN (HTML STYLISÉ) ---

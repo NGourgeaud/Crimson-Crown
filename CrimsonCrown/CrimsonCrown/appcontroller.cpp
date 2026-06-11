@@ -1,6 +1,8 @@
 #include "appcontroller.h"
 #include <QApplication>
 #include <QFontDatabase>
+#include <QInputDialog>
+
 
 ///
 /// \brief AppController::AppController
@@ -19,9 +21,9 @@ AppController::AppController(QObject *parent)
     gameController(new GameController(mainWindow, this)),
     itsGameOverController(new GameOverController()),
     itsGameWonController(new GameWonController()),
-    settingsController(new SettingController(mainWindow, this))
+    settingsController(new SettingController(mainWindow, this)),
+    leaderboardController(new LeaderboardController(mainWindow, this))
 {
-    mainWindow->setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // Police
     int fontId = QFontDatabase::addApplicationFont(":/alagard.ttf");
@@ -30,6 +32,21 @@ AppController::AppController(QObject *parent)
         QFont customFont(family);
         qApp->setFont(customFont);
     }
+    QIcon appIcon(":/logo.png");
+    qApp->setWindowIcon(appIcon);
+    mainWindow->setWindowIcon(appIcon);
+
+    // --- INITIALISATION DE L'AUDIO ---
+    audioOutput = new QAudioOutput(this);
+    audioOutput->setVolume(0.5); // Volume à 50%
+
+    musicPlayer = new QMediaPlayer(this);
+    musicPlayer->setAudioOutput(audioOutput);
+    musicPlayer->setLoops(QMediaPlayer::Infinite); // Boucle infinie pour que la musique ne s'arrête pas
+
+    // Connexion pour la musique du Boss
+    connect(gameController, &GameController::bossEncountered, this, &AppController::onBossEncountered);
+
 
     // Connects
     connect(menuController, &MenuController::playRequested, this, &AppController::onCharSelectRequested);
@@ -47,6 +64,12 @@ AppController::AppController(QObject *parent)
 
     connect(itsGameOverController, &GameOverController::menuRequested, this, &AppController::onMenuRequested);
     connect(itsGameWonController, &GameWonController::menuRequested, this, &AppController::onMenuRequested);
+
+    connect(gameController, &GameController::bossEncountered, this, &AppController::onBossEncountered);
+    connect(gameController, &GameController::bossKilled, this, &AppController::onBossKilled); 
+
+    connect(leaderboardController, &LeaderboardController::menuRequested, this, &AppController::onMenuRequested);
+    connect(menuController, &MenuController::leaderboardRequested, this, &AppController::onLeaderboardRequested);
 
     start();
 }
@@ -81,7 +104,7 @@ void AppController::onCharSelectRequested() {
 /// \details Slot triggered when the 'LEADERBOARD' button is clicked.
 ///
 void AppController::onLeaderboardRequested() {
-    // Next step: scoresController->createView();
+    navigateTo(AppState::Leaderboard);
 }
 
 ///
@@ -121,6 +144,17 @@ void AppController::navigateTo(AppState state) {
 
     cleanupCurrentView();
 
+    // --- CORRECTION : CHANGEMENT DE MUSIQUE SELON L'ÉTAT ---
+    if (state == AppState::Menu) {
+        // Se lance à chaque fois qu'on est sur un menu (au démarrage ou au retour)
+        musicPlayer->setSource(QUrl("qrc:/menu-music.mp3"));
+        musicPlayer->play();
+    }
+    else if (state == AppState::Game) {
+        musicPlayer->setSource(QUrl("qrc:/combat-music.mp3"));
+        musicPlayer->play();
+    }
+
     switch (state) {
     case AppState::Menu:
         currentView = menuController->createView();
@@ -133,6 +167,9 @@ void AppController::navigateTo(AppState state) {
         break;
     case AppState::Setting:
         currentView = settingsController->createView();
+        break;
+    case AppState::Leaderboard:
+        currentView = leaderboardController->createView();
         break;
     default:
         return;
@@ -157,6 +194,8 @@ void AppController::cleanupCurrentView() {
         gameController->destroyView();
     } else if (currentState == AppState::Setting) {
         settingsController->destroyView();
+    } else if (currentState == AppState::Leaderboard) {
+        leaderboardController->destroyView();
     }
 
     currentView = nullptr;
@@ -164,16 +203,80 @@ void AppController::cleanupCurrentView() {
 
 void AppController::onGameOver(int score, HeroType hero)
 {
-    gameController->destroyView();
-    mainWindow->setCentralWidget(itsGameOverController->createView(score, hero));
-    currentView = itsGameWonController->createView(score, hero);
 
+    if (currentState != AppState::Game) return;
+    currentState = AppState::Menu; // Blocks other loop ticks
+
+    gameController->destroyView();
+
+    currentView = itsGameOverController->createView(score, hero);
+    mainWindow->setCentralWidget(currentView);
+
+    currentView = nullptr;
+
+    QCoreApplication::processEvents();
+
+    bool ok;
+    QString playerName = QInputDialog::getText(mainWindow,
+                                               "Game Over",
+                                               "Entrez votre prénom pour le Leaderboard :",
+                                               QLineEdit::Normal,
+                                               "Joueur", &ok);
+
+    if (!ok || playerName.trimmed().isEmpty()) {
+        playerName = "Anonyme";
+    } else {
+        playerName = playerName.trimmed();
+    }
+
+    // Saved score in the Leaderboard
+    leaderboardController->submitScore(playerName, score);
 }
 
 void AppController::onGameWon(int score, HeroType hero)
 {
+    // 1. Sécurité anti-double déclenchement
+    if (currentState != AppState::Game) return;
+    currentState = AppState::Menu;
+
+    // 2. Nettoyage de l'écran de jeu
     gameController->destroyView();
-    mainWindow->setCentralWidget(itsGameWonController->createView(score, hero));
-    currentView = itsGameOverController->createView(score, hero);
- 
+
+    // 3. Affichage de l'écran de victoire
+    currentView = itsGameWonController->createView(score, hero);
+    mainWindow->setCentralWidget(currentView);
+
+    // 4. On détache la vue et on force l'affichage
+    currentView = nullptr;
+    QCoreApplication::processEvents();
+
+    // 5. Boîte de dialogue pour le prénom
+    bool ok;
+    QString playerName = QInputDialog::getText(mainWindow,
+                                               "Victoire !",
+                                               "Félicitations ! Entrez votre prénom :",
+                                               QLineEdit::Normal,
+                                               "Joueur", &ok);
+
+    if (!ok || playerName.trimmed().isEmpty()) {
+        playerName = "Anonyme";
+    } else {
+        playerName = playerName.trimmed();
+    }
+
+    // 6. Sauvegarde du score
+    leaderboardController->submitScore(playerName, score);
+}
+
+void AppController::onBossEncountered()
+{
+    musicPlayer->setSource(QUrl("qrc:/boss-music.mp3"));
+    musicPlayer->play();
+}
+
+void AppController::onBossKilled()
+{
+    // Remettre la musique calme du donjon pendant que le joueur marche vers la sortie
+    musicPlayer->setSource(QUrl("qrc:/combat-music.mp3"));
+    musicPlayer->play();
 }

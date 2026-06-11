@@ -13,14 +13,25 @@ void RoomView::draw(QPainter &painter, const RoomModel *roomModel, ObstacleView 
 {
     if (!roomModel) return;
 
-    if (roomModel->getOffsetX() == 2100 && roomModel->getOffsetY() == 225) {
-        return;
+    // --- 🤫 MASQUAGE DES ZONES INVISIBLES (NIVEAU 1 & NIVEAU 3) ---
 
+    // 1. Couloir secret du Niveau 1
+    if (roomModel->getOffsetX() == 2100 && roomModel->getOffsetY() == 225) {
+        return; // On stoppe le dessin : la pièce reste noire
     }
+
+    // 2. Couloir et salle secrète du Niveau 3
+    if ((roomModel->getOffsetX() == 3475 && roomModel->getOffsetY() == 1625) ||
+        (roomModel->getOffsetX() == 3250 && roomModel->getOffsetY() == 2025))
+    {
+        return; // On stoppe le dessin : la pièce reste noire
+    }
+
+    // --- FIN DU MASQUAGE ---
 
     RoomType type = roomModel->getType();
 
-    if  (type == Spawn){
+    if (type == Spawn){
         painter.drawPixmap(0, 0, roomModel->getWidth(), roomModel->getHeight(), spawnTexture);
     }
 
@@ -33,16 +44,6 @@ void RoomView::draw(QPainter &painter, const RoomModel *roomModel, ObstacleView 
 
     painter.setPen(QPen(Qt::black, 4));
     painter.drawRect(0, 0, roomModel->getWidth(), roomModel->getHeight());
-
-    // ==========================================
-    // VISUAL EFFECT: WOODEN FENCING
-    // ==========================================
-    if (roomModel->getIsLocked()) {
-        painter.setBrush(Qt::NoBrush);
-        painter.setPen(QPen(QColor(139, 69, 19), 12));
-        painter.drawRect(6, 6, roomModel->getWidth() - 12, roomModel->getHeight() - 12);
-    }
-
 
     painter.setPen(QPen(Qt::black, 4));
     for (const ObstacleModel* obstacle : roomModel->getItsObstacles()) {

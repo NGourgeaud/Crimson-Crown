@@ -166,12 +166,7 @@ int PlayerModel::getMaxHP()
 
 void PlayerModel::regen()
 {
-    if(itsHP + playerRegen > itsMaxHP) {
-        itsHP = itsMaxHP;
-    }
-    else {
-        itsHP += playerRegen;
-    }
+    itsHP = itsMaxHP;
 }
 
 bool PlayerModel::getCanAttack1() const
@@ -203,5 +198,12 @@ void PlayerModel::heal(int amount)
     }
 }
 
+// --- AJOUT DE LA FONCTION POUR LE BONUS DU NIVEAU 3 ---
+void PlayerModel::increaseDamage(double percentage)
+{
+    // Augmente les dégâts des deux attaques du personnage de 10%
+    itsAttack1Damage += static_cast<int>(itsAttack1Damage * percentage);
+    itsAttack2Damage += static_cast<int>(itsAttack2Damage * percentage);
+}
 
 

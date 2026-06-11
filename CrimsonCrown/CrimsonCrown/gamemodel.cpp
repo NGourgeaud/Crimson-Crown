@@ -3,12 +3,13 @@
 #include "blacksmithmodel.h"
 #include "assassinmodel.h"
 #include "clergymodel.h"
+#include "kingmodel.h"
 #include "knightmodel.h"
 #include "lancermodel.h"
 #include "lordmodel.h"
 #include "config.h"
 #include "qpainterpath.h"
-#include <QRandomGenerator> // for random spawn
+#include <QRandomGenerator> 
 #include <QtCore/qdebug.h>
 #include "huntermodel.h"
 
@@ -22,16 +23,19 @@ QList<ProjectileModel *> GameModel::getItsProjeciles() const
     return itsProjeciles;
 }
 
+QList<ItemModel *> GameModel::getItsItems() const
+{
+    return itsItems;
+}
+
 GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
 {
     currentLevel = 1;
-    resetGame(HeroType::None);
     itsBoss = nullptr;
     activeRoom = nullptr;
-    minEnemy = 4;
-    maxEnemy = 6;
-    statIncreass = 1;
     isEasterEggFound = false;
+    itsGoldModel = new GoldModel;
+    resetGame(HeroType::None);
 }
 
 GameModel::~GameModel()
@@ -45,9 +49,7 @@ GameModel::~GameModel()
 
 void GameModel::resetGame(HeroType hero)
 {
-
-    isHeart1Collected = false;
-    isHeart2Collected = false;
+    itsGoldModel->resetGold();
 
     qDeleteAll(allRooms);
     allRooms.clear();
@@ -58,6 +60,9 @@ void GameModel::resetGame(HeroType hero)
     qDeleteAll(itsProjeciles);
     itsProjeciles.clear();
 
+    qDeleteAll(itsItems);
+    itsItems.clear();
+
     if (itsBoss != nullptr) {
         delete itsBoss;
         itsBoss = nullptr;
@@ -67,6 +72,12 @@ void GameModel::resetGame(HeroType hero)
         delete itsPlayer;
         itsPlayer = nullptr;
     }
+
+    minEnemy = 4;
+    maxEnemy = 6;
+    statIncreass = 1;
+    itsDropChance = 10;
+    itsGoldWorth = 3;
 
     // ==========================================
     // MAP GENERATION (WITHOUT GLOBAL ENEMIES)
@@ -156,6 +167,8 @@ void GameModel::loadLevel(int levelId)
     allRooms.clear();
     qDeleteAll(itsEnemies);
     itsEnemies.clear();
+    qDeleteAll(itsItems);
+    itsItems.clear();
     if (itsBoss) {
         delete itsBoss;
         itsBoss = nullptr;
@@ -237,6 +250,78 @@ void GameModel::loadLevel(int levelId)
         allRooms.append(new RoomModel(RoomType::Spawn, -2500, 2100, 600, 600)); // Zone Loot gauche
         allRooms.append(new RoomModel(RoomType::CorridorHorizontal, -2900, 2325, 400, 150));
         allRooms.append(new RoomModel(RoomType::Combat, -4000, 2075, 1100, 650));
+
+        // ajout des coeurs
+        itsItems.append(new ItemModel(QPointF(275, 1350), HEART));
+        itsItems.append(new ItemModel(QPointF(-2225, 2375), HEART));
+
+        // modification des variables
+        minEnemy = 5;
+        maxEnemy = 7;
+        statIncreass=1.1;
+    }
+    else if (levelId == 3) {
+        // 1. SPAWN (Tout en haut au centre)
+        allRooms.append(new RoomModel(RoomType::Spawn, 2000, 0, 600, 600));
+        allRooms.append(new RoomModel(RoomType::CorridorVertical, 2225, 600, 150, 400));
+
+        // 2. CENTRAL COMBAT (La pièce maîtresse sous le spawn)
+        allRooms.append(new RoomModel(RoomType::Combat, 1750, 1000, 1100, 650));
+
+        // ==========================================
+        // BRANCHES DROITE : LOOT & COULOIRS INVISIBLES
+        // ==========================================
+        allRooms.append(new RoomModel(RoomType::CorridorHorizontal, 2850, 1250, 400, 150));
+        allRooms.append(new RoomModel(RoomType::Spawn, 3250, 1025, 600, 600)); // Loot visible
+
+        // --- PARTIE INVISIBLE ---
+        // Couloir vertical invisible vers le bas
+        allRooms.append(new RoomModel(RoomType::CorridorVertical, 3475, 1625, 150, 400));
+        // Salle de Loot invisible qui contient le bonus de +10% dégâts
+        allRooms.append(new RoomModel(RoomType::Spawn, 3250, 2025, 600, 600));
+
+        // ==========================================
+        // TRONC CENTRAL ET BRANCHE DROITE INFÉRIEURE
+        // ==========================================
+        // Long couloir qui descend vers le boss
+        allRooms.append(new RoomModel(RoomType::CorridorVertical, 2225, 1650, 150, 1400));
+
+        // Long couloir horizontal vers la salle de combat de droite (DÉCALÉ PLUS BAS)
+        allRooms.append(new RoomModel(RoomType::CorridorHorizontal, 2375, 2700, 1600, 150));
+        allRooms.append(new RoomModel(RoomType::Combat, 3975, 2450, 1100, 650));
+
+        // ==========================================
+        // LABYRINTHE DE GAUCHE (LE SERPENT DE COMBAT)
+        // ==========================================
+        // Sortie gauche du combat central
+        allRooms.append(new RoomModel(RoomType::CorridorHorizontal, 1350, 1250, 400, 150));
+        allRooms.append(new RoomModel(RoomType::Combat, 250, 1025, 1100, 650)); // Combat Gauche 1
+
+        // Descente vers Combat Gauche 2
+        allRooms.append(new RoomModel(RoomType::CorridorVertical, 725, 1675, 150, 400));
+        allRooms.append(new RoomModel(RoomType::Combat, 250, 2075, 1100, 650)); // Combat Gauche 2
+
+        // Descente vers Combat Gauche 3
+        allRooms.append(new RoomModel(RoomType::CorridorVertical, 725, 2725, 150, 400));
+        allRooms.append(new RoomModel(RoomType::Combat, 250, 3125, 1100, 650)); // Combat Gauche 3
+
+        // Bifurcation vers la gauche (Combat Gauche 4)
+        allRooms.append(new RoomModel(RoomType::CorridorHorizontal, -150, 3375, 400, 150));
+        allRooms.append(new RoomModel(RoomType::Combat, -1250, 3125, 1100, 650)); // Combat Gauche 4
+
+        // Descente vers le Loot en bas à gauche
+        allRooms.append(new RoomModel(RoomType::CorridorVertical, -775, 3775, 150, 400));
+        allRooms.append(new RoomModel(RoomType::Spawn, -1000, 4175, 600, 600)); // Loot bas gauche
+
+        // Dernière ligne droite vers le Combat ultime de gauche
+        allRooms.append(new RoomModel(RoomType::CorridorHorizontal, -400, 4400, 400, 150));
+        allRooms.append(new RoomModel(RoomType::Combat, 0, 4150, 1100, 650)); // Combat Gauche 5
+
+        // ==========================================
+        // FIN DU DONJON : BOSS & SORTIE FINALE
+        // ==========================================
+        allRooms.append(new RoomModel(RoomType::Boss, 1750, 3050, 1100, 650));
+        allRooms.append(new RoomModel(RoomType::Exit, 2225, 3700, 150, 400));
     }
 
     // 3. Repositionner le personnage au centre de la zone de Spawn actuelle
@@ -262,12 +347,6 @@ void GameModel::spawnEnemies(bool isBoss)
         std::uniform_int_distribution<int> RoomY(roomBoundaries.topLeft().ry()+60,roomBoundaries.bottomLeft().ry()-60);
         std::uniform_int_distribution<int> Type(LANCER,ARCHER);
 
-        if (currentLevel == 2){
-            minEnemy = 5;
-            maxEnemy = 7;
-            statIncreass+=0.1;
-            qDebug() << "Level 2";
-        }
         std::uniform_int_distribution<int> EnemiesNb(minEnemy,maxEnemy);
 
         int nbEnemies = EnemiesNb(eng);
@@ -308,6 +387,7 @@ void GameModel::spawnEnemies(bool isBoss)
             }
         }
     }
+
     //else {
     //    clergyModel * newClergy = new clergyModel(ClergyDefaultMaxHp, ClergyDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
     //                                             ClergyDefaultAttack1CoolDown, ClergyDefaultAttack2CoolDown, ClergyDefaultAttack1Damage, ClergyDefaultAttack2Damage);
@@ -316,6 +396,40 @@ void GameModel::spawnEnemies(bool isBoss)
     //    connect(newClergy, &clergyModel::death, this, &GameModel::onBossDeath);
     //    connect(newClergy, &clergyModel::attacking, this, &GameModel::onNewProjectile);
     //}
+
+    else{
+        // method to spawn the lord
+
+        LordModel * newLord = new LordModel(LordDefaultMaxHp, LordDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
+                                           LordDefaultAttack1CoolDown, LordDefaultAttack2CoolDown, LordDefaultAttack1Damage, LordDefaultAttack2Damage);
+        itsBoss = newLord;
+
+        emit bossSpawned();
+
+        connect(newLord, &LordModel::death, this, &GameModel::onBossDeath);
+        connect(newLord, &LordModel::attacking, this, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+
+
+        // method to spawn the king
+        /*
+        KingModel * newKing = new KingModel(KingDefaultMaxHp, KingDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
+                                           KingDefaultAttack1CoolDown, KingDefaultAttack2CoolDown, KingDefaultAttack1Damage, KingDefaultAttack2Damage);
+        itsBoss = newKing;
+
+        connect(newKing, &KingModel::death, this, &GameModel::onBossDeath);
+        connect(newKing, &KingModel::attacking, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+        connect(newKing, &KingModel::spawnEnemies, this, &GameModel::onKingSummon);
+        */
+
+        //else {
+    //    clergyModel * newClergy = new clergyModel(ClergyDefaultMaxHp, ClergyDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
+    //                                             ClergyDefaultAttack1CoolDown, ClergyDefaultAttack2CoolDown, ClergyDefaultAttack1Damage, ClergyDefaultAttack2Damage);
+    //    itsBoss = newClergy;
+
+    //    connect(newClergy, &clergyModel::death, this, &GameModel::onBossDeath);
+    //    connect(newClergy, &clergyModel::attacking, this, &GameModel::onNewProjectile);
+    //}
+    }
 
 }
 
@@ -369,18 +483,23 @@ void GameModel::updateLogic()
             RoomType type = activeRoom->getType();
 
             // =========================================================
-            // GESTION DU COULOIR DE SORTIE (TP Niveau 2 OU Victoire)
+            // GESTION DU COULOIR DE SORTIE (PROGRESSION DES NIVEAUX)
             // =========================================================
             if (type == RoomType::Exit) {
                 if (currentLevel == 1) {
-                    // On passe au niveau 2
                     currentLevel = 2;
-                    loadLevel(currentLevel); // Charge la nouvelle carte et TP le joueur au spawn du Lvl 2
-                    return; // On quitte la fonction pour ce tick, la nouvelle map est chargée !
+                    loadLevel(currentLevel);
+                    return;
                 }
                 else if (currentLevel == 2) {
-                    // Fin du niveau 2 : Le joueur prend la sortie, il a GAGNÉ le jeu !
-                    emit gameWon(itsScore, itsPlayer->getItsName()); // Déclenche ton écran de victoire final
+                    // CORRECTION : Au lieu de gagner, on charge le niveau 3 !
+                    currentLevel = 3;
+                    loadLevel(currentLevel);
+                    return;
+                }
+                else if (currentLevel == 3) {
+                    // CORRECTION : C'est ici, à la fin du niveau 3, qu'on gagne !
+                    emit gameWon(itsScore, itsPlayer->getItsName());
                     return;
                 }
             }
@@ -402,28 +521,40 @@ void GameModel::updateLogic()
             }
         }
         // ==========================================
-        // --- LOGIQUE DES COEURS (NIVEAU 2) ---
+        // --- LOGIQUE DES ITEMS ---
         // ==========================================
-        if (currentLevel == 2) {
-
-            // Coeur 1 (Dans la salle de loot de droite, centre = 300, 1375)
-            if (!isHeart1Collected) {
-                QRectF heart1Zone(275, 1350, 50, 50); // Hitbox de 50x50 au centre
-                if (itsPlayer->getHitBox().intersects(heart1Zone)) {
-                    itsPlayer->heal(5); // +5 HP !
-                    isHeart1Collected = true;
-                    qDebug() << "Coeur 1 ramasse !";
+        if (!itsItems.empty()){
+            for (ItemModel * item : itsItems){
+                if (itsPlayer->getHitBox().intersects(item->getItsHitbox())){
+                    switch (item->getItsType()) {
+                    case HEART:
+                        itsPlayer->heal(5);
+                        break;
+                    case GOLD:
+                        itsGoldModel->addGold(itsGoldWorth+itsGoldWorth*(1.4*currentLevel-1));
+                    default:
+                        break;
+                    }
+                    itsItems.removeOne(item);
+                    delete item;
                 }
             }
+        }
+        // ==========================================
+        // --- LOGIQUE BONUS CACHÉ (NIVEAU 3) ---
+        // ==========================================
+        if (currentLevel == 3 && !isLevel3BonusCollected) {
 
-            // Coeur 2 (Dans la salle de loot tout a gauche, centre = -2200, 2400)
-            if (!isHeart2Collected) {
-                QRectF heart2Zone(-2225, 2375, 50, 50); // Hitbox de 50x50 au centre
-                if (itsPlayer->getHitBox().intersects(heart2Zone)) {
-                    itsPlayer->heal(5); // +5 HP !
-                    isHeart2Collected = true;
-                    qDebug() << "Coeur 2 ramasse !";
-                }
+            // Centre de la pièce invisible calculé à (3250 + 300, 2025 + 300) = (3550, 2325)
+            // Hitbox de ramassage de 60x60 pixels calée au milieu
+            QRectF secretBonusZone(3520, 2295, 60, 60);
+
+            if (itsPlayer->getHitBox().intersects(secretBonusZone)) {
+                itsPlayer->increaseDamage(0.10); // +10% de dégâts définitifs !
+                isLevel3BonusCollected = true;
+
+                // Déclenche la Pop-up dorée à l'écran
+                emit showPopup("BONUS SECRET DETERRE : +10% DEGATS !");
             }
         }
 
@@ -907,9 +1038,26 @@ void GameModel::onEnemyDeath(EnemyModel * model)
     itsEnemies.removeOne(model);
     itsScore += 10; // +10 Points pour le lancier
 
-    if (itsEnemies.empty()){
+    if (itsEnemies.empty() and !itsBoss){
         activeRoom->unlockDoors();
-        itsPlayer->regen();
+    }
+
+    std::random_device rd;
+    std::default_random_engine eng(rd());
+    std::uniform_int_distribution<int> dropChance(1,100);
+    std::uniform_int_distribution<int> dropType(HEART,GOLD);
+    if (dropChance(eng) < itsDropChance){
+        switch (dropType(eng)) {
+        case HEART:
+            itsItems.append(new ItemModel(model->getHitBox().center(), HEART));
+            break;
+        case GOLD:
+            itsItems.append(new ItemModel(model->getHitBox().center(), GOLD));
+            break;
+        default:
+            break;
+        }
+
     }
 
     QObject * qobjEnemy = dynamic_cast<QObject*>(model);
@@ -918,6 +1066,13 @@ void GameModel::onEnemyDeath(EnemyModel * model)
     }
     else {
         delete model;
+    }
+
+    if (itsBoss){
+        if (itsEnemies.count() <2){
+            KingModel * king = dynamic_cast<KingModel*>(itsBoss);
+            king->setCanSummon(true);
+        }
     }
 
 }
@@ -933,9 +1088,8 @@ void GameModel::onBossDeath(BossModel * model)
     itsBoss = nullptr;
     itsScore += 150;
 
-    // V2
-    // currentRoom->unlockDoors();
-
+    emit bossKilled();
+    itsPlayer->regen();
 
     //emit gameWon(itsScore);
 
@@ -1031,7 +1185,7 @@ void GameModel::onplayerProjectile(ProjectileModel *projectile)
             }
         }
     }
-    else if (itsBoss){
+    if (itsBoss){
         if (projectile->getItsHitbox().intersects(itsBoss->getHitBox())){
             itsBoss->takeDamage(projectile->getItsDamage());
             disconnect(projectile);
@@ -1068,6 +1222,21 @@ void GameModel::onplayerProjectile(ProjectileModel *projectile)
        itsProjeciles.removeOne(projectile);
        delete projectile;
        return;
+    }
+}
+
+void GameModel::onKingSummon()
+{
+    int oldMinEnemy = minEnemy;
+    int oldMaxEnemy = maxEnemy;
+    minEnemy = 1;
+    maxEnemy = 2;
+    spawnEnemies(false);
+    minEnemy = oldMinEnemy;
+    maxEnemy = oldMaxEnemy;
+    if (itsEnemies.count() >=3){
+        KingModel * king = dynamic_cast<KingModel*>(itsBoss);
+        king->setCanSummon(false);
     }
 }
 
