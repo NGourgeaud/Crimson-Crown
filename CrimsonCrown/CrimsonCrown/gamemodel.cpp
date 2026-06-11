@@ -740,7 +740,6 @@ void GameModel::onEnemyDeath(EnemyModel * model)
 
     if (itsEnemies.empty() and !itsBoss){
         activeRoom->unlockDoors();
-        itsPlayer->regen();
     }
 
     std::random_device rd;
@@ -781,7 +780,7 @@ void GameModel::onBossDeath(BossModel * model)
 
     itsBoss = nullptr;
     itsScore += 150;
-
+    itsPlayer->regen();
     // V2
     // currentRoom->unlockDoors();
 
