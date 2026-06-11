@@ -32,6 +32,7 @@ SOURCES += \
     hitzonemodel.cpp \
     hitzoneview.cpp \
     huntermodel.cpp \
+    itemmodel.cpp \
     knightmodel.cpp \
     lordmodel.cpp \
     gameview.cpp \
@@ -77,6 +78,7 @@ HEADERS += \
     hitzonemodel.h \
     hitzoneview.h \
     huntermodel.h \
+    itemmodel.h \
     knightmodel.h \
     lordmodel.h \
     gameview.h \

@@ -5,6 +5,7 @@
 #include "enemymodel.h"
 #include "goldmodel.h"
 #include "hitzonemodel.h"
+#include "itemmodel.h"
 #include "projectilemodel.h"
 #include "roommodel.h"
 #include "playermodel.h"
@@ -18,6 +19,7 @@ private:
     QList<RoomModel*> allRooms;
     QList<EnemyModel*> itsEnemies;
     QList<ProjectileModel*> itsProjeciles;
+    QList<ItemModel*> itsItems;
     BossModel * itsBoss;
     int itsScore;
     PlayerModel * itsPlayer;
@@ -26,6 +28,7 @@ private:
     int currentLevel;
     int minEnemy;
     int maxEnemy;
+    int itsDropChance;
     float statIncreass;
     bool isEasterEggFound;
     bool isHeart1Collected;

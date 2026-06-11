@@ -27,9 +27,6 @@ GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
     resetGame(HeroType::None);
     itsBoss = nullptr;
     activeRoom = nullptr;
-    minEnemy = 4;
-    maxEnemy = 6;
-    statIncreass = 1;
     isEasterEggFound = false;
     itsGoldModel = new GoldModel;
 }
@@ -59,6 +56,9 @@ void GameModel::resetGame(HeroType hero)
     qDeleteAll(itsProjeciles);
     itsProjeciles.clear();
 
+    qDeleteAll(itsItems);
+    itsItems.clear();
+
     if (itsBoss != nullptr) {
         delete itsBoss;
         itsBoss = nullptr;
@@ -68,6 +68,11 @@ void GameModel::resetGame(HeroType hero)
         delete itsPlayer;
         itsPlayer = nullptr;
     }
+
+    minEnemy = 4;
+    maxEnemy = 6;
+    statIncreass = 1;
+    itsDropChance = 10;
 
     // ==========================================
     // MAP GENERATION (WITHOUT GLOBAL ENEMIES)
@@ -730,9 +735,27 @@ void GameModel::onEnemyDeath(EnemyModel * model)
     itsEnemies.removeOne(model);
     itsScore += 10; // +10 Points pour le lancier
 
-    if (itsEnemies.empty()){
+    if (itsEnemies.empty() and !itsBoss){
         activeRoom->unlockDoors();
         itsPlayer->regen();
+    }
+
+    std::random_device rd;
+    std::default_random_engine eng(rd());
+    std::uniform_int_distribution<int> dropChance(1,100);
+    std::uniform_int_distribution<int> dropType(HEART,GOLD);
+    if (dropChance(eng) < itsDropChance){
+        switch (dropType(eng)) {
+        case HEART:
+            itsItems.append(new ItemModel(model->getHitBox().center(), HEART));
+            break;
+        case GOLD:
+            itsItems.append(new ItemModel(model->getHitBox().center(), GOLD));
+            break;
+        default:
+            break;
+        }
+
     }
 
     QObject * qobjEnemy = dynamic_cast<QObject*>(model);
