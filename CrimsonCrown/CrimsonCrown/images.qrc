@@ -27,5 +27,6 @@
         <file>logo.png</file>
         <file>logo.icns</file>
         <file>logo.ico</file>
+        <file>gold.png</file>
     </qresource>
 </RCC>
