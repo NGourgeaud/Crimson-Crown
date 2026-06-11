@@ -31,6 +31,7 @@ GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
     maxEnemy = 6;
     statIncreass = 1;
     isEasterEggFound = false;
+    itsGoldModel = new GoldModel;
 }
 
 GameModel::~GameModel()
@@ -47,6 +48,7 @@ void GameModel::resetGame(HeroType hero)
 
     isHeart1Collected = false;
     isHeart2Collected = false;
+    itsGoldModel->resetGold();
 
     qDeleteAll(allRooms);
     allRooms.clear();

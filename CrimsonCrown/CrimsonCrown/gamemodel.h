@@ -3,6 +3,7 @@
 #include <QObject>
 #include "bossmodel.h"
 #include "enemymodel.h"
+#include "goldmodel.h"
 #include "hitzonemodel.h"
 #include "projectilemodel.h"
 #include "roommodel.h"
@@ -21,6 +22,7 @@ private:
     int itsScore;
     PlayerModel * itsPlayer;
     RoomModel * activeRoom;
+    GoldModel * itsGoldModel;
     int currentLevel;
     int minEnemy;
     int maxEnemy;

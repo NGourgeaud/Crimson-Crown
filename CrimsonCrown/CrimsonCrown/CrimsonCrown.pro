@@ -28,6 +28,7 @@ SOURCES += \
     gameoverview.cpp \
     gamewoncontroller.cpp \
     gamewonview.cpp \
+    goldmodel.cpp \
     hitzonemodel.cpp \
     hitzoneview.cpp \
     huntermodel.cpp \
@@ -72,6 +73,7 @@ HEADERS += \
     gameoverview.h \
     gamewoncontroller.h \
     gamewonview.h \
+    goldmodel.h \
     hitzonemodel.h \
     hitzoneview.h \
     huntermodel.h \
