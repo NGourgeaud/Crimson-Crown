@@ -108,7 +108,7 @@ void LordModel::takeDamage(int amount)
 ///
 void LordModel::move(QPointF pos)
 {
-    itsHitBox.moveCenter(pos);
+    itsHitBox.moveTo(pos);
 }
 
 ///
