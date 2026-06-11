@@ -142,7 +142,8 @@ const float KingAttack1Duration = 1.5;
 const float KingJumpDuration = 1;
 const float KingAttack2Step2Delay = 0.5;
 
-
+// Drops stats
+const int DropSize = 20;
 
 enum HeroType {
     None,
@@ -180,6 +181,11 @@ enum AttackZoneType {
     HAMMER,
     LANCE,
     SWORD
+};
+
+enum ItemType {
+    HEART,
+    GOLD
 };
 
 // --- STATISTIQUES ET DESCRIPTION DU ASSASSIN (HTML STYLISÉ) ---

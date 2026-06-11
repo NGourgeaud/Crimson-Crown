@@ -11,6 +11,7 @@ EnemyView::EnemyView() {}
 void EnemyView::draw(QPainter * painter, EnemyModel * model)
 {
     if (itsTexTure.isNull()) {
+        painter->setBrush(QBrush(Qt::NoBrush));
         switch (model->getitsEnemyType()) {
         case KNIGHT:
             painter->fillRect(model->getHitBox(), QColor(50, 100, 220));

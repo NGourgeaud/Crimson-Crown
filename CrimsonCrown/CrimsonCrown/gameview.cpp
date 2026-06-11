@@ -14,6 +14,7 @@ GameView::GameView(GameModel *model, QWidget *parent)
     itsEnemyView = new EnemyView;
     itsChestView = new CollectibleView();
     itsHitZoneView = new HitZoneView;
+    itsItemView = new ItemView;
 
     heartTexture = QPixmap(":/coeur.png");
     
@@ -196,16 +197,9 @@ void GameView::paintEvent(QPaintEvent *event)
     itsChestView->draw(painter, isClosed);
 
     // --- DESSIN DES COEURS DE SOIN (NIVEAU 2) ---
-    if (itsModel->getCurrentLevel() == 2 && !heartTexture.isNull()) {
-
-        // On dessine le coeur 1 s'il n'est pas ramassé
-        if (!itsModel->getIsHeart1Collected()) {
-            painter.drawPixmap(275, 1350, 50, 50, heartTexture);
-        }
-
-        // On dessine le coeur 2 s'il n'est pas ramassé
-        if (!itsModel->getIsHeart2Collected()) {
-            painter.drawPixmap(-2225, 2375, 50, 50, heartTexture);
+    if (!itsModel->getItsItems().empty()){
+        for (ItemModel * item : itsModel->getItsItems()){
+            itsItemView->draw(&painter, item);
         }
     }
 

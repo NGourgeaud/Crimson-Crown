@@ -8,7 +8,7 @@
 #include "lordmodel.h"
 #include "config.h"
 #include "qpainterpath.h"
-#include <QRandomGenerator> // for random spawn
+#include <QRandomGenerator> 
 #include <QtCore/qdebug.h>
 #include "huntermodel.h"
 
@@ -22,15 +22,18 @@ QList<ProjectileModel *> GameModel::getItsProjeciles() const
     return itsProjeciles;
 }
 
+QList<ItemModel *> GameModel::getItsItems() const
+{
+    return itsItems;
+}
+
 GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
 {
     currentLevel = 1;
     itsBoss = nullptr;
     activeRoom = nullptr;
-    minEnemy = 4;
-    maxEnemy = 6;
-    statIncreass = 1;
     isEasterEggFound = false;
+    itsGoldModel = new GoldModel;
     resetGame(HeroType::None);
 }
 
@@ -45,9 +48,7 @@ GameModel::~GameModel()
 
 void GameModel::resetGame(HeroType hero)
 {
-
-    isHeart1Collected = false;
-    isHeart2Collected = false;
+    itsGoldModel->resetGold();
 
     qDeleteAll(allRooms);
     allRooms.clear();
@@ -58,6 +59,9 @@ void GameModel::resetGame(HeroType hero)
     qDeleteAll(itsProjeciles);
     itsProjeciles.clear();
 
+    qDeleteAll(itsItems);
+    itsItems.clear();
+
     if (itsBoss != nullptr) {
         delete itsBoss;
         itsBoss = nullptr;
@@ -67,6 +71,12 @@ void GameModel::resetGame(HeroType hero)
         delete itsPlayer;
         itsPlayer = nullptr;
     }
+
+    minEnemy = 4;
+    maxEnemy = 6;
+    statIncreass = 1;
+    itsDropChance = 10;
+    itsGoldWorth = 3;
 
     // ==========================================
     // MAP GENERATION (WITHOUT GLOBAL ENEMIES)
@@ -156,6 +166,8 @@ void GameModel::loadLevel(int levelId)
     allRooms.clear();
     qDeleteAll(itsEnemies);
     itsEnemies.clear();
+    qDeleteAll(itsItems);
+    itsItems.clear();
     if (itsBoss) {
         delete itsBoss;
         itsBoss = nullptr;
@@ -238,6 +250,11 @@ void GameModel::loadLevel(int levelId)
         allRooms.append(new RoomModel(RoomType::CorridorHorizontal, -2900, 2325, 400, 150));
         allRooms.append(new RoomModel(RoomType::Combat, -4000, 2075, 1100, 650));
 
+        // ajout des coeurs
+        itsItems.append(new ItemModel(QPointF(275, 1350), HEART));
+        itsItems.append(new ItemModel(QPointF(-2225, 2375), HEART));
+
+        // modification des variables
         minEnemy = 5;
         maxEnemy = 7;
         statIncreass=1.1;
@@ -588,31 +605,25 @@ void GameModel::updateLogic()
             }
         }
         // ==========================================
-        // --- LOGIQUE DES COEURS (NIVEAU 2) ---
+        // --- LOGIQUE DES ITEMS ---
         // ==========================================
-        if (currentLevel == 2) {
-
-            // Coeur 1 (Dans la salle de loot de droite, centre = 300, 1375)
-            if (!isHeart1Collected) {
-                QRectF heart1Zone(275, 1350, 50, 50); // Hitbox de 50x50 au centre
-                if (itsPlayer->getHitBox().intersects(heart1Zone)) {
-                    itsPlayer->heal(5); // +5 HP !
-                    isHeart1Collected = true;
-                    qDebug() << "Coeur 1 ramasse !";
-                }
-            }
-
-            // Coeur 2 (Dans la salle de loot tout a gauche, centre = -2200, 2400)
-            if (!isHeart2Collected) {
-                QRectF heart2Zone(-2225, 2375, 50, 50); // Hitbox de 50x50 au centre
-                if (itsPlayer->getHitBox().intersects(heart2Zone)) {
-                    itsPlayer->heal(5); // +5 HP !
-                    isHeart2Collected = true;
-                    qDebug() << "Coeur 2 ramasse !";
+        if (!itsItems.empty()){
+            for (ItemModel * item : itsItems){
+                if (itsPlayer->getHitBox().intersects(item->getItsHitbox())){
+                    switch (item->getItsType()) {
+                    case HEART:
+                        itsPlayer->heal(5);
+                        break;
+                    case GOLD:
+                        itsGoldModel->addGold(itsGoldWorth+itsGoldWorth*(1.4*currentLevel-1));
+                    default:
+                        break;
+                    }
+                    itsItems.removeOne(item);
+                    delete item;
                 }
             }
         }
-
         // ==========================================
         // --- LOGIQUE EASTER EGG & COULOIR SECRET ---
         // ==========================================
@@ -743,7 +754,24 @@ void GameModel::onEnemyDeath(EnemyModel * model)
 
     if (itsEnemies.empty() and !itsBoss){
         activeRoom->unlockDoors();
-        itsPlayer->regen();
+    }
+
+    std::random_device rd;
+    std::default_random_engine eng(rd());
+    std::uniform_int_distribution<int> dropChance(1,100);
+    std::uniform_int_distribution<int> dropType(HEART,GOLD);
+    if (dropChance(eng) < itsDropChance){
+        switch (dropType(eng)) {
+        case HEART:
+            itsItems.append(new ItemModel(model->getHitBox().center(), HEART));
+            break;
+        case GOLD:
+            itsItems.append(new ItemModel(model->getHitBox().center(), GOLD));
+            break;
+        default:
+            break;
+        }
+
     }
 
     QObject * qobjEnemy = dynamic_cast<QObject*>(model);
@@ -773,7 +801,7 @@ void GameModel::onBossDeath(BossModel * model)
 
     itsBoss = nullptr;
     itsScore += 150;
-
+    itsPlayer->regen();
     // V2
     // currentRoom->unlockDoors();
 

@@ -13,6 +13,7 @@
 #include "gamemodel.h"
 #include "hitzonemodel.h"
 #include "hitzoneview.h"
+#include "itemview.h"
 #include "projectileview.h"
 #include "roomview.h"
 #include "obstacleview.h"
@@ -42,6 +43,7 @@ private:
     EnemyView * itsEnemyView;
     ProjectileView * itsProjectileView;
     HitZoneView * itsHitZoneView;
+    ItemView * itsItemView;
     QList<HitZoneModel> itsAttackAreas;
 
     QPointF currentCameraCenter;

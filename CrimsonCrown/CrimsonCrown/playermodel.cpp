@@ -166,12 +166,7 @@ int PlayerModel::getMaxHP()
 
 void PlayerModel::regen()
 {
-    if(itsHP + playerRegen > itsMaxHP) {
-        itsHP = itsMaxHP;
-    }
-    else {
-        itsHP += playerRegen;
-    }
+    itsHP = itsMaxHP;
 }
 
 bool PlayerModel::getCanAttack1() const
