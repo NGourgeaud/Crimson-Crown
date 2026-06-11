@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -121,3 +121,11 @@ DISTFILES +=
 macx:QMAKE_CXXFLAGS += -Wno-error=implicit-function-declaration
 
 macx:QMAKE_CFLAGS += -Wno-error=implicit-function-declaration
+
+# --- CONFIGURATION DES ICÔNES NATIFS ---
+
+# Pour le fichier .app et le Dock sur Mac
+macx: ICON = logo.icns
+
+# Pour le fichier .exe sur Windows
+win32: RC_ICONS = logo.ico

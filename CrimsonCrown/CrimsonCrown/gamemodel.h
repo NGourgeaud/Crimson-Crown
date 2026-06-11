@@ -33,6 +33,10 @@ private:
     float statIncreass;
     bool isEasterEggFound;
 
+    bool isHeart1Collected;
+    bool isHeart2Collected;
+    bool isLevel3BonusCollected;
+
 public:
     GameModel();
     ~GameModel();
@@ -64,6 +68,10 @@ signals:
     void gameWon(int score, HeroType hero);
     void gameOver(int score);
     void attack(HitZoneModel);
+
+    void showPopup(QString message);
+    void bossSpawned();
+    void bossKilled();
 
 private slots:
     void onEnemyDeath(EnemyModel * model);

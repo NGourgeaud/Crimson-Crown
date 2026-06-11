@@ -20,6 +20,8 @@ signals:
     void menuRequested();
     void gameOver(int score, HeroType hero);
     void gameWon(int score, HeroType hero);
+    void bossEncountered();
+    void bossKilled();
 
 private slots:
     void onPlayerDeath();

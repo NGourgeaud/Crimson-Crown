@@ -20,5 +20,11 @@
         <file>chasseur-loose.png</file>
         <file>chasseur-win.png</file>
         <file>coeur.png</file>
+        <file>boss-music.mp3</file>
+        <file>combat-music.mp3</file>
+        <file>menu-music.mp3</file>
+        <file>logo.png</file>
+        <file>logo.icns</file>
+        <file>logo.ico</file>
     </qresource>
 </RCC>
