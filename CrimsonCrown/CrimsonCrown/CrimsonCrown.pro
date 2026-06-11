@@ -33,6 +33,9 @@ SOURCES += \
     huntermodel.cpp \
     kingmodel.cpp \
     knightmodel.cpp \
+    leaderboardcontroller.cpp \
+    leaderboardmodel.cpp \
+    leaderboardview.cpp \
     lordmodel.cpp \
     gameview.cpp \
     main.cpp \
@@ -78,6 +81,9 @@ HEADERS += \
     huntermodel.h \
     kingmodel.h \
     knightmodel.h \
+    leaderboardcontroller.h \
+    leaderboardmodel.h \
+    leaderboardview.h \
     lordmodel.h \
     gameview.h \
     mainwindow.h \
