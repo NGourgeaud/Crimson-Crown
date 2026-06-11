@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QFontDatabase>
 
+
 ///
 /// \brief AppController::AppController
 /// \details Constructor for the global application orchestrator.
@@ -30,6 +31,21 @@ AppController::AppController(QObject *parent)
         QFont customFont(family);
         qApp->setFont(customFont);
     }
+    QIcon appIcon(":/logo.png");
+    qApp->setWindowIcon(appIcon);
+    mainWindow->setWindowIcon(appIcon);
+
+    // --- INITIALISATION DE L'AUDIO ---
+    audioOutput = new QAudioOutput(this);
+    audioOutput->setVolume(0.5); // Volume à 50%
+
+    musicPlayer = new QMediaPlayer(this);
+    musicPlayer->setAudioOutput(audioOutput);
+    musicPlayer->setLoops(QMediaPlayer::Infinite); // Boucle infinie pour que la musique ne s'arrête pas
+
+    // Connexion pour la musique du Boss
+    connect(gameController, &GameController::bossEncountered, this, &AppController::onBossEncountered);
+
 
     // Connects
     connect(menuController, &MenuController::playRequested, this, &AppController::onCharSelectRequested);
@@ -47,6 +63,9 @@ AppController::AppController(QObject *parent)
 
     connect(itsGameOverController, &GameOverController::menuRequested, this, &AppController::onMenuRequested);
     connect(itsGameWonController, &GameWonController::menuRequested, this, &AppController::onMenuRequested);
+
+    connect(gameController, &GameController::bossEncountered, this, &AppController::onBossEncountered);
+    connect(gameController, &GameController::bossKilled, this, &AppController::onBossKilled); // <-- AJOUTE CETTE LIGNE
 
     start();
 }
@@ -121,6 +140,17 @@ void AppController::navigateTo(AppState state) {
 
     cleanupCurrentView();
 
+    // --- CORRECTION : CHANGEMENT DE MUSIQUE SELON L'ÉTAT ---
+    if (state == AppState::Menu) {
+        // Se lance à chaque fois qu'on est sur un menu (au démarrage ou au retour)
+        musicPlayer->setSource(QUrl("qrc:/menu-music.mp3"));
+        musicPlayer->play();
+    }
+    else if (state == AppState::Game) {
+        musicPlayer->setSource(QUrl("qrc:/combat-music.mp3"));
+        musicPlayer->play();
+    }
+
     switch (state) {
     case AppState::Menu:
         currentView = menuController->createView();
@@ -176,4 +206,20 @@ void AppController::onGameWon(int score, HeroType hero)
     mainWindow->setCentralWidget(itsGameWonController->createView(score, hero));
     currentView = itsGameOverController->createView(score, hero);
  
+}
+
+void AppController::onBossEncountered()
+{
+    musicPlayer->setSource(QUrl("qrc:/boss-music.mp3"));
+    musicPlayer->play();
+}
+
+void AppController::onBossKilled()
+{
+    // OPTION A : Remettre la musique calme du donjon pendant que le joueur marche vers la sortie
+    musicPlayer->setSource(QUrl("qrc:/combat-music.mp3"));
+    musicPlayer->play();
+
+    // OPTION B : Si tu préfères le silence absolu à la place, décommente la ligne ci-dessous et commente l'Option A :
+    // musicPlayer->stop();
 }

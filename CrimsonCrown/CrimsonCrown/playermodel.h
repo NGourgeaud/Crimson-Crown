@@ -77,7 +77,7 @@ public:
 
     void heal(int amount);
 
-
+    void increaseDamage(double percentage);
 
 signals:
     void death();

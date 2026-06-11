@@ -44,6 +44,8 @@ QWidget* GameController::createView(HeroType hero)
     connect(itsModel, &GameModel::attack, itsView, &GameView::drawAttackArea, Qt::UniqueConnection);
 
     connect(itsView, &GameView::quitRequested, this, &GameController::menuRequested);
+    connect(itsModel, &GameModel::bossSpawned, this, &GameController::bossEncountered);
+    connect(itsModel, &GameModel::bossKilled, this, &GameController::bossKilled);
 
     itsView->setFocus();
 
