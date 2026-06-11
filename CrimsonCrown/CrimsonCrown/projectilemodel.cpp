@@ -1,3 +1,4 @@
+
 #include "projectilemodel.h"
 
 
@@ -33,6 +34,17 @@ ProjectileType ProjectileModel::getItsType() const
     return itsType;
 }
 
+void ProjectileModel::resetTimer()
+{
+    isInvincible = false;
+    itsInvinciblePeriode->stop();
+}
+
+bool ProjectileModel::getIsInvincible() const
+{
+    return isInvincible;
+}
+
 ProjectileModel::ProjectileModel(QRectF Hitbox, QLineF direction, int speed, int damage, Team team, ProjectileType type)
 {
     itsHitbox = Hitbox;
@@ -41,6 +53,11 @@ ProjectileModel::ProjectileModel(QRectF Hitbox, QLineF direction, int speed, int
     itsDamage = damage;
     itsTeam = team;
     itsType = type;
+
+    isInvincible = true;
+    itsInvinciblePeriode = new QTimer;
+    itsInvinciblePeriode->start(3*100);
+    connect(itsInvinciblePeriode, &QTimer::timeout, this, &ProjectileModel::resetTimer);
 }
 
 QLineF ProjectileModel::getItsDiretion() const

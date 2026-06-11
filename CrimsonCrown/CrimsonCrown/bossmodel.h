@@ -15,6 +15,8 @@ protected:
     QTimer * IframeTimer;
     bool isInIframe;
     BossType itsType;
+    float itsSpeed;
+
 public:
     BossModel();
     virtual ~BossModel();
@@ -23,6 +25,7 @@ public:
     virtual void attack2(QPointF heroPos) = 0;
     virtual void update(QPointF heroPos) = 0;
     BossType getItsType() const;
+    float getItsSpeed() const;
 };
 
 #endif // BOSSMODEL_H

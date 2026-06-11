@@ -56,6 +56,9 @@ void ProjectileView::setItsTexture(ProjectileType type)
     case KNIFE:
         itsTexture = QPixmap(":/knife.png");
         break;
+    case RADIUS:
+        itsTexture = QPixmap(":/rayon.png");
+        break;
     default:
         break;
     }
