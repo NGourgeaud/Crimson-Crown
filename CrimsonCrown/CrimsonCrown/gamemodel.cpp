@@ -1257,3 +1257,11 @@ int GameModel::getCurrentLevel() const
 {
     return currentLevel;
 }
+
+int GameModel::getGoldAmount() const
+{
+    if (itsGoldModel != nullptr) {
+        return itsGoldModel->getItsGold();
+    }
+    return 0;
+}
