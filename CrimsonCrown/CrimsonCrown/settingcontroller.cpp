@@ -6,6 +6,7 @@ SettingController::SettingController(QWidget *parentWidget, QObject *parent)
     itsSettingModel(new SettingModel(this)),
     parentWidget(parentWidget)
 {
+    connect(itsSettingModel, &SettingModel::globalVolumeChanged, this, &SettingController::globalVolumeChanged);
 }
 
 SettingController::~SettingController()
