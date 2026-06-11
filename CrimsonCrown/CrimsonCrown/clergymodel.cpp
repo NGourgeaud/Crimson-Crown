@@ -55,7 +55,11 @@ void clergyModel::update(QPointF heroPos)
 void clergyModel::attack1(QPointF heroPos)
 {
     QLineF aimLine(itsHitBox.center(), heroPos);
-    ProjectileModel * projectile = new ProjectileModel(QRectF(itsHitBox.center().x(), itsHitBox.center().y(), ClergyAttack1HitBoxWidth, ClergyAttack1HitBoxHeight), aimLine, 3, ClergyDefaultAttack1Damage, ENEMY, RADIUS);
+
+    QRectF projHitbox(0, 0, ClergyAttack1HitBoxWidth, ClergyAttack1HitBoxHeight);
+    projHitbox.moveCenter(itsHitBox.center());
+    ProjectileModel * projectile = new ProjectileModel(projHitbox, aimLine, 3, ClergyDefaultAttack1Damage, ENEMY, RADIUS);
+
     emit attacking(projectile);
     canAttack1 = false;
     itsCoolDownTimer1->start(ClergyDefaultAttack1CoolDown * 1000);
@@ -84,12 +88,15 @@ void clergyModel::attack2(QPointF heroPos)
     QLineF aimLine6 = aimLine5;
     aimLine6.setAngle(aimLine5.angle() + 60);
 
-    ProjectileModel * projectile1 = new ProjectileModel(QRectF(itsHitBox.center().x(), itsHitBox.center().y(), ClergyAttack1HitBoxWidth, ClergyAttack1HitBoxHeight), aimLine1, 3, ClergyDefaultAttack1Damage, ENEMY, RADIUS);
-    ProjectileModel * projectile2 = new ProjectileModel(QRectF(itsHitBox.center().x(), itsHitBox.center().y(), ClergyAttack1HitBoxWidth, ClergyAttack1HitBoxHeight), aimLine2, 3, ClergyDefaultAttack1Damage, ENEMY, RADIUS);
-    ProjectileModel * projectile3 = new ProjectileModel(QRectF(itsHitBox.center().x(), itsHitBox.center().y(), ClergyAttack1HitBoxWidth, ClergyAttack1HitBoxHeight), aimLine3, 3, ClergyDefaultAttack1Damage, ENEMY, RADIUS);
-    ProjectileModel * projectile4 = new ProjectileModel(QRectF(itsHitBox.center().x(), itsHitBox.center().y(), ClergyAttack1HitBoxWidth, ClergyAttack1HitBoxHeight), aimLine4, 3, ClergyDefaultAttack1Damage, ENEMY, RADIUS);
-    ProjectileModel * projectile5 = new ProjectileModel(QRectF(itsHitBox.center().x(), itsHitBox.center().y(), ClergyAttack1HitBoxWidth, ClergyAttack1HitBoxHeight), aimLine5, 3, ClergyDefaultAttack1Damage, ENEMY, RADIUS);
-    ProjectileModel * projectile6 = new ProjectileModel(QRectF(itsHitBox.center().x(), itsHitBox.center().y(), ClergyAttack1HitBoxWidth, ClergyAttack1HitBoxHeight), aimLine6, 3, ClergyDefaultAttack1Damage, ENEMY, RADIUS);
+    QRectF projHitbox(0, 0, ClergyAttack1HitBoxWidth, ClergyAttack1HitBoxHeight);
+    projHitbox.moveCenter(itsHitBox.center());
+
+    ProjectileModel * projectile1 = new ProjectileModel(projHitbox, aimLine1, 3, ClergyDefaultAttack1Damage, ENEMY, RADIUS);
+    ProjectileModel * projectile2 = new ProjectileModel(projHitbox, aimLine2, 3, ClergyDefaultAttack1Damage, ENEMY, RADIUS);
+    ProjectileModel * projectile3 = new ProjectileModel(projHitbox, aimLine3, 3, ClergyDefaultAttack1Damage, ENEMY, RADIUS);
+    ProjectileModel * projectile4 = new ProjectileModel(projHitbox, aimLine4, 3, ClergyDefaultAttack1Damage, ENEMY, RADIUS);
+    ProjectileModel * projectile5 = new ProjectileModel(projHitbox, aimLine5, 3, ClergyDefaultAttack1Damage, ENEMY, RADIUS);
+    ProjectileModel * projectile6 = new ProjectileModel(projHitbox, aimLine6, 3, ClergyDefaultAttack1Damage, ENEMY, RADIUS);
 
     emit attacking(projectile1);
     emit attacking(projectile2);
@@ -99,7 +106,7 @@ void clergyModel::attack2(QPointF heroPos)
     emit attacking(projectile6);
 
     canAttack2 = false;
-    itsCoolDownTimer1->start(ClergyDefaultAttack2CoolDown * 1000);
+    itsCoolDownTimer2->start(ClergyDefaultAttack2CoolDown * 1000);
 }
 
 ///
@@ -123,7 +130,7 @@ void clergyModel::takeDamage(int amount)
 ///
 void clergyModel::move(QPointF pos)
 {
-    itsHitBox.moveCenter(pos);
+    itsHitBox.moveTo(pos);
 }
 
 ///
@@ -142,18 +149,22 @@ QRectF clergyModel::getHitBox() const
 ///
 bool clergyModel::handleAI(QPointF heroPos)
 {
-    for (int i = 0; i<itsSpeed; i++){
-        if (QLineF(heroPos, itsHitBox.center()).length() < 200){
+    // Si le joueur est trop près (moins de 200 pixels)
+    if (QLineF(heroPos, itsHitBox.center()).length() < 200) {
 
-            QLineF aimLine = QLineF(itsHitBox.center(), heroPos);
-            qreal angle = aimLine.angle();
-            QLineF movementVector = QLineF::fromPolar(-1, angle);
-            itsHitBox.translate(movementVector.dx(), movementVector.dy());
+        QLineF aimLine(itsHitBox.center(), heroPos);
 
-            if (i == itsSpeed-1)
-                return false;
-        }
+        // On crée un vecteur de mouvement:
+        // Longueur = sa vitesse
+        // Direction = Angle vers le joueur + 180 degrés (pour aller à l'opposé)
+        QLineF movementVector = QLineF::fromPolar(itsSpeed, aimLine.angle() + 180);
+
+        // On déplace la hitbox
+        itsHitBox.translate(movementVector.dx(), movementVector.dy());
+
+        return false;
     }
+
     return true;
 }
 

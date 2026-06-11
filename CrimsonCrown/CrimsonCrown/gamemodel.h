@@ -44,6 +44,9 @@ public:
 
     void cheatKillEnemies();
 
+    void collisionEnemy(EnemyModel * enemy);
+    void collisionBoss(BossModel * enemy);
+
     int getItsScore() const;
     int getCurrentLevel() const;
 

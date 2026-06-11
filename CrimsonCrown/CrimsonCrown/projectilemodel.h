@@ -4,6 +4,7 @@
 #include "config.h"
 #include "qline.h"
 #include "qobject.h"
+#include <QTimer>
 
 
 class ProjectileModel : public QObject
@@ -17,6 +18,10 @@ private:
     Team itsTeam;
     ProjectileType itsType;
 
+    bool isInvincible;
+    QTimer * itsInvinciblePeriode;
+
+
 public:
     ProjectileModel(QRectF Hitbox, QLineF direction, int speed, int damage, Team team, ProjectileType type);
     Team getItsTeam() const;
@@ -26,8 +31,13 @@ public:
     QRectF getItsHitbox() const;
     ProjectileType getItsType() const;
 
+    bool getIsInvincible() const;
+
 signals:
     void tick(ProjectileModel*);
+
+private slots:
+    void resetTimer();
 };
 
 #endif // PROJECTILEMODEL_H

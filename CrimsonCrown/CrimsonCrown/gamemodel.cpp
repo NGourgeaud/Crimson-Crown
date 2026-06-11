@@ -308,14 +308,14 @@ void GameModel::spawnEnemies(bool isBoss)
             }
         }
     }
-    else {
-        clergyModel * newClergy = new clergyModel(ClergyDefaultMaxHp, ClergyDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
-                                                 ClergyDefaultAttack1CoolDown, ClergyDefaultAttack2CoolDown, ClergyDefaultAttack1Damage, ClergyDefaultAttack2Damage);
-        itsBoss = newClergy;
+    //else {
+    //    clergyModel * newClergy = new clergyModel(ClergyDefaultMaxHp, ClergyDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
+    //                                             ClergyDefaultAttack1CoolDown, ClergyDefaultAttack2CoolDown, ClergyDefaultAttack1Damage, ClergyDefaultAttack2Damage);
+    //    itsBoss = newClergy;
 
-        connect(newClergy, &clergyModel::death, this, &GameModel::onBossDeath);
-        connect(newClergy, &clergyModel::attacking, this, &GameModel::onNewProjectile);
-    }
+    //    connect(newClergy, &clergyModel::death, this, &GameModel::onBossDeath);
+    //    connect(newClergy, &clergyModel::attacking, this, &GameModel::onNewProjectile);
+    //}
 
 }
 
@@ -334,214 +334,13 @@ void GameModel::updateLogic()
 
             // A. Enemies Update
             for (int i = itsEnemies.size() - 1; i >= 0; --i) {
-
-                bool isCollision = false;
-
-                EnemyModel* enemy = itsEnemies.at(i);
-
-                // 1. MISE À JOUR DE L'IA (L'ennemi calcule sa trajectoire et avance vers le joueur en premier)
-                enemy->update(itsPlayer->getHitBox().center());
-
-                // 2. Collisions avec les autres ennemis
-                for (int j = 0; j < itsEnemies.size(); ++j) {
-                    EnemyModel * otherEnemy = itsEnemies.at(j);
-
-                    // On ignore la collision avec soi-même
-                    if (enemy == otherEnemy) {
-                        continue;
-                    }
-
-                    QRectF teamCollision = enemy->getHitBox().intersected(otherEnemy->getHitBox());
-
-                    // Si les deux ennemis se rentrent dedans
-                    if (!teamCollision.isEmpty()) {
-
-                        // On récupère la position actuelle pour la corriger
-                        QPointF newPos = enemy->getHitBox().topLeft();
-                        QRectF otherRect = otherEnemy->getHitBox();
-
-                        // CAS 1 : Collision en haut ou en bas (Poussée verticale)
-                        if (teamCollision.width() > teamCollision.height()) {
-                            if(enemy->getHitBox().center().y() < otherRect.center().y()){
-                                newPos.setY(otherRect.top() - enemy->getHitBox().height());
-                            }
-                            else{
-                                newPos.setY(otherRect.bottom());
-                            }
-                        }
-
-                        // CAS 2 : Collision sur les côtés (Poussée horizontale)
-                        else if (teamCollision.height() > teamCollision.width()) {
-                            if(enemy->getHitBox().center().x() < otherRect.center().x()){
-                                newPos.setX(otherRect.left() - enemy->getHitBox().width());
-                            }
-                            else{
-                                newPos.setX(otherRect.right());
-                            }
-                        }
-
-                        // CAS 3 : Collision pile sur un coin
-                        else {
-                            if(enemy->getHitBox().center().y() < otherRect.center().y()){
-                                newPos.setY(otherRect.top() - enemy->getHitBox().height());
-                            }
-                            else{
-                                newPos.setY(otherRect.bottom());
-                            }
-
-                            if(enemy->getHitBox().center().x() < otherRect.center().x()){
-                                newPos.setX(otherRect.left() - enemy->getHitBox().width());
-                            }
-                            else{
-                                newPos.setX(otherRect.right());
-                            }
-                        }
-
-                        // On applique la répulsion pour qu'ils ne se superposent pas
-                        enemy->move(newPos);
-
-                        isCollision = true;
-                    }
-                }
-
-                // 3. Collision avec les bords de la map
-                QPointF newPosMap = enemy->getHitBox().topLeft();
-                QRectF roomBounds = activeRoom->getBounds();
-
-                if (newPosMap.x() < roomBounds.left()) {
-                    newPosMap.setX(roomBounds.left());
-                }
-                else if (newPosMap.x() + enemy->getHitBox().width() > roomBounds.right()) {
-                    newPosMap.setX(roomBounds.right() - enemy->getHitBox().width());
-                }
-
-                if (newPosMap.y() < roomBounds.top()) {
-                    newPosMap.setY(roomBounds.top());
-                }
-                else if (newPosMap.y() + enemy->getHitBox().height() > roomBounds.bottom()) {
-                    newPosMap.setY(roomBounds.bottom() - enemy->getHitBox().height());
-                }
-                enemy->move(newPosMap);
-
-                // 4. Collision avec les obstacles
-                if (!activeRoom->getItsObstacles().empty()){
-
-                    QRectF zoneCollision;
-                    // On récupère la position absolue que l'ennemi vient de calculer
-                    QPointF newPos = enemy->getHitBox().topLeft();
-
-                    for (ObstacleModel * obstacle : activeRoom->getItsObstacles()) {
-
-                        // Calcul de la HitBox Globale de l'obstacle
-                        QRectF globalObsRect = obstacle->getHitBox();
-                        globalObsRect.translate(activeRoom->getBounds().x(), activeRoom->getBounds().y());
-
-                        zoneCollision = enemy->getHitBox().intersected(globalObsRect);
-
-                        // S'il y a une collision avec cet obstacle
-                        if(!zoneCollision.isEmpty()){
-
-                            // CAS 1 : Collision en haut ou en bas (Mur Horizontal)
-                            if (zoneCollision.width() > zoneCollision.height()) {
-
-                                // Répulsion contre le mur
-                                if(enemy->getHitBox().center().y() < globalObsRect.center().y()){
-                                    newPos.setY(globalObsRect.top() - enemy->getHitBox().height());
-                                }
-                                else{
-                                    newPos.setY(globalObsRect.bottom());
-                                }
-
-                                // --- SMART SLIDING (SANS RESTRICTION + FRICTION) ---
-                                // L'ennemi glisse TOUJOURS vers la position X du joueur
-                                if (itsPlayer->getHitBox().center().x() > enemy->getHitBox().center().x()) {
-                                    newPos.setX(newPos.x() + (enemy->getitsSpeed())); // Glisse à droite
-                                } else {
-                                    newPos.setX(newPos.x() - (enemy->getitsSpeed())); // Glisse à gauche
-                                }
-                            }
-
-                            // CAS 2 : Collision sur les côtés (Mur Vertical)
-                            else if (zoneCollision.height() > zoneCollision.width()) {
-
-                                // Répulsion contre le mur
-                                if(enemy->getHitBox().center().x() < globalObsRect.center().x()){
-                                    newPos.setX(globalObsRect.left() - enemy->getHitBox().width());
-                                }
-                                else{
-                                    newPos.setX(globalObsRect.right());
-                                }
-
-                                // --- SMART SLIDING (SANS RESTRICTION + FRICTION) ---
-                                // L'ennemi glisse TOUJOURS vers la position Y du joueur
-                                if (itsPlayer->getHitBox().center().y() > enemy->getHitBox().center().y()) {
-                                    newPos.setY(newPos.y() + (enemy->getitsSpeed())); // Glisse vers le bas
-                                } else {
-                                    newPos.setY(newPos.y() - (enemy->getitsSpeed())); // Glisse vers le haut
-                                }
-                            }
-
-                            // CAS 3 : Collision pile sur un coin (largeur == hauteur)
-                            else {
-                                // Répulsion simple en diagonale
-                                if(enemy->getHitBox().center().y() < globalObsRect.center().y()){
-                                    newPos.setY(globalObsRect.top() - enemy->getHitBox().height());
-                                }
-                                else{
-                                    newPos.setY(globalObsRect.bottom());
-                                }
-
-                                if(enemy->getHitBox().center().x() < globalObsRect.center().x()){
-                                    newPos.setX(globalObsRect.left() - enemy->getHitBox().width());
-                                }
-                                else{
-                                    newPos.setX(globalObsRect.right());
-                                }
-                            }
-
-                            // APPLICATION DU DEPLACEMENT
-                            enemy->move(newPos);
-
-                            isCollision = true;
-                        }
-                    }
-                }
-                if(!isCollision){
-                    enemy->update(itsPlayer->getHitBox().center());
-                }
+                EnemyModel * enemy = itsEnemies.at(i);
+                collisionEnemy(enemy);
             }
-        }
 
-    }
-
-    if (itsBoss){
-        bool collision = false;
-        QPointF newPosMap = itsBoss->getHitBox().topLeft();
-        QRectF roomBounds = activeRoom->getBounds();
-
-        if (newPosMap.x() < roomBounds.left()) {
-            newPosMap.setX(roomBounds.left());
-            collision = true;
-        }
-        else if (newPosMap.x() + itsBoss->getHitBox().width() > roomBounds.right()) {
-            newPosMap.setX(roomBounds.right() - itsBoss->getHitBox().width());
-            collision = true;
-        }
-
-        if (newPosMap.y() < roomBounds.top()) {
-            newPosMap.setY(roomBounds.top());
-            collision = true;
-        }
-        else if (newPosMap.y() + itsBoss->getHitBox().height() > roomBounds.bottom()) {
-            newPosMap.setY(roomBounds.bottom() - itsBoss->getHitBox().height());
-            collision = true;
-        }
-
-        if(collision){
-            itsBoss->move(newPosMap);
-        }
-        else{
-            itsBoss->update(itsPlayer->getHitBox().center());
+            if(itsBoss != nullptr){
+                collisionBoss(itsBoss);
+            }
         }
     }
 
@@ -745,6 +544,358 @@ void GameModel::cheatKillEnemies()
     }
 }
 
+void GameModel::collisionEnemy(EnemyModel * enemy){
+
+    // A. Enemies Update
+    bool isCollision = false;
+
+    // 1. MISE À JOUR DE L'IA (L'ennemi calcule sa trajectoire et avance vers le joueur en premier)
+    enemy->update(itsPlayer->getHitBox().center());
+
+    // 2. Collisions avec les autres ennemis
+    for (int j = 0; j < itsEnemies.size(); ++j) {
+        EnemyModel * otherEnemy = itsEnemies.at(j);
+
+        // On ignore la collision avec soi-même
+        if (enemy == otherEnemy) {
+            continue;
+        }
+
+        QRectF teamCollision = enemy->getHitBox().intersected(otherEnemy->getHitBox());
+
+        // Si les deux ennemis se rentrent dedans
+        if (!teamCollision.isEmpty()) {
+
+            // On récupère la position actuelle pour la corriger
+            QPointF newPos = enemy->getHitBox().topLeft();
+            QRectF otherRect = otherEnemy->getHitBox();
+
+            // CAS 1 : Collision en haut ou en bas (Poussée verticale)
+            if (teamCollision.width() > teamCollision.height()) {
+                if(enemy->getHitBox().center().y() < otherRect.center().y()){
+                    newPos.setY(otherRect.top() - enemy->getHitBox().height());
+                }
+                else{
+                    newPos.setY(otherRect.bottom());
+                }
+            }
+
+            // CAS 2 : Collision sur les côtés (Poussée horizontale)
+            else if (teamCollision.height() > teamCollision.width()) {
+                if(enemy->getHitBox().center().x() < otherRect.center().x()){
+                        newPos.setX(otherRect.left() - enemy->getHitBox().width());
+                    }
+                    else{
+                        newPos.setX(otherRect.right());
+                    }
+                }
+
+                // CAS 3 : Collision pile sur un coin
+                else {
+                    if(enemy->getHitBox().center().y() < otherRect.center().y()){
+                        newPos.setY(otherRect.top() - enemy->getHitBox().height());
+                    }
+                    else{
+                        newPos.setY(otherRect.bottom());
+                    }
+
+                    if(enemy->getHitBox().center().x() < otherRect.center().x()){
+                        newPos.setX(otherRect.left() - enemy->getHitBox().width());
+                    }
+                    else{
+                        newPos.setX(otherRect.right());
+                    }
+                }
+
+                // On applique la répulsion pour qu'ils ne se superposent pas
+                enemy->move(newPos);
+
+                isCollision = true;
+            }
+        }
+
+        // 3. Collision avec les bords de la map
+        QPointF newPosMap = enemy->getHitBox().topLeft();
+        QRectF roomBounds = activeRoom->getBounds();
+
+        if (newPosMap.x() < roomBounds.left()) {
+            newPosMap.setX(roomBounds.left());
+        }
+        else if (newPosMap.x() + enemy->getHitBox().width() > roomBounds.right()) {
+            newPosMap.setX(roomBounds.right() - enemy->getHitBox().width());
+        }
+
+        if (newPosMap.y() < roomBounds.top()) {
+            newPosMap.setY(roomBounds.top());
+        }
+        else if (newPosMap.y() + enemy->getHitBox().height() > roomBounds.bottom()) {
+            newPosMap.setY(roomBounds.bottom() - enemy->getHitBox().height());
+        }
+        enemy->move(newPosMap);
+
+        // 4. Collision avec les obstacles
+        if (!activeRoom->getItsObstacles().empty()){
+
+            QRectF zoneCollision;
+            // On récupère la position absolue que l'ennemi vient de calculer
+            QPointF newPos = enemy->getHitBox().topLeft();
+
+            for (ObstacleModel * obstacle : activeRoom->getItsObstacles()) {
+
+                // Calcul de la HitBox Globale de l'obstacle
+                QRectF globalObsRect = obstacle->getHitBox();
+                globalObsRect.translate(activeRoom->getBounds().x(), activeRoom->getBounds().y());
+
+                zoneCollision = enemy->getHitBox().intersected(globalObsRect);
+
+                // S'il y a une collision avec cet obstacle
+                if(!zoneCollision.isEmpty()){
+
+                    // CAS 1 : Collision en haut ou en bas (Mur Horizontal)
+                    if (zoneCollision.width() > zoneCollision.height()) {
+
+                        // Répulsion contre le mur
+                        if(enemy->getHitBox().center().y() < globalObsRect.center().y()){
+                            newPos.setY(globalObsRect.top() - enemy->getHitBox().height());
+                        }
+                        else{
+                            newPos.setY(globalObsRect.bottom());
+                        }
+
+                        // --- SMART SLIDING (SANS RESTRICTION + FRICTION) ---
+                        // L'ennemi glisse TOUJOURS vers la position X du joueur
+                        if (itsPlayer->getHitBox().center().x() > enemy->getHitBox().center().x()) {
+                            newPos.setX(newPos.x() + (enemy->getitsSpeed())); // Glisse à droite
+                        } else {
+                            newPos.setX(newPos.x() - (enemy->getitsSpeed())); // Glisse à gauche
+                        }
+                    }
+
+                    // CAS 2 : Collision sur les côtés (Mur Vertical)
+                    else if (zoneCollision.height() > zoneCollision.width()) {
+
+                        // Répulsion contre le mur
+                        if(enemy->getHitBox().center().x() < globalObsRect.center().x()){
+                            newPos.setX(globalObsRect.left() - enemy->getHitBox().width());
+                        }
+                        else{
+                            newPos.setX(globalObsRect.right());
+                        }
+
+                        // --- SMART SLIDING (SANS RESTRICTION + FRICTION) ---
+                        // L'ennemi glisse TOUJOURS vers la position Y du joueur
+                        if (itsPlayer->getHitBox().center().y() > enemy->getHitBox().center().y()) {
+                            newPos.setY(newPos.y() + (enemy->getitsSpeed())); // Glisse vers le bas
+                        } else {
+                            newPos.setY(newPos.y() - (enemy->getitsSpeed())); // Glisse vers le haut
+                        }
+                    }
+
+                    // CAS 3 : Collision pile sur un coin (largeur == hauteur)
+                    else {
+                        // Répulsion simple en diagonale
+                        if(enemy->getHitBox().center().y() < globalObsRect.center().y()){
+                            newPos.setY(globalObsRect.top() - enemy->getHitBox().height());
+                        }
+                        else{
+                            newPos.setY(globalObsRect.bottom());
+                        }
+
+                        if(enemy->getHitBox().center().x() < globalObsRect.center().x()){
+                            newPos.setX(globalObsRect.left() - enemy->getHitBox().width());
+                        }
+                        else{
+                            newPos.setX(globalObsRect.right());
+                        }
+                    }
+
+                    // APPLICATION DU DEPLACEMENT
+                    enemy->move(newPos);
+
+                    isCollision = true;
+                }
+            }
+        }
+        if(!isCollision){
+            enemy->update(itsPlayer->getHitBox().center());
+        }
+    }
+
+
+void GameModel::collisionBoss(BossModel * enemy){
+    // A. Enemies Update
+    bool isCollision = false;
+
+    // 1. MISE À JOUR DE L'IA (L'ennemi calcule sa trajectoire et avance vers le joueur en premier)
+    enemy->update(itsPlayer->getHitBox().center());
+
+    // 2. Collisions avec les autres ennemis
+    for (int j = 0; j < itsEnemies.size(); ++j) {
+        EnemyModel * otherEnemy = itsEnemies.at(j);
+
+        QRectF teamCollision = enemy->getHitBox().intersected(otherEnemy->getHitBox());
+
+        // Si les deux ennemis se rentrent dedans
+        if (!teamCollision.isEmpty()) {
+
+            // On récupère la position actuelle pour la corriger
+            QPointF newPos = enemy->getHitBox().topLeft();
+            QRectF otherRect = otherEnemy->getHitBox();
+
+            // CAS 1 : Collision en haut ou en bas (Poussée verticale)
+            if (teamCollision.width() > teamCollision.height()) {
+                if(enemy->getHitBox().center().y() < otherRect.center().y()){
+                    newPos.setY(otherRect.top() - enemy->getHitBox().height());
+                }
+                else{
+                    newPos.setY(otherRect.bottom());
+                }
+            }
+
+            // CAS 2 : Collision sur les côtés (Poussée horizontale)
+            else if (teamCollision.height() > teamCollision.width()) {
+                if(enemy->getHitBox().center().x() < otherRect.center().x()){
+                    newPos.setX(otherRect.left() - enemy->getHitBox().width());
+                }
+                else{
+                    newPos.setX(otherRect.right());
+                }
+            }
+
+            // CAS 3 : Collision pile sur un coin
+            else {
+                if(enemy->getHitBox().center().y() < otherRect.center().y()){
+                    newPos.setY(otherRect.top() - enemy->getHitBox().height());
+                }
+                else{
+                    newPos.setY(otherRect.bottom());
+                }
+
+                if(enemy->getHitBox().center().x() < otherRect.center().x()){
+                    newPos.setX(otherRect.left() - enemy->getHitBox().width());
+                }
+                else{
+                    newPos.setX(otherRect.right());
+                }
+            }
+
+            // On applique la répulsion pour qu'ils ne se superposent pas
+            enemy->move(newPos);
+
+            isCollision = true;
+        }
+    }
+
+    // 3. Collision avec les bords de la map
+    QPointF newPosMap = enemy->getHitBox().topLeft();
+    QRectF roomBounds = activeRoom->getBounds();
+
+    if (newPosMap.x() < roomBounds.left()) {
+        newPosMap.setX(roomBounds.left());
+    }
+    else if (newPosMap.x() + enemy->getHitBox().width() > roomBounds.right()) {
+        newPosMap.setX(roomBounds.right() - enemy->getHitBox().width());
+    }
+
+    if (newPosMap.y() < roomBounds.top()) {
+        newPosMap.setY(roomBounds.top());
+    }
+    else if (newPosMap.y() + enemy->getHitBox().height() > roomBounds.bottom()) {
+        newPosMap.setY(roomBounds.bottom() - enemy->getHitBox().height());
+    }
+    enemy->move(newPosMap);
+
+    // 4. Collision avec les obstacles
+    if (!activeRoom->getItsObstacles().empty()){
+
+        QRectF zoneCollision;
+        // On récupère la position absolue que l'ennemi vient de calculer
+        QPointF newPos = enemy->getHitBox().topLeft();
+
+        for (ObstacleModel * obstacle : activeRoom->getItsObstacles()) {
+
+            // Calcul de la HitBox Globale de l'obstacle
+            QRectF globalObsRect = obstacle->getHitBox();
+            globalObsRect.translate(activeRoom->getBounds().x(), activeRoom->getBounds().y());
+
+            zoneCollision = enemy->getHitBox().intersected(globalObsRect);
+
+            // S'il y a une collision avec cet obstacle
+            if(!zoneCollision.isEmpty()){
+
+                // CAS 1 : Collision en haut ou en bas (Mur Horizontal)
+                if (zoneCollision.width() > zoneCollision.height()) {
+
+                    // Répulsion contre le mur
+                    if(enemy->getHitBox().center().y() < globalObsRect.center().y()){
+                        newPos.setY(globalObsRect.top() - enemy->getHitBox().height());
+                    }
+                    else{
+                        newPos.setY(globalObsRect.bottom());
+                    }
+
+                    // --- SMART SLIDING (SANS RESTRICTION + FRICTION) ---
+                    // L'ennemi glisse TOUJOURS vers la position X du joueur
+                    if (itsPlayer->getHitBox().center().x() > enemy->getHitBox().center().x()) {
+                        newPos.setX(newPos.x() + (enemy->getItsSpeed())); // Glisse à droite
+                    } else {
+                        newPos.setX(newPos.x() - (enemy->getItsSpeed())); // Glisse à gauche
+                    }
+                }
+
+                // CAS 2 : Collision sur les côtés (Mur Vertical)
+                else if (zoneCollision.height() > zoneCollision.width()) {
+
+                    // Répulsion contre le mur
+                    if(enemy->getHitBox().center().x() < globalObsRect.center().x()){
+                        newPos.setX(globalObsRect.left() - enemy->getHitBox().width());
+                    }
+                    else{
+                        newPos.setX(globalObsRect.right());
+                    }
+
+                    // --- SMART SLIDING (SANS RESTRICTION + FRICTION) ---
+                    // L'ennemi glisse TOUJOURS vers la position Y du joueur
+                    if (itsPlayer->getHitBox().center().y() > enemy->getHitBox().center().y()) {
+                        newPos.setY(newPos.y() + (enemy->getItsSpeed())); // Glisse vers le bas
+                    } else {
+                        newPos.setY(newPos.y() - (enemy->getItsSpeed())); // Glisse vers le haut
+                    }
+                }
+
+                // CAS 3 : Collision pile sur un coin (largeur == hauteur)
+                else {
+                    // Répulsion simple en diagonale
+                    if(enemy->getHitBox().center().y() < globalObsRect.center().y()){
+                        newPos.setY(globalObsRect.top() - enemy->getHitBox().height());
+                    }
+                    else{
+                        newPos.setY(globalObsRect.bottom());
+                    }
+
+                    if(enemy->getHitBox().center().x() < globalObsRect.center().x()){
+                        newPos.setX(globalObsRect.left() - enemy->getHitBox().width());
+                    }
+                    else{
+                        newPos.setX(globalObsRect.right());
+                    }
+                }
+
+                // APPLICATION DU DEPLACEMENT
+                enemy->move(newPos);
+
+                isCollision = true;
+            }
+        }
+    }
+    if(!isCollision){
+        enemy->update(itsPlayer->getHitBox().center());
+    }
+}
+
+
+
+
 int GameModel::getItsScore() const
 {
     return itsScore;
@@ -832,6 +983,10 @@ void GameModel::onEnemyProjectile(ProjectileModel * projectile)
         disconnect(projectile);
         itsProjeciles.removeOne(projectile);
         projectile->deleteLater();
+    }
+
+    if (projectile->getIsInvincible()) {
+        return;
     }
 
     if (!activeRoom->getItsObstacles().empty()){

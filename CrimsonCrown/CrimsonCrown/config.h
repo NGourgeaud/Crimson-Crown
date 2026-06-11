@@ -113,7 +113,7 @@ const float LordIframe = 0.2;
 const int LordWidth = 50;
 const int LordHeight = 50;
 
-const int LordAttack1HitBoxWidth = 60;
+const int LordAttack1HitBoxWidth = 40;
 const int LordAttack1HitBoxHeight = 30;
 
 const int LordAttack2HitBoxWidth = 40;
@@ -121,11 +121,11 @@ const int LordAttack2HitBoxHeight = 30;
 
 // Clergy Stats
 const int ClergyDefaultMaxHp = 150;
-const int ClergyDefaultSpeed = 1;
-const int ClergyDefaultAttack1Damage = 10;
-const int ClergyDefaultAttack2Damage = 10;
-const float ClergyDefaultAttack1CoolDown = 1;
-const float ClergyDefaultAttack2CoolDown = 5;
+const int ClergyDefaultSpeed = 2;
+const int ClergyDefaultAttack1Damage = 7;
+const int ClergyDefaultAttack2Damage = 7;
+const float ClergyDefaultAttack1CoolDown = 3;
+const float ClergyDefaultAttack2CoolDown = 6;
 const float ClergyIframe = 0.2;
 
 
