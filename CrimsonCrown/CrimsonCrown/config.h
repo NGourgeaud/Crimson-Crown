@@ -119,7 +119,8 @@ const int LordAttack1HitBoxHeight = 100;
 const int LordAttack2HitBoxWidth = 40;
 const int LordAttack2HitBoxHeight = 30;
 
-
+// Drops stats
+const int DropSize = 50;
 enum HeroType {
     None,
     Blacksmith,
@@ -155,6 +156,11 @@ enum AttackZoneType {
     HAMMER,
     LANCE,
     SWORD
+};
+
+enum ItemType {
+    HEART,
+    GOLD
 };
 
 // --- STATISTIQUES ET DESCRIPTION DU ASSASSIN (HTML STYLISÉ) ---

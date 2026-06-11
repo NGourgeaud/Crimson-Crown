@@ -42,9 +42,6 @@ GameModel::~GameModel()
 
 void GameModel::resetGame(HeroType hero)
 {
-
-    isHeart1Collected = false;
-    isHeart2Collected = false;
     itsGoldModel->resetGold();
 
     qDeleteAll(allRooms);
@@ -73,6 +70,7 @@ void GameModel::resetGame(HeroType hero)
     maxEnemy = 6;
     statIncreass = 1;
     itsDropChance = 10;
+    itsGoldWorth = 3;
 
     // ==========================================
     // MAP GENERATION (WITHOUT GLOBAL ENEMIES)
@@ -162,6 +160,8 @@ void GameModel::loadLevel(int levelId)
     allRooms.clear();
     qDeleteAll(itsEnemies);
     itsEnemies.clear();
+    qDeleteAll(itsItems);
+    itsItems.clear();
     if (itsBoss) {
         delete itsBoss;
         itsBoss = nullptr;
@@ -243,6 +243,10 @@ void GameModel::loadLevel(int levelId)
         allRooms.append(new RoomModel(RoomType::Spawn, -2500, 2100, 600, 600)); // Zone Loot gauche
         allRooms.append(new RoomModel(RoomType::CorridorHorizontal, -2900, 2325, 400, 150));
         allRooms.append(new RoomModel(RoomType::Combat, -4000, 2075, 1100, 650));
+
+        // ajout des coeurs
+        itsItems.append(new ItemModel(QPointF(275, 1350), HEART));
+        itsItems.append(new ItemModel(QPointF(-2225, 2375), HEART));
     }
 
     // 3. Repositionner le personnage au centre de la zone de Spawn actuelle
@@ -582,31 +586,23 @@ void GameModel::updateLogic()
             }
         }
         // ==========================================
-        // --- LOGIQUE DES COEURS (NIVEAU 2) ---
+        // --- LOGIQUE DES ITEMS ---
         // ==========================================
-        if (currentLevel == 2) {
-
-            // Coeur 1 (Dans la salle de loot de droite, centre = 300, 1375)
-            if (!isHeart1Collected) {
-                QRectF heart1Zone(275, 1350, 50, 50); // Hitbox de 50x50 au centre
-                if (itsPlayer->getHitBox().intersects(heart1Zone)) {
-                    itsPlayer->heal(5); // +5 HP !
-                    isHeart1Collected = true;
-                    qDebug() << "Coeur 1 ramasse !";
-                }
-            }
-
-            // Coeur 2 (Dans la salle de loot tout a gauche, centre = -2200, 2400)
-            if (!isHeart2Collected) {
-                QRectF heart2Zone(-2225, 2375, 50, 50); // Hitbox de 50x50 au centre
-                if (itsPlayer->getHitBox().intersects(heart2Zone)) {
-                    itsPlayer->heal(5); // +5 HP !
-                    isHeart2Collected = true;
-                    qDebug() << "Coeur 2 ramasse !";
+        if (!itsItems.empty()){
+            for (ItemModel * item : itsItems){
+                if (itsPlayer->getHitBox().intersects(item->getItsHitbox())){
+                    switch (item->getItsType()) {
+                    case HEART:
+                        itsPlayer->heal(5);
+                        break;
+                    case GOLD:
+                        itsGoldModel->addGold(itsGoldWorth*(1.4*currentLevel-1));
+                    default:
+                        break;
+                    }
                 }
             }
         }
-
         // ==========================================
         // --- LOGIQUE EASTER EGG & COULOIR SECRET ---
         // ==========================================

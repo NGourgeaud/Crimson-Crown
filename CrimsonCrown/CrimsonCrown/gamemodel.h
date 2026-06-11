@@ -29,10 +29,9 @@ private:
     int minEnemy;
     int maxEnemy;
     int itsDropChance;
+    int itsGoldWorth;
     float statIncreass;
     bool isEasterEggFound;
-    bool isHeart1Collected;
-    bool isHeart2Collected;
 
 public:
     GameModel();

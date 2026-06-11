@@ -5,19 +5,17 @@
 #include "QRectF"
 #include "config.h"
 
-class ItemModel : public QObject
+class ItemModel
 {
-    Q_OBJECT
 
 private:
     QRectF itsHitbox;
     ItemType itsType;
 public:
-    explicit ItemModel(QPointF pos, ItemType type, QObject *parent = nullptr);
+    explicit ItemModel(QPointF pos, ItemType type);
     ItemType getItsType() const;
     QRectF getItsHitbox() const;
 
-signals:
 };
 
 #endif // ITEMMODEL_H
