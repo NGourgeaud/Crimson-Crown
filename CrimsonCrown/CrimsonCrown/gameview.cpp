@@ -76,8 +76,10 @@ GameView::GameView(GameModel *model, QWidget *parent)
     pauseMenu->hide();
 
     QVBoxLayout *overlayLayout = new QVBoxLayout(this);
-
     overlayLayout->addWidget(pauseMenu, 0, Qt::AlignCenter);
+
+    setupShopMenu();
+    overlayLayout->addWidget(shopMenu, 0, Qt::AlignCenter);
 }
 
 void GameView::showEvent(QShowEvent *event)
@@ -409,4 +411,76 @@ void GameView::setPauseMenuVisible(bool visible)
         // VERY IMPORTANT: Give focus back to the game, otherwise the keyboard stops responding!
         this->setFocus();
     }
+}
+
+void GameView::setupShopMenu() {
+    shopMenu = new QFrame(this);
+    shopMenu->setFixedSize(400, 450);
+    shopMenu->setStyleSheet("QFrame { background-color: rgba(20, 20, 20, 240); border: 2px solid #FFD700; border-radius: 10px; }");
+
+    QVBoxLayout *layout = new QVBoxLayout(shopMenu);
+
+    QLabel *title = new QLabel("BOUTIQUE");
+    title->setFont(QFont("Alagard", 30, QFont::Bold));
+    title->setStyleSheet("color: #FFD700; border: none; background: transparent;");
+    title->setAlignment(Qt::AlignCenter);
+    layout->addWidget(title);
+
+    shopGoldLabel = new QLabel("Or disponible : 0");
+    shopGoldLabel->setStyleSheet("color: white; border: none; background: transparent; font-size: 18px;");
+    layout->addWidget(shopGoldLabel);
+
+    // Style des boutons
+    QString btnStyle = "QPushButton { background-color: #111; color: white; border: 1px solid #555; padding: 10px; }"
+                       "QPushButton:hover { background-color: #333; border-color: #FFD700; }";
+
+    btnHP = new QPushButton(); // On laisse le texte vide pour l'instant
+    btnHP->setStyleSheet(btnStyle);
+    connect(btnHP, &QPushButton::clicked, this, [this]() { emit buyUpgradeRequested("HP"); });
+    layout->addWidget(btnHP);
+
+    btnDmg = new QPushButton();
+    btnDmg->setStyleSheet(btnStyle);
+    connect(btnDmg, &QPushButton::clicked, this, [this]() { emit buyUpgradeRequested("DMG"); });
+    layout->addWidget(btnDmg);
+
+    btnSpeed = new QPushButton();
+    btnSpeed->setStyleSheet(btnStyle);
+    connect(btnSpeed, &QPushButton::clicked, this, [this]() { emit buyUpgradeRequested("SPEED"); });
+    layout->addWidget(btnSpeed);
+
+    QPushButton *btnNext = new QPushButton("NIVEAU SUIVANT");
+    btnNext->setStyleSheet("background-color: #E30000; color: white; padding: 15px; font-weight: bold; border-radius: 5px; font-family: 'Alagard'; font-size: 20px;");
+    connect(btnNext, &QPushButton::clicked, this, &GameView::nextLevelRequested);
+    layout->addWidget(btnNext);
+
+    shopMenu->hide();
+}
+
+void GameView::setShopMenuVisible(bool visible)
+{
+    if (shopMenu == nullptr || shopGoldLabel == nullptr) return;
+
+    if (visible) {
+        int level = itsModel->getCurrentLevel();
+        double multiplier = std::pow(PRICE_SCALE, level - 2);
+
+        int currentPriceHP = static_cast<int>(BASE_PRICE_HP * multiplier);
+        int currentPriceDmg = static_cast<int>(BASE_PRICE_DMG * multiplier);
+        int currentPriceSpeed = static_cast<int>(BASE_PRICE_SPEED * multiplier);
+
+        btnHP->setText(QString("+5 Max HP (Prix: %1 Or)").arg(currentPriceHP));
+        btnDmg->setText(QString("+20% Dégâts (Prix: %1 Or)").arg(currentPriceDmg));
+        btnSpeed->setText(QString("+2 Vitesse (Prix: %1 Or)").arg(currentPriceSpeed));
+
+        updateShopGold(itsModel->getGoldAmount());
+        shopMenu->show();
+    } else {
+        shopMenu->hide();
+        this->setFocus();
+    }
+}
+
+void GameView::updateShopGold(int amount) {
+    shopGoldLabel->setText(QString("Or disponible : %1").arg(amount));
 }

@@ -78,6 +78,8 @@ public:
     void heal(int amount);
 
     void increaseDamage(double percentage);
+    void increaseMaxHP(int amount);
+    void increaseSpeed(int amount);
 
 signals:
     void death();

@@ -254,4 +254,9 @@ namespace keyBind {
 const float CAMERA_LERP_SPEED = 0.07f;  // Smoothing speed (0.05 = very smooth, 0.2 = very fast)
 const float CAMERA_MAX_OFFSET = 100.0f; // Maximum anticipation distance in pixels if running
 
+const int BASE_PRICE_HP = 15;
+const int BASE_PRICE_DMG = 20;
+const int BASE_PRICE_SPEED = 25;
+const float PRICE_SCALE = 1.4f;
+
 #endif // CONFIG_H
