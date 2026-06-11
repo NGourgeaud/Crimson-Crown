@@ -24,13 +24,13 @@ QList<ProjectileModel *> GameModel::getItsProjeciles() const
 GameModel::GameModel() : itsScore(0), itsPlayer(nullptr)
 {
     currentLevel = 1;
-    resetGame(HeroType::None);
     itsBoss = nullptr;
     activeRoom = nullptr;
     minEnemy = 4;
     maxEnemy = 6;
     statIncreass = 1;
     isEasterEggFound = false;
+    resetGame(HeroType::None);
 }
 
 GameModel::~GameModel()
