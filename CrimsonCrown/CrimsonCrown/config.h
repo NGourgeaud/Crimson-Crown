@@ -113,8 +113,8 @@ const float LordIframe = 0.2;
 const int LordWidth = 50;
 const int LordHeight = 50;
 
-const int LordAttack1HitBoxWidth = 40;
-const int LordAttack1HitBoxHeight = 30;
+const int LordAttack1HitBoxWidth = 100;
+const int LordAttack1HitBoxHeight = 100;
 
 const int LordAttack2HitBoxWidth = 40;
 const int LordAttack2HitBoxHeight = 30;
