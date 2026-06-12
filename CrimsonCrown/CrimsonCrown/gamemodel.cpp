@@ -331,6 +331,41 @@ void GameModel::loadLevel(int levelId)
         statIncreass=1.2;
         itsDropChance *= 1.4;
     }
+    // ==========================================
+    // GÉNÉRATION PROCÉDURALE D'OBSTACLES
+    // ==========================================
+    std::random_device rd;
+    std::default_random_engine eng(rd());
+
+    for (RoomModel* room : allRooms) {
+        // On cible UNIQUEMENT les salles de Combat (pas les Spawn, ni les couloirs, ni le Boss pour éviter de le coincer)
+        if (room->getType() == RoomType::Combat) {
+
+            int w = room->getWidth();
+            int h = room->getHeight();
+
+            // 1. On choisit un nombre aléatoire d'obstacles par pièce (entre 2 et 5)
+            std::uniform_int_distribution<int> nbObstaclesDist(2, 5);
+            int nbObstacles = nbObstaclesDist(eng);
+
+            // 2. On définit une "zone de sécurité" pour ne pas bloquer les portes
+            // On laisse une marge de 150 pixels depuis les murs
+            std::uniform_int_distribution<int> posX(150, w - 200);
+            std::uniform_int_distribution<int> posY(150, h - 200);
+
+            // 3. On définit une taille aléatoire pour chaque obstacle (entre 40 et 80 pixels)
+            std::uniform_int_distribution<int> sizeDist(40, 80);
+
+            // Création et ajout des obstacles
+            for (int i = 0; i < nbObstacles; ++i) {
+                int obsSize = sizeDist(eng);
+                int x = posX(eng);
+                int y = posY(eng);
+
+                room->addObstacle(x, y, obsSize, obsSize);
+            }
+        }
+    }
 
     // 3. Repositionner le personnage au centre de la zone de Spawn actuelle
     if (itsPlayer != nullptr) {
