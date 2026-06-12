@@ -73,12 +73,6 @@ void GameModel::resetGame(HeroType hero)
         itsPlayer = nullptr;
     }
 
-    minEnemy = 4;
-    maxEnemy = 6;
-    statIncreass = 1;
-    itsDropChance = 10;
-    itsGoldWorth = 3;
-
     // ==========================================
     // MAP GENERATION (WITHOUT GLOBAL ENEMIES)
     // ==========================================
@@ -215,6 +209,13 @@ void GameModel::loadLevel(int levelId)
 
         // 8. SORTIE (Au-dessus du Boss)
         allRooms.append(new RoomModel(RoomType::Exit, 2975, -425, 150, 400));
+
+        // Stats de jeu
+        minEnemy = 4;
+        maxEnemy = 6;
+        statIncreass = 1;
+        itsDropChance = 30;
+        itsGoldWorth = 3;
     }
     else if (levelId == 2) {
         // --- NIVEAU 2 (Fidèle à ta nouvelle maquette) ---
@@ -259,6 +260,7 @@ void GameModel::loadLevel(int levelId)
         minEnemy = 5;
         maxEnemy = 7;
         statIncreass=1.1;
+        itsDropChance *= 1.4;
     }
     else if (levelId == 3) {
         // 1. SPAWN (Tout en haut au centre)
@@ -322,6 +324,12 @@ void GameModel::loadLevel(int levelId)
         // ==========================================
         allRooms.append(new RoomModel(RoomType::Boss, 1750, 3050, 1100, 650));
         allRooms.append(new RoomModel(RoomType::Exit, 2225, 3700, 150, 400));
+
+        // modification des variables
+        minEnemy = 6;
+        maxEnemy = 8;
+        statIncreass=1.2;
+        itsDropChance *= 1.4;
     }
 
     // 3. Repositionner le personnage au centre de la zone de Spawn actuelle
