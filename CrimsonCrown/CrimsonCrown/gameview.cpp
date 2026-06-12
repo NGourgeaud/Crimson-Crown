@@ -157,32 +157,59 @@ void GameView::paintEvent(QPaintEvent *event)
 
     painter.save();
     painter.translate(cameraOffset);
-
     // 1. DRAW DUNGEON
     for (RoomModel* room : itsModel->getAllRooms()) {
         painter.save();
-        painter.translate(room->getBounds().x(), room->getBounds().y()); // CORRECTION HERE
+        painter.translate(room->getBounds().x(), room->getBounds().y());
         itsRoomView->draw(painter, room, *itsObstacleView);
         painter.restore();
     }
 
-    if (!itsModel->areAllCombatRoomsCleared()) {
-        for (RoomModel* room : itsModel->getAllRooms()) {
-            if (room->getType() == RoomType::Boss) {
-                painter.save();
-                painter.translate(room->getBounds().x(), room->getBounds().y());
+    // ==========================================
+    // 🚪 BARRICADES INTELLIGENTES (COMBAT & BOSS)
+    // ==========================================
+    for (RoomModel* room : itsModel->getAllRooms()) {
 
-                // Draw a large brown beam (solid wood color)
-                painter.setBrush(QColor(139, 69, 19));
-                painter.setPen(QPen(Qt::black, 3));
+        // 1. La salle a-t-elle besoin de barricades ?
+        // (Oui, si le combat est en cours OU si c'est le Boss et que le donjon n'est pas fini)
+        bool needsBarricades = room->getIsLocked();
+        if (room->getType() == RoomType::Boss && !itsModel->areAllCombatRoomsCleared()) {
+            needsBarricades = true;
+        }
 
-                // Place it right at the south entrance of the Boss room
-                int doorX = (room->getWidth() / 2) - 75; // The corridor is 150 wide
-                int doorY = room->getHeight() - 20;      // At the very bottom of the room
-                painter.drawRect(doorX, doorY, 150, 20);
+        if (needsBarricades) {
+            QRectF rBounds = room->getBounds();
+            painter.save();
+            painter.setBrush(QColor(139, 69, 19)); // Couleur Bois Massif
+            painter.setPen(QPen(Qt::black, 3));
 
-                painter.restore();
+            // 2. On scanne toutes les autres pièces pour trouver où sont les connexions
+            for (RoomModel* other : itsModel->getAllRooms()) {
+                if (other == room) continue;
+                QRectF oBounds = other->getBounds();
+
+                // Si l'autre pièce touche notre salle (avec une tolérance de 5 pixels)
+                if (rBounds.adjusted(-5, -5, 5, 5).intersects(oBounds)) {
+
+                    // Connexion au NORD (L'autre pièce est au-dessus)
+                    if (oBounds.bottom() <= rBounds.top() + 5) {
+                        painter.drawRect(rBounds.center().x() - 75, rBounds.top(), 150, 20);
+                    }
+                    // Connexion au SUD (L'autre pièce est en-dessous)
+                    else if (oBounds.top() >= rBounds.bottom() - 5) {
+                        painter.drawRect(rBounds.center().x() - 75, rBounds.bottom() - 20, 150, 20);
+                    }
+                    // Connexion à l'OUEST (L'autre pièce est à gauche)
+                    else if (oBounds.right() <= rBounds.left() + 5) {
+                        painter.drawRect(rBounds.left(), rBounds.center().y() - 75, 20, 150);
+                    }
+                    // Connexion à l'EST (L'autre pièce est à droite)
+                    else if (oBounds.left() >= rBounds.right() - 5) {
+                        painter.drawRect(rBounds.right() - 20, rBounds.center().y() - 75, 20, 150);
+                    }
+                }
             }
+            painter.restore();
         }
     }
 

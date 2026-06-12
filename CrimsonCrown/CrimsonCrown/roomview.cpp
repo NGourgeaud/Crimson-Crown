@@ -13,27 +13,23 @@ void RoomView::draw(QPainter &painter, const RoomModel *roomModel, ObstacleView 
 {
     if (!roomModel) return;
 
-    // --- 🤫 MASQUAGE DES ZONES INVISIBLES (NIVEAU 1 & NIVEAU 3) ---
-    // 1. Couloir secret du Niveau 1
-    if (roomModel->getOffsetX() == 2100 && roomModel->getOffsetY() == 225) {
-        return;
-    }
-
-    // 2. Couloir et salle secrète du Niveau 3
+    // --- 🤫 MASQUAGE DES ZONES INVISIBLES ---
+    if (roomModel->getOffsetX() == 2100 && roomModel->getOffsetY() == 225) return;
     if ((roomModel->getOffsetX() == 3475 && roomModel->getOffsetY() == 1625) ||
-        (roomModel->getOffsetX() == 3250 && roomModel->getOffsetY() == 2025))
-    {
-        return;
-    }
-    // --- FIN DU MASQUAGE ---
+        (roomModel->getOffsetX() == 3250 && roomModel->getOffsetY() == 2025)) return;
 
     RoomType type = roomModel->getType();
 
-    // DESSIN DU FOND DE LA SALLE
-    if (type == Spawn){
-        painter.drawPixmap(0, 0, roomModel->getWidth(), roomModel->getHeight(), spawnTexture);
+    // --- DESSIN DU FOND DE LA SALLE ---
+    if (type == RoomType::Spawn) {
+        if (!spawnTexture.isNull()) {
+            painter.drawPixmap(0, 0, roomModel->getWidth(), roomModel->getHeight(), spawnTexture);
+            painter.setBrush(Qt::NoBrush); // Empêche le gris de recouvrir la texture
+        } else {
+            painter.setBrush(QBrush(QColor(64, 64, 64))); // SÉCURITÉ : Gris clair au lieu de noir
+        }
     }
-    else if (type == Boss) {
+    else if (type == RoomType::Boss) {
         painter.setBrush(QBrush(QColor(80, 20, 20))); // Rouge sombre
     }
     else {
@@ -44,33 +40,7 @@ void RoomView::draw(QPainter &painter, const RoomModel *roomModel, ObstacleView 
     painter.setPen(QPen(Qt::black, 4));
     painter.drawRect(0, 0, roomModel->getWidth(), roomModel->getHeight());
 
-    // ==========================================
-    // 🚪 DESSIN DES BARRICADES (PORTES VERROUILLÉES)
-    // ==========================================
-    if (roomModel->getIsLocked()) {
-        painter.save();
-        painter.setBrush(QColor(139, 69, 19)); // Couleur bois
-        painter.setPen(QPen(Qt::black, 3));
-
-        int w = roomModel->getWidth();
-        int h = roomModel->getHeight();
-
-        // Poutre Haut (Nord)
-        painter.drawRect((w / 2) - 75, 0, 150, 20);
-
-        // Poutre Bas (Sud)
-        painter.drawRect((w / 2) - 75, h - 20, 150, 20);
-
-        // Poutre Gauche (Ouest)
-        painter.drawRect(0, (h / 2) - 75, 20, 150);
-
-        // Poutre Droite (Est)
-        painter.drawRect(w - 20, (h / 2) - 75, 20, 150);
-
-        painter.restore();
-    }
-
-    // DESSIN DES OBSTACLES (Tonneaux, rochers...)
+    // DESSIN DES OBSTACLES
     painter.setPen(QPen(Qt::black, 4));
     for (const ObstacleModel* obstacle : roomModel->getItsObstacles()) {
         obstacleView.draw(painter, obstacle);
