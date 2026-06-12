@@ -13,6 +13,7 @@ BossView::BossView()
 void BossView::draw(QPainter * painter, const BossModel * model)
 {
     if (itsTexTure.isNull()) {
+        painter->setBrush(QBrush(Qt::NoBrush));
         switch (model->getItsType()) {
         case LORD:
             painter->fillRect(model->getHitBox(), QColor(150, 150, 200));

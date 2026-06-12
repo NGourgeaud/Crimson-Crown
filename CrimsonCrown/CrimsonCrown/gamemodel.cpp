@@ -396,47 +396,45 @@ void GameModel::spawnEnemies(bool isBoss)
         }
     }
 
-    //else {
-    //    clergyModel * newClergy = new clergyModel(ClergyDefaultMaxHp, ClergyDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
-    //                                             ClergyDefaultAttack1CoolDown, ClergyDefaultAttack2CoolDown, ClergyDefaultAttack1Damage, ClergyDefaultAttack2Damage);
-    //    itsBoss = newClergy;
-
-    //    connect(newClergy, &clergyModel::death, this, &GameModel::onBossDeath);
-    //    connect(newClergy, &clergyModel::attacking, this, &GameModel::onNewProjectile);
-    //}
-
     else{
         // method to spawn the lord
+        switch (currentLevel) {
+        case 1:
+        {
+            clergyModel * newClergy = new clergyModel(ClergyDefaultMaxHp, ClergyDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
+                                                     ClergyDefaultAttack1CoolDown, ClergyDefaultAttack2CoolDown, ClergyDefaultAttack1Damage, ClergyDefaultAttack2Damage);
+            itsBoss = newClergy;
 
-        LordModel * newLord = new LordModel(LordDefaultMaxHp, LordDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
-                                           LordDefaultAttack1CoolDown, LordDefaultAttack2CoolDown, LordDefaultAttack1Damage, LordDefaultAttack2Damage);
-        itsBoss = newLord;
+            connect(newClergy, &clergyModel::death, this, &GameModel::onBossDeath);
+            connect(newClergy, &clergyModel::attacking, this, &GameModel::onNewProjectile);
+            break;
+        }
+        case 2:
+        {
+            LordModel * newLord = new LordModel(LordDefaultMaxHp, LordDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
+                                               LordDefaultAttack1CoolDown, LordDefaultAttack2CoolDown, LordDefaultAttack1Damage, LordDefaultAttack2Damage);
+            itsBoss = newLord;
 
-        emit bossSpawned();
+            emit bossSpawned();
 
-        connect(newLord, &LordModel::death, this, &GameModel::onBossDeath);
-        connect(newLord, &LordModel::attacking, this, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+            connect(newLord, &LordModel::death, this, &GameModel::onBossDeath);
+            connect(newLord, &LordModel::attacking, this, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+            break;
+        }
+        case 3:
+        {
+            KingModel * newKing = new KingModel(KingDefaultMaxHp, KingDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
+                                               KingDefaultAttack1CoolDown, KingDefaultAttack2CoolDown, KingDefaultAttack1Damage, KingDefaultAttack2Damage);
+            itsBoss = newKing;
 
-
-        // method to spawn the king
-        /*
-        KingModel * newKing = new KingModel(KingDefaultMaxHp, KingDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
-                                           KingDefaultAttack1CoolDown, KingDefaultAttack2CoolDown, KingDefaultAttack1Damage, KingDefaultAttack2Damage);
-        itsBoss = newKing;
-
-        connect(newKing, &KingModel::death, this, &GameModel::onBossDeath);
-        connect(newKing, &KingModel::attacking, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
-        connect(newKing, &KingModel::spawnEnemies, this, &GameModel::onKingSummon);
-        */
-
-        //else {
-    //    clergyModel * newClergy = new clergyModel(ClergyDefaultMaxHp, ClergyDefaultSpeed, roomBoundaries.center().rx(), roomBoundaries.center().ry(),
-    //                                             ClergyDefaultAttack1CoolDown, ClergyDefaultAttack2CoolDown, ClergyDefaultAttack1Damage, ClergyDefaultAttack2Damage);
-    //    itsBoss = newClergy;
-
-    //    connect(newClergy, &clergyModel::death, this, &GameModel::onBossDeath);
-    //    connect(newClergy, &clergyModel::attacking, this, &GameModel::onNewProjectile);
-    //}
+            connect(newKing, &KingModel::death, this, &GameModel::onBossDeath);
+            connect(newKing, &KingModel::attacking, [this](HitZoneModel hitbox, int damage) {this->onEnemyAttack(hitbox, damage);});
+            connect(newKing, &KingModel::spawnEnemies, this, &GameModel::onKingSummon);
+            break;
+        }
+        default:
+            break;
+        }
     }
 
 }
