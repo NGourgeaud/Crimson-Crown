@@ -194,7 +194,7 @@ void KingModel::attack2Step1()
 
     QPolygon attackHitbox = hitboxCercle.toFillPolygon().toPolygon();
     itsAttack2Step2Timer->start(KingAttack2Step2Delay * 1000);
-    emit attacking(HitZoneModel(attackHitbox, UNDEFINEDE), itsAttack1Damage);
+    emit attacking(HitZoneModel(attackHitbox, UNDEFINEDE), itsAttack2Damage);
 }
 
 ///
