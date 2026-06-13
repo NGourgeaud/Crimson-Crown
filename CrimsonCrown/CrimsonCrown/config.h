@@ -1,3 +1,7 @@
+// File Name: config.h
+// Group: A11
+// Description: Global configuration file containing game constants, stats, text strings, and enumerations.
+
 #ifndef CONFIG_H
 #define CONFIG_H
 
@@ -109,7 +113,6 @@ const float LordDefaultAttack1CoolDown = 5;
 const float LordDefaultAttack2CoolDown = 5;
 const float LordIframe = 0.2;
 
-
 const int LordWidth = 50;
 const int LordHeight = 50;
 
@@ -128,7 +131,6 @@ const float ClergyDefaultAttack1CoolDown = 3;
 const float ClergyDefaultAttack2CoolDown = 6;
 const float ClergyIframe = 0.2;
 
-
 const int ClergyWidth = 50;
 const int ClergyHeight = 50;
 
@@ -146,7 +148,6 @@ const int KingDefaultAttack2Damage = 5;
 const float KingDefaultAttack1CoolDown = 5;
 const float KingDefaultAttack2CoolDown = 5;
 const float KingIframe = 0.2;
-
 
 const int KingWidth = 60;
 const int KingHeight = 60;
@@ -208,34 +209,33 @@ enum ItemType {
     GOLD
 };
 
-// --- STATISTIQUES ET DESCRIPTION DU ASSASSIN (HTML STYLISÉ) ---
-// --- STATISTIQUES ET DESCRIPTION DE L'ASSASSIN ---
+// --- ASSASSIN STATS AND DESCRIPTION ---
 const QString STATS_ASSASSIN =
     "<p style='font-family: Alagard; font-size: 24px; color: #FFD700; margin: 0 0 4px 0;'><b>L'ASSASSIN</b></p>"
     "<p style='font-family: Alagard; font-size: 14px; color: #DDDDDD; margin: 0 0 12px 0;'>"
-    "Extrêmement rapide et mortel. Il esquive les combats longs mais ne pardonne pas.</p>"
+    "Extremely fast and deadly. Evades long fights but shows no mercy.</p>"
     "<p style='font-family: Alagard; font-size: 16px; color: white; line-height: 150%; margin: 0;'>"
     "<span style='color: #BBBBBB;'>Vie :</span> <span style='color: #FF3333;'><b>18 HP</b></span><br>"
     "<span style='color: #BBBBBB;'>Vitesse :</span> <span style='color: #33FF33;'><b>12</b></span><br>"
     "<span style='color: #BBBBBB;'>Dégâts :</span> <span style='color: #3333FF;'><b>6 HP</b></span>"
     "</p>";
 
-// --- STATISTIQUES ET DESCRIPTION DU FORGERON ---
+// --- BLACKSMITH STATS AND DESCRIPTION ---
 const QString STATS_BLACKSMITH =
     "<p style='font-family: Alagard; font-size: 24px; color: #FFD700; margin: 0 0 4px 0;'><b>LE FORGERON</b></p>"
     "<p style='font-family: Alagard; font-size: 14px; color: #DDDDDD; margin: 0 0 12px 0;'>"
-    "Tank lourdement blindé, taillé pour la mêlée. Il encaisse les coups pour le groupe.</p>"
+    "Heavily armored tank, built for melee. Takes the hits for the group.</p>"
     "<p style='font-family: Alagard; font-size: 16px; color: white; line-height: 150%; margin: 0;'>"
     "<span style='color: #BBBBBB;'>Vie :</span> <span style='color: #FF3333;'><b>40 HP</b></span><br>"
     "<span style='color: #BBBBBB;'>Vitesse :</span> <span style='color: #33FF33;'><b>8</b></span><br>"
     "<span style='color: #BBBBBB;'>Dégâts :</span> <span style='color: #3333FF;'><b>13 HP</b></span>"
     "</p>";
 
-// --- STATISTIQUES ET DESCRIPTION DU CHASSEUR ---
+// --- HUNTER STATS AND DESCRIPTION ---
 const QString STATS_HUNTER =
     "<p style='font-family: Alagard; font-size: 24px; color: #FFD700; margin: 0 0 4px 0;'><b>LE CHASSEUR</b></p>"
     "<p style='font-family: Alagard; font-size: 14px; color: #DDDDDD; margin: 0 0 12px 0;'>"
-    "Combattant à distance très mobile mais vulnérable, spécialisé dans le contrôle de zone grâce à ses volées de flèches.</p>"
+    "Highly mobile but vulnerable ranged fighter, specialized in zone control with volleys of arrows.</p>"
     "<p style='font-family: Alagard; font-size: 16px; color: white; line-height: 150%; margin: 0;'>"
     "<span style='color: #BBBBBB;'>Vie :</span> <span style='color: #FF3333;'><b>25 HP</b></span><br>"
     "<span style='color: #BBBBBB;'>Vitesse :</span> <span style='color: #33FF33;'><b>6</b></span><br>"
@@ -244,12 +244,12 @@ const QString STATS_HUNTER =
 
 
 namespace keyBind {
-    inline Qt::Key keyUp = Qt::Key_Z;
-    inline Qt::Key keyDown = Qt::Key_S;
-    inline Qt::Key keyLeft = Qt::Key_Q;
-    inline Qt::Key keyRight = Qt::Key_D;
-    inline Qt::Key keyAttaque1 = Qt::Key_K;
-    inline Qt::Key keyAttaque2 = Qt::Key_L;
+inline Qt::Key keyUp = Qt::Key_Z;
+inline Qt::Key keyDown = Qt::Key_S;
+inline Qt::Key keyLeft = Qt::Key_Q;
+inline Qt::Key keyRight = Qt::Key_D;
+inline Qt::Key keyAttaque1 = Qt::Key_K;
+inline Qt::Key keyAttaque2 = Qt::Key_L;
 }
 
 const float CAMERA_LERP_SPEED = 0.07f;  // Smoothing speed (0.05 = very smooth, 0.2 = very fast)
