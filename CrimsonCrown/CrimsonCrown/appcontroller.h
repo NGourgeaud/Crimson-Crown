@@ -19,7 +19,7 @@
 #include <QIcon>
 #include "leaderboardcontroller.h"
 
-enum class AppState { Menu, CharSelect, Game, Setting, Leaderboard };
+enum class AppState { Menu, CharSelect, Game, Setting, Leaderboard, GameOver, GameWon };
 
 class AppController : public QObject {
     Q_OBJECT

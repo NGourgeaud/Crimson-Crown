@@ -194,6 +194,10 @@ void AppController::cleanupCurrentView() {
         settingsController->destroyView();
     } else if (currentState == AppState::Leaderboard) {
         leaderboardController->destroyView();
+    } else if (currentState == AppState::GameOver) {
+        itsGameOverController->destroyView();
+    } else if (currentState == AppState::GameWon) {
+        itsGameWonController->destroyView();
     }
 
     currentView = nullptr;
@@ -207,7 +211,7 @@ void AppController::cleanupCurrentView() {
 void AppController::onGameOver(int score, HeroType hero)
 {
     if (currentState != AppState::Game) return;
-    currentState = AppState::Menu; // Blocks other loop ticks
+    currentState = AppState::GameOver;
 
     gameController->destroyView();
 
@@ -243,7 +247,7 @@ void AppController::onGameWon(int score, HeroType hero)
 {
     // 1. Anti-double trigger security
     if (currentState != AppState::Game) return;
-    currentState = AppState::Menu;
+    currentState = AppState::GameWon;
 
     // 2. Clean up the game screen
     gameController->destroyView();

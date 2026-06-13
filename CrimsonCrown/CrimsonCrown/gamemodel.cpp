@@ -164,6 +164,10 @@ void GameModel::loadLevel(int levelId)
     itsEnemies.clear();
     qDeleteAll(itsItems);
     itsItems.clear();
+
+    qDeleteAll(itsProjeciles);
+    itsProjeciles.clear();
+
     if (itsBoss) {
         delete itsBoss;
         itsBoss = nullptr;

@@ -28,5 +28,10 @@
         <file>logo.icns</file>
         <file>logo.ico</file>
         <file>gold.png</file>
+        <file>chevalier.png</file>
+        <file>archer.png</file>
+        <file>king.png</file>
+        <file>lord.png</file>
+        <file>clerge.png</file>
     </qresource>
 </RCC>

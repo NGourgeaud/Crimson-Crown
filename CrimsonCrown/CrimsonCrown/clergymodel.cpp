@@ -34,6 +34,7 @@ clergyModel::clergyModel(int maxHp, int speed, int x, int y, float attack1Cooldo
     canAttack2 = false;
     IframeTimer = new QTimer();
     isInIframe = false;
+    itsType = CLERGY;
 
     connect(itsCoolDownTimer1, &QTimer::timeout, this, &clergyModel::resetAttack1Cooldown);
     connect(itsCoolDownTimer2, &QTimer::timeout, this, &clergyModel::resetAttack2Cooldown);

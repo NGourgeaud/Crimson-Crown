@@ -113,8 +113,8 @@ const float LordDefaultAttack1CoolDown = 5;
 const float LordDefaultAttack2CoolDown = 5;
 const float LordIframe = 0.2;
 
-const int LordWidth = 50;
-const int LordHeight = 50;
+const int LordWidth = 60;
+const int LordHeight = 60;
 
 const int LordAttack1HitBoxWidth = 100;
 const int LordAttack1HitBoxHeight = 100;
@@ -131,8 +131,8 @@ const float ClergyDefaultAttack1CoolDown = 3;
 const float ClergyDefaultAttack2CoolDown = 6;
 const float ClergyIframe = 0.2;
 
-const int ClergyWidth = 50;
-const int ClergyHeight = 50;
+const int ClergyWidth = 60;
+const int ClergyHeight = 60;
 
 const int ClergyAttack1HitBoxWidth = 100;
 const int ClergyAttack1HitBoxHeight = 100;
@@ -149,8 +149,8 @@ const float KingDefaultAttack1CoolDown = 5;
 const float KingDefaultAttack2CoolDown = 5;
 const float KingIframe = 0.2;
 
-const int KingWidth = 60;
-const int KingHeight = 60;
+const int KingWidth = 70;
+const int KingHeight = 70;
 
 const int KingAttack2HitBoxWidth = 100;
 const int KingAttack2HitBoxHeight = 100;
@@ -182,7 +182,8 @@ enum EnemyType{
 enum BossType{
     UNDEF,
     LORD,
-    KING
+    KING,
+    CLERGY
 };
 
 enum Team{

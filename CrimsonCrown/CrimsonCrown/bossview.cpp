@@ -34,6 +34,11 @@ void BossView::draw(QPainter * painter, const BossModel * model)
             painter->setPen(Qt::blue);
             painter->drawRect(model->getHitBox());
             break;
+        case CLERGY:
+            painter->fillRect(model->getHitBox(), Qt::white);
+            painter->setPen(Qt::white);
+            painter->drawRect(model->getHitBox());
+            break;
         default:
             painter->fillRect(model->getHitBox(), Qt::white);
             painter->setPen(Qt::white);
@@ -59,7 +64,10 @@ void BossView::setItsTexture(BossType type)
         break;
     case KING:
         itsTexTure = QPixmap(":/king.png");
-        break; // Fixed: Added missing break statement
+        break;
+    case CLERGY:
+        itsTexTure = QPixmap(":/clerge.png");
+        break;
     default:
         break;
     }
