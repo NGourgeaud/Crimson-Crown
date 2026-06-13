@@ -1,17 +1,19 @@
+// File Name: blacksmithmodel.cpp
+// Group: A11
+// Description: Model class for the Blacksmith hero, managing stats, directional hammer attacks, and area-of-effect abilities.
+
 #include "blacksmithmodel.h"
 #include <QPainterPath>
 
 ///
-/// \brief Constructs a BlacksmithModel instance.
-/// \details Initializes the player model with Blacksmith-specific base stats (HP, MaxHP, Speed, Attack1Damage, Attack2Damage, HeroType).
+/// \brief Initializes the Blacksmith player character with specific base stats (HP, speed, and damage).
 ///
 BlacksmithModel::BlacksmithModel()
     :PlayerModel(40, 40, 8, 13, 10, HeroType::Blacksmith)
 {}
 
 ///
-/// \brief Executes the primary attack of the Blacksmith.
-/// \details Calculates the attack trajectory based on the player's current direction, creates a rotated rectangular hitbox, emits the attackPlayer signal, and starts the cooldown timer.
+/// \brief Executes the primary attack, creating a rotated rectangular hitbox based on the player's facing direction to simulate a hammer swing.
 ///
 void BlacksmithModel::attack1()
 {
@@ -55,47 +57,46 @@ void BlacksmithModel::attack1()
         QLineF aimLine(QPointF(0,0), QPointF(attackDirectionX, attackDirectionY));
         qreal angle = aimLine.angle();
 
-        // 2. The rectangle starts at "0" on the X-axis (in front of the pivot point)
+        // The rectangle starts at "0" on the X-axis (in front of the pivot point)
         QRect baseAttackRect(0, -BlacksmithAttack1HitboxHeight / 2, BlacksmithAttack1HitboxWidth, BlacksmithAttack1HitboxHeight);
 
-        // 3. Transformation
+        // Transforms the rectangle to rotate it according to the aiming angle
         QTransform transform;
         transform.translate(itsHitBox.center().x(), itsHitBox.center().y());
         transform.rotate(-angle);
 
-        // 4. Zone generation
+        // Generates the final polygon for the attack zone
         QPolygon attackHitbox = transform.mapToPolygon(baseAttackRect);
 
         emit attackPlayer(HitZoneModel(attackHitbox, HAMMER), itsAttack1Damage);
 
         canAttack1 = false;
-        itsCooldown1->start(BlacksmithAttack1Cooldown*1000);
+        itsCooldown1->start(BlacksmithAttack1Cooldown * 1000);
     }
 }
 
 ///
-/// \brief Executes the secondary area-of-effect attack of the Blacksmith.
-/// \details Generates a circular hitbox centered on the player using QPainterPath, converts it to a polygon, emits the attackPlayer signal, and starts the secondary attack cooldown.
+/// \brief Executes the secondary area-of-effect attack, generating a circular hitbox around the player.
 ///
 void BlacksmithModel::attack2()
 {
     if (canAttack2){
-        // Create a mathematical path (QPainterPath)
+        // Creates a mathematical path to draw the circular hitbox
         QPainterPath path;
 
-        // addEllipse takes the center and the X and Y radii.
-        // Setting the same value creates a perfect circle.
-        path.addEllipse(itsHitBox.center().x() - BlacksmithAttack2HitboxRadius/2, itsHitBox.center().y() - BlacksmithAttack2HitboxRadius/2, BlacksmithAttack2HitboxRadius, BlacksmithAttack2HitboxRadius);
+        // addEllipse takes the top-left corner and the width/height to create a perfect circle around the center
+        path.addEllipse(itsHitBox.center().x() - BlacksmithAttack2HitboxRadius / 2,
+                        itsHitBox.center().y() - BlacksmithAttack2HitboxRadius / 2,
+                        BlacksmithAttack2HitboxRadius,
+                        BlacksmithAttack2HitboxRadius);
 
-        // Convert this path to a polygon
-        // toFillPolygon() returns a QPolygonF (with floats)
-        // toPolygon() converts it to a QPolygon (with integers) to match the signal
+        // Converts the QPainterPath (QPolygonF) into a QPolygon (integers) to match the expected signal format
         QPolygon attackHitbox = path.toFillPolygon().toPolygon();
 
-        // Transmit the signal with the new attack zone
+        // Transmits the signal with the new AoE attack zone
         emit attackPlayer(HitZoneModel(attackHitbox, UNDEFINEDP), itsAttack2Damage);
 
         canAttack2 = false;
-        itsCooldown2->start(BlacksmithAttack2Cooldown*1000);
+        itsCooldown2->start(BlacksmithAttack2Cooldown * 1000);
     }
 }

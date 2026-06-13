@@ -1,16 +1,26 @@
+// File Name: gameoverview.cpp
+// Group: A11
+// Description: View class responsible for rendering the Game Over screen, displaying the final score and the defeated hero's sprite.
+
 #include "gameoverview.h"
 
+///
+/// \brief Constructs the Game Over UI, displaying the final score, the defeated hero sprite, and a return button.
+/// \param score The final score to display.
+/// \param hero The type of hero to determine which defeated sprite to load.
+/// \param parent The parent QWidget.
+///
 GameOverView::GameOverView(int score, HeroType hero, QWidget *parent)
     : QWidget(parent) {
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN);
 
-    // 1. Remplacer addStretch(7) par un espacement fixe en pixels
-    // Augmente cette valeur pour descendre le perso, diminue-la pour le monter !
+    // 1. Fixed spacing to position the character correctly on the background bridge
+    // Increase this value to move the character down, decrease it to move them up
     mainLayout->addSpacing(380);
 
-    // 2. CHOIX DYNAMIQUE DU PERSONNAGE (DÉFAITE)
+    // 2. DYNAMIC CHARACTER SELECTION (DEFEAT SPRITE)
     QString imagePath;
     switch (hero) {
     case HeroType::Assassin: imagePath = ":/assassin-loose.png"; break;
@@ -23,7 +33,7 @@ GameOverView::GameOverView(int score, HeroType hero, QWidget *parent)
     QPixmap spriteDefaite(imagePath);
     characterImage->setPixmap(spriteDefaite.scaled(160, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     characterImage->setStyleSheet("background: transparent;");
-    mainLayout->addWidget(characterImage, 0, Qt::AlignHCenter); // Conserve le centrage automatique !
+    mainLayout->addWidget(characterImage, 0, Qt::AlignHCenter); // Maintains automatic horizontal centering
 
     mainLayout->addSpacing(20);
 
@@ -67,10 +77,15 @@ GameOverView::GameOverView(int score, HeroType hero, QWidget *parent)
     mainLayout->addLayout(bottomLayout);
 }
 
+///
+/// \brief Handles the background rendering event for the Game Over screen.
+/// \param event The paint event triggered by the Qt framework.
+///
 void GameOverView::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);
     QPainter painter(this);
     QPixmap background(":/ecran_defaite");
+
     if (!background.isNull()) {
         painter.drawPixmap(0, 0, this->width(), this->height(), background);
     } else {

@@ -13,7 +13,6 @@ SOURCES += \
     archermodel.cpp \
     assassinmodel.cpp \
     blacksmithmodel.cpp \
-    blacksmithview.cpp \
     bossmodel.cpp \
     bossview.cpp \
     charselectcontroller.cpp \
@@ -64,7 +63,6 @@ HEADERS += \
     archermodel.h \
     assassinmodel.h \
     blacksmithmodel.h \
-    blacksmithview.h \
     bossmodel.h \
     bossview.h \
     charselectcontroller.h \

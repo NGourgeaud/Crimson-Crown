@@ -1,9 +1,23 @@
+// File Name: clergymodel.cpp
+// Group: A11
+// Description: Model class for the Clergy enemy, managing its health, evasion AI, and multi-directional projectile attacks.
+
 #include "clergymodel.h"
 #include "config.h"
 #include "projectilemodel.h"
 #include <QPainterpath>
 
-
+///
+/// \brief Initializes the Clergy enemy with health, speed, and dual attack cooldowns.
+/// \param maxHp The maximum and starting health points of the Clergy.
+/// \param speed The movement speed of the Clergy.
+/// \param x The starting X coordinate.
+/// \param y The starting Y coordinate.
+/// \param attack1Cooldown The base time in seconds between each primary attack.
+/// \param attack2Cooldown The base time in seconds between each secondary area attack.
+/// \param attack1Damage The damage dealt by the primary attack.
+/// \param attack2Damage The damage dealt by the secondary attack.
+///
 clergyModel::clergyModel(int maxHp, int speed, int x, int y, float attack1Cooldown, float attack2Cooldown, int attack1Damage, int attack2Damage)
 {
     itsHP = maxHp;
@@ -24,33 +38,35 @@ clergyModel::clergyModel(int maxHp, int speed, int x, int y, float attack1Cooldo
     connect(itsCoolDownTimer1, &QTimer::timeout, this, &clergyModel::resetAttack1Cooldown);
     connect(itsCoolDownTimer2, &QTimer::timeout, this, &clergyModel::resetAttack2Cooldown);
     connect(IframeTimer, &QTimer::timeout, this, &clergyModel::resetIframe);
+
+    // Initial delays before the first attacks can be launched
     itsCoolDownTimer1->start(1500);
     itsCoolDownTimer2->start(1500);
 }
 
 ///
-/// \brief Called to update the Lord
-/// \param heroPos: QPointF of the hero's position
+/// \brief Updates the Clergy's logic per frame, handling movement and both attacks.
+/// \param heroPos The current position of the player's hero.
 ///
 void clergyModel::update(QPointF heroPos)
 {
+    // 1. Handle AI movement (evasion)
     handleAI(heroPos);
 
-    // 2. On gère l'attaque 1
+    // 2. Handle primary attack (single projectile)
     if(canAttack1) {
         attack1(heroPos);
     }
 
-    // 3. On gère l'attaque 2
+    // 3. Handle secondary attack (multi-directional projectiles)
     if (canAttack2) {
         attack2(heroPos);
     }
-
 }
 
 ///
-/// \brief First attack of the Lors (spin)
-/// \param heroPos: QPointF of the hero's position
+/// \brief Executes the Clergy's primary attack, firing a single projectile at the player.
+/// \param heroPos The target position to aim the projectile at.
 ///
 void clergyModel::attack1(QPointF heroPos)
 {
@@ -66,15 +82,16 @@ void clergyModel::attack1(QPointF heroPos)
 }
 
 ///
-/// \brief Secondary attack of the Lord (dash)
-/// \param heroPos: QPointF of the hero's position
+/// \brief Executes the Clergy's secondary attack, firing 6 projectiles in a hexagonal pattern.
+/// \param heroPos The current position of the player to set the base angle.
 ///
 void clergyModel::attack2(QPointF heroPos)
 {
     QLineF aimLine1(itsHitBox.center(), heroPos);
 
+    // Adds 60 degrees iteratively to create a star/hexagon firing pattern
     QLineF aimLine2 = aimLine1;
-    aimLine2.setAngle(aimLine1.angle() + 60); // Ajoute 60° par rapport à la ligne 1
+    aimLine2.setAngle(aimLine1.angle() + 60);
 
     QLineF aimLine3 = aimLine2;
     aimLine3.setAngle(aimLine2.angle() + 60);
@@ -110,8 +127,8 @@ void clergyModel::attack2(QPointF heroPos)
 }
 
 ///
-/// \brief Damages the Lord of the ammount
-/// \param amount: amout of the damage the Lord will take
+/// \brief Deducts health from the Clergy and activates invincibility frames.
+/// \param amount The amount of damage points to deduct from the Clergy's health.
 ///
 void clergyModel::takeDamage(int amount)
 {
@@ -120,13 +137,15 @@ void clergyModel::takeDamage(int amount)
         isInIframe = true;
         IframeTimer->start(ClergyIframe * 1000);
     }
-    if (itsHP<=0)
+
+    // Checks if the Clergy's health has depleted to trigger the death signal
+    if (itsHP <= 0)
         emit death(this);
 }
 
 ///
-/// \brief Moves the Lord on pos
-/// \param pos: QPointF of the position
+/// \brief Forces the Clergy's hitbox to move to a specific position.
+/// \param pos The new coordinate to move the Clergy to.
 ///
 void clergyModel::move(QPointF pos)
 {
@@ -134,8 +153,8 @@ void clergyModel::move(QPointF pos)
 }
 
 ///
-/// \brief Returns the Lord's Hitbox
-/// \return
+/// \brief Retrieves the current geometric bounding box of the Clergy.
+/// \return A QRectF representing the Clergy's physical space and position.
 ///
 QRectF clergyModel::getHitBox() const
 {
@@ -143,23 +162,23 @@ QRectF clergyModel::getHitBox() const
 }
 
 ///
-/// \brief Handles the Lord's AI movement
-/// \param heroPos: QPointF of the hero's position
-/// \return
+/// \brief Handles the Clergy's evasion AI, making it flee in the opposite direction if the player gets too close.
+/// \param heroPos The current position of the player's hero.
+/// \return True if the Clergy is maintaining its position, false if it is actively fleeing.
 ///
 bool clergyModel::handleAI(QPointF heroPos)
 {
-    // Si le joueur est trop près (moins de 200 pixels)
+    // If the player is too close (less than 200 pixels)
     if (QLineF(heroPos, itsHitBox.center()).length() < 200) {
 
         QLineF aimLine(itsHitBox.center(), heroPos);
 
-        // On crée un vecteur de mouvement:
-        // Longueur = sa vitesse
-        // Direction = Angle vers le joueur + 180 degrés (pour aller à l'opposé)
+        // Creates a movement vector:
+        // Length = movement speed
+        // Direction = Angle towards the player + 180 degrees (to move in the opposite direction)
         QLineF movementVector = QLineF::fromPolar(itsSpeed, aimLine.angle() + 180);
 
-        // On déplace la hitbox
+        // Translates the hitbox based on the calculated vector
         itsHitBox.translate(movementVector.dx(), movementVector.dy());
 
         return false;
@@ -169,7 +188,7 @@ bool clergyModel::handleAI(QPointF heroPos)
 }
 
 ///
-/// \brief Resets Attack1 cooldown
+/// \brief Allows the Clergy to use its primary attack again once the cooldown timer finishes.
 ///
 void clergyModel::resetAttack1Cooldown()
 {
@@ -178,7 +197,7 @@ void clergyModel::resetAttack1Cooldown()
 }
 
 ///
-/// \brief Resets Attack2 cooldown
+/// \brief Allows the Clergy to use its secondary attack again once the cooldown timer finishes.
 ///
 void clergyModel::resetAttack2Cooldown()
 {
@@ -186,6 +205,9 @@ void clergyModel::resetAttack2Cooldown()
     itsCoolDownTimer2->stop();
 }
 
+///
+/// \brief Disables the invincibility state once the i-frame timer finishes.
+///
 void clergyModel::resetIframe()
 {
     IframeTimer->stop();
