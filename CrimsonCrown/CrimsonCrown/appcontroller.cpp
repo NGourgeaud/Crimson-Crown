@@ -1,15 +1,15 @@
+// File Name: appcontroller.cpp
+// Group: A11
+// Description: Main controller orchestrating the MVC application state, UI transitions, and audio logic for the game.
+
 #include "appcontroller.h"
 #include <QApplication>
 #include <QFontDatabase>
 #include <QInputDialog>
 
-
 ///
-/// \brief AppController::AppController
-/// \details Constructor for the global application orchestrator.
-/// Initializes the main window, loads the "Alagard" medieval pixel font,
-/// connects all the signals from the menu UI, and starts the application.
-/// \param parent Pointer to the parent QObject (defaults to nullptr).
+/// \brief Constructor for the global application orchestrator, initializing audio, UI, and connections.
+/// \param parent Pointer to the parent QObject.
 ///
 AppController::AppController(QObject *parent)
     : QObject(parent),
@@ -25,7 +25,7 @@ AppController::AppController(QObject *parent)
     leaderboardController(new LeaderboardController(mainWindow, this))
 {
 
-    // Police
+    // Font initialization
     int fontId = QFontDatabase::addApplicationFont(":/alagard.ttf");
     if (fontId != -1) {
         QString family = QFontDatabase::applicationFontFamilies(fontId).at(0);
@@ -36,19 +36,15 @@ AppController::AppController(QObject *parent)
     qApp->setWindowIcon(appIcon);
     mainWindow->setWindowIcon(appIcon);
 
-    // --- INITIALISATION DE L'AUDIO ---
+    // Audio initialization
     audioOutput = new QAudioOutput(this);
-    audioOutput->setVolume(0.5); // Volume à 50%
+    audioOutput->setVolume(0.5); // Volume set to 50%
 
     musicPlayer = new QMediaPlayer(this);
     musicPlayer->setAudioOutput(audioOutput);
-    musicPlayer->setLoops(QMediaPlayer::Infinite); // Boucle infinie pour que la musique ne s'arrête pas
+    musicPlayer->setLoops(QMediaPlayer::Infinite); // Infinite loop so the music never stops
 
-    // Connexion pour la musique du Boss
-    connect(gameController, &GameController::bossEncountered, this, &AppController::onBossEncountered);
-
-
-    // Connects
+    // Signal and slot connections
     connect(menuController, &MenuController::playRequested, this, &AppController::onCharSelectRequested);
     connect(menuController, &MenuController::quitRequested, this, &AppController::onQuitRequested);
 
@@ -66,13 +62,13 @@ AppController::AppController(QObject *parent)
     connect(itsGameWonController, &GameWonController::menuRequested, this, &AppController::onMenuRequested);
 
     connect(gameController, &GameController::bossEncountered, this, &AppController::onBossEncountered);
-    connect(gameController, &GameController::bossKilled, this, &AppController::onBossKilled); 
+    connect(gameController, &GameController::bossKilled, this, &AppController::onBossKilled);
 
     connect(leaderboardController, &LeaderboardController::menuRequested, this, &AppController::onMenuRequested);
     connect(menuController, &MenuController::leaderboardRequested, this, &AppController::onLeaderboardRequested);
 
     connect(settingsController, &SettingController::globalVolumeChanged, this, [this](int volume) {
-        // Convertit 0-100 (du slider) en 0.0-1.0 (pour QAudioOutput)
+        // Converts 0-100 (from the slider) to 0.0-1.0 (for QAudioOutput)
         audioOutput->setVolume(volume / 100.0f);
     });
 
@@ -80,8 +76,7 @@ AppController::AppController(QObject *parent)
 }
 
 ///
-/// \brief AppController::start
-/// \details Launches the application by displaying the main menu.
+/// \brief Launches the application by displaying the main window and navigating to the menu.
 ///
 void AppController::start() {
     navigateTo(AppState::Menu);
@@ -89,40 +84,36 @@ void AppController::start() {
 }
 
 ///
-/// \brief AppController::onMenuRequested
-/// \details Slot triggered when a request to return to the main menu is made.
+/// \brief Triggers a state change back to the main menu.
 ///
 void AppController::onMenuRequested() {
     navigateTo(AppState::Menu);
 }
 
 ///
-/// \brief AppController::onCharSelectRequested
-/// \details Slot triggered when the 'PLAY' button is clicked.
+/// \brief Triggers a state change to the character selection screen.
 ///
 void AppController::onCharSelectRequested() {
     navigateTo(AppState::CharSelect);
 }
 
 ///
-/// \brief AppController::onLeaderboardRequested
-/// \details Slot triggered when the 'LEADERBOARD' button is clicked.
+/// \brief Triggers a state change to the leaderboard screen.
 ///
 void AppController::onLeaderboardRequested() {
     navigateTo(AppState::Leaderboard);
 }
 
 ///
-/// \brief AppController::onSettingsRequested
-/// \details Slot triggered when the 'SETTINGS' button is clicked.
+/// \brief Triggers a state change to the settings screen.
 ///
 void AppController::onSettingsRequested() {
     navigateTo(AppState::Setting);
 }
 
 ///
-/// \brief AppController::onGameRequested
-/// \details Slot triggered to launch the main gameplay loop.
+/// \brief Triggers a state change to start the main game loop with a specific hero.
+/// \param type The specific type of hero selected by the player.
 ///
 void AppController::onGameRequested(HeroType type) {
     selectedHero = type;
@@ -130,18 +121,14 @@ void AppController::onGameRequested(HeroType type) {
 }
 
 ///
-/// \brief AppController::onQuitRequested
-/// \details Slot triggered when the 'QUIT' button is clicked.
+/// \brief Triggers the application shutdown sequence.
 ///
 void AppController::onQuitRequested() {
     qApp->quit();
 }
 
 ///
-/// \brief AppController::navigateTo
-/// \details Manages the application state machine and screen transitions.
-/// Cleans up the active view, instantiates the requested view, and injects
-/// it into the center of the QMainWindow.
+/// \brief Manages the application state machine and updates the central view widget accordingly.
 /// \param state The new application state to navigate to.
 ///
 void AppController::navigateTo(AppState state) {
@@ -149,9 +136,10 @@ void AppController::navigateTo(AppState state) {
 
     cleanupCurrentView();
 
+    // Manage background music transitions based on the target state
     if (state == AppState::Menu) {
         QUrl menuSource("qrc:/menu-music.mp3");
-        // The file is only reloaded if it's not already the one being used.
+        // The file is only reloaded if it's not already the one being played
         if (musicPlayer->source() != menuSource) {
             musicPlayer->setSource(menuSource);
             musicPlayer->play();
@@ -165,6 +153,7 @@ void AppController::navigateTo(AppState state) {
         }
     }
 
+    // Instantiate the appropriate view based on the state
     switch (state) {
     case AppState::Menu:
         currentView = menuController->createView();
@@ -190,8 +179,7 @@ void AppController::navigateTo(AppState state) {
 }
 
 ///
-/// \brief AppController::cleanupCurrentView
-/// \details Safely frees memory and destroys the currently displayed view.
+/// \brief Safely frees memory and destroys the currently displayed view based on the active state.
 ///
 void AppController::cleanupCurrentView() {
     if (currentView == nullptr) return;
@@ -211,9 +199,13 @@ void AppController::cleanupCurrentView() {
     currentView = nullptr;
 }
 
+///
+/// \brief Handles the game over sequence, displays the final score screen, and prompts for a leaderboard name.
+/// \param score The final score achieved by the player.
+/// \param hero The type of hero the player was using when they died.
+///
 void AppController::onGameOver(int score, HeroType hero)
 {
-
     if (currentState != AppState::Game) return;
     currentState = AppState::Menu; // Blocks other loop ticks
 
@@ -222,10 +214,9 @@ void AppController::onGameOver(int score, HeroType hero)
     currentView = itsGameOverController->createView(score, hero);
     mainWindow->setCentralWidget(currentView);
 
-    currentView = nullptr;
-
     QCoreApplication::processEvents();
 
+    // Prompt user for their name to save the score
     bool ok;
     QString playerName = QInputDialog::getText(mainWindow,
                                                "Game Over",
@@ -239,28 +230,32 @@ void AppController::onGameOver(int score, HeroType hero)
         playerName = playerName.trimmed();
     }
 
-    // Saved score in the Leaderboard
+    // Save score in the Leaderboard
     leaderboardController->submitScore(playerName, score);
 }
 
+///
+/// \brief Handles the victory sequence, displays the win screen, and prompts for a leaderboard name.
+/// \param score The final score achieved by the player upon winning.
+/// \param hero The type of hero the player used to win.
+///
 void AppController::onGameWon(int score, HeroType hero)
 {
-    // 1. Sécurité anti-double déclenchement
+    // 1. Anti-double trigger security
     if (currentState != AppState::Game) return;
     currentState = AppState::Menu;
 
-    // 2. Nettoyage de l'écran de jeu
+    // 2. Clean up the game screen
     gameController->destroyView();
 
-    // 3. Affichage de l'écran de victoire
+    // 3. Display the victory screen
     currentView = itsGameWonController->createView(score, hero);
     mainWindow->setCentralWidget(currentView);
 
-    // 4. On détache la vue et on force l'affichage
-    currentView = nullptr;
+    // 4. Force display update
     QCoreApplication::processEvents();
 
-    // 5. Boîte de dialogue pour le prénom
+    // 5. Dialog box for the player's name
     bool ok;
     QString playerName = QInputDialog::getText(mainWindow,
                                                "Victoire !",
@@ -274,19 +269,25 @@ void AppController::onGameWon(int score, HeroType hero)
         playerName = playerName.trimmed();
     }
 
-    // 6. Sauvegarde du score
+    // 6. Save the score
     leaderboardController->submitScore(playerName, score);
 }
 
+///
+/// \brief Switches the background music to the boss theme when a boss battle starts.
+///
 void AppController::onBossEncountered()
 {
     musicPlayer->setSource(QUrl("qrc:/boss-music.mp3"));
     musicPlayer->play();
 }
 
+///
+/// \brief Reverts the background music to the standard dungeon theme after defeating a boss.
+///
 void AppController::onBossKilled()
 {
-    // Remettre la musique calme du donjon pendant que le joueur marche vers la sortie
+    // Revert to calm dungeon music while the player walks to the exit
     musicPlayer->setSource(QUrl("qrc:/combat-music.mp3"));
     musicPlayer->play();
 }

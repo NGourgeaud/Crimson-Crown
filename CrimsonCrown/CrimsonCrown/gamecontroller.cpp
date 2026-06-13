@@ -1,7 +1,13 @@
+// File Name: gamecontroller.cpp
+// Group: A11
+// Description: Core controller managing the main game loop, physical updates, input routing, and game states (pause, shop, game over).
+
 #include "gamecontroller.h"
 
 ///
-/// \brief GameController::GameController
+/// \brief Initializes the game controller, its model, and the high-precision frame timer.
+/// \param parentWidget The parent widget to host the game view.
+/// \param parent The parent QObject for memory management.
 ///
 GameController::GameController(QWidget *parentWidget, QObject *parent)
     : QObject(parent),
@@ -16,7 +22,7 @@ GameController::GameController(QWidget *parentWidget, QObject *parent)
 }
 
 ///
-/// \brief GameController::~GameController
+/// \brief Destructor handling the cleanup of the underlying game model.
 ///
 GameController::~GameController()
 {
@@ -24,12 +30,14 @@ GameController::~GameController()
 }
 
 ///
-/// \brief GameController::createView
-/// \details Instantiates the hardware-focused viewport, routes device listeners, and spins up physics processing.
+/// \brief Instantiates the hardware-focused viewport, routes device listeners, and spins up physics processing.
+/// \param hero The specific hero type selected by the player.
+/// \return A pointer to the newly created GameView widget.
 ///
 QWidget* GameController::createView(HeroType hero)
 {
     isPaused = false;
+    levelToLoadPending = 1; // Ensures the level counter resets correctly on a new game
 
     itsModel->resetGame(hero);
 
@@ -59,8 +67,7 @@ QWidget* GameController::createView(HeroType hero)
 }
 
 ///
-/// \brief GameController::destroyView
-/// \details Suspends execution loops and clears graphical handles from volatile layers.
+/// \brief Suspends execution loops and clears graphical handles from volatile layers.
 ///
 void GameController::destroyView()
 {
@@ -72,34 +79,39 @@ void GameController::destroyView()
     itsView = nullptr;
 }
 
+///
+/// \brief Slot triggered when the player's health reaches zero, emitting the game over state.
+///
 void GameController::onPlayerDeath()
 {
     emit gameOver(itsModel->getItsScore(), itsModel->getItsPlayer()->getItsName());
 }
 
+///
+/// \brief Slot triggered when the final boss is defeated, emitting the victory state.
+///
 void GameController::onBossDeath()
 {
     emit gameWon(itsModel->getItsScore(), itsModel->getItsPlayer()->getItsName());
 }
 
-
-
 ///
-/// \brief GameController::onTick
+/// \brief Core heartbeat of the game engine, updating physics and rendering at 60 FPS.
 ///
 void GameController::onTick()
 {
     if (!isPaused) {
-        itsModel->updateLogic(); // The game stops calculating if isPaused == true!
+        itsModel->updateLogic(); // The game logic stops calculating if isPaused == true!
     }
 
     if (itsView != nullptr) {
-        itsView->update(); // We continue drawing to see the pause screen
+        itsView->update(); // We continue rendering the view to display the pause/shop screens
     }
 }
 
 ///
-/// \brief GameController::onKeyPressed
+/// \brief Routes raw keyboard press events from the view to the model's action states.
+/// \param key The integer code of the pressed key.
 ///
 void GameController::onKeyPressed(int key)
 {
@@ -107,11 +119,9 @@ void GameController::onKeyPressed(int key)
         togglePause();
         return;
     }
+
     if (isPaused) return;
 
-
-    if (!itsModel || !itsModel->getItsPlayer()) return;
-    // Safe guard model verification passes
     if (!itsModel || !itsModel->getItsPlayer()) return;
 
     if (key == keyBind::keyLeft) {
@@ -127,7 +137,7 @@ void GameController::onKeyPressed(int key)
         itsModel->getItsPlayer()->setMovementDown(true);
     }
     else if (key == Qt::Key_T) {
-        itsModel->cheatKillEnemies();
+        itsModel->cheatKillEnemies(); // Debug/Cheat key to instantly clear the room
     }
     else if (key == keyBind::keyAttaque1) {
         itsModel->getItsPlayer()->setAttack1(true);
@@ -138,7 +148,8 @@ void GameController::onKeyPressed(int key)
 }
 
 ///
-/// \brief GameController::onKeyReleased
+/// \brief Routes raw keyboard release events to stop player movements or attacks.
+/// \param key The integer code of the released key.
 ///
 void GameController::onKeyReleased(int key)
 {
@@ -164,6 +175,9 @@ void GameController::onKeyReleased(int key)
     }
 }
 
+///
+/// \brief Toggles the game's paused state and toggles the pause menu visibility.
+///
 void GameController::togglePause()
 {
     isPaused = !isPaused;
@@ -172,16 +186,24 @@ void GameController::togglePause()
     }
 }
 
+///
+/// \brief Handles the transition sequence when a level is completed, opening the shop menu.
+/// \param nextLevelId The ID of the upcoming level to be loaded.
+///
 void GameController::onLevelCompleted(int nextLevelId) {
     levelToLoadPending = nextLevelId;
-    isPaused = true; // On stop la logique du jeu
+    isPaused = true; // Stops the game logic while in the shop
     itsView->setShopMenuVisible(true);
 }
 
+///
+/// \brief Processes a purchase request from the shop menu, verifying funds and applying the upgrade.
+/// \param type A string identifier for the requested upgrade ("HP", "DMG", or "SPEED").
+///
 void GameController::onBuyUpgradeRequested(QString type) {
     bool success = false;
 
-    // Calcul du multiplicateur de prix selon le niveau actuel du modèle
+    // Calculates the price multiplier based on the current level of the model
     int level = itsModel->getCurrentLevel();
     double multiplier = std::pow(PRICE_SCALE, level - 2);
 
@@ -213,8 +235,11 @@ void GameController::onBuyUpgradeRequested(QString type) {
     }
 }
 
+///
+/// \brief Closes the shop, loads the pending level, and resumes the game loop.
+///
 void GameController::onNextLevelRequested() {
     itsView->setShopMenuVisible(false);
     itsModel->loadLevel(levelToLoadPending);
-    isPaused = false; // On relance le jeu
+    isPaused = false; // Resumes the game logic
 }

@@ -1,3 +1,7 @@
+// File Name: settingView.cpp
+// Group: A11
+// Description: View class responsible for rendering the settings interface, capturing keybind inputs, and adjusting volume sliders.
+
 #include "settingView.h"
 #include "settingmodel.h"
 #include "config.h"
@@ -6,6 +10,11 @@
 #include <QGridLayout>
 #include <QKeySequence>
 
+///
+/// \brief Initializes the SettingView, constructing the UI and connecting model signals.
+/// \param model Pointer to the underlying SettingModel.
+/// \param parent The parent QWidget.
+///
 SettingView::SettingView(SettingModel *model, QWidget *parent)
     : QWidget(parent), itsSettingModel(model)
 {
@@ -17,6 +26,9 @@ SettingView::SettingView(SettingModel *model, QWidget *parent)
     connect(itsSettingModel, &SettingModel::keyBindChanged, this, &SettingView::updateUIFromModel);
 }
 
+///
+/// \brief Constructs the visual layout, labels, sliders, and text inputs for the settings screen.
+///
 void SettingView::setupUI()
 {
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
@@ -25,7 +37,7 @@ void SettingView::setupUI()
 
     QString labelStyle = "color: white; font-family: 'Alagard'; font-size: 18px; background: transparent;";
 
-    // Style arcade pour nos zones de texte
+    // Arcade style for our text inputs
     QString lineEditStyle =
         "QLineEdit {"
         "   background-color: #111111;"
@@ -43,7 +55,7 @@ void SettingView::setupUI()
         "QPushButton { background-color: #111111; color: white; border: 2px solid #555555; font-family: 'Alagard'; font-size: 15px; font-weight: bold; border-radius: 3px; }"
         "QPushButton:hover { background-color: #E30000; border-color: white; }";
 
-    // --- PANNEAU GAUCHE ---
+    // --- LEFT PANEL ---
     QVBoxLayout *leftPanel = new QVBoxLayout();
     leftPanel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 
@@ -71,17 +83,17 @@ void SettingView::setupUI()
 
         itsKeyLines[actions[i]] = lineEdit;
 
-        // Détection automatique dès que la lettre change
+        // Automatic detection as soon as the letter changes
         connect(lineEdit, &QLineEdit::textEdited, this, [this, action = actions[i]](const QString &text) {
             if (!text.isEmpty()) {
                 QString upperText = text.toUpper();
 
-                // On force l'affichage en majuscule dans la zone de texte
+                // Forces uppercase display in the text input
                 itsKeyLines[action]->blockSignals(true);
                 itsKeyLines[action]->setText(upperText);
                 itsKeyLines[action]->blockSignals(false);
 
-                // Conversion de la lettre en Qt::Key (la valeur unicode correspond aux enums Qt::Key_A à Z)
+                // Conversion of the letter to Qt::Key (the unicode value corresponds to the Qt::Key_A to Z enums)
                 Qt::Key pressedKey = static_cast<Qt::Key>(upperText.at(0).unicode());
                 emit keyBindChangedRequested(action, pressedKey);
             }
@@ -133,7 +145,7 @@ void SettingView::setupUI()
     connect(boutonBack, &QPushButton::clicked, this, &SettingView::backRequested);
     leftPanel->addWidget(boutonBack);
 
-    // --- PANNEAU DROITE ---
+    // RIGHT PANEL
     QVBoxLayout *rightPanel = new QVBoxLayout();
     rightPanel->setAlignment(Qt::AlignCenter);
 
@@ -142,12 +154,15 @@ void SettingView::setupUI()
     this->setStyleSheet("background: transparent;");
 }
 
+///
+/// \brief Syncs the UI components with the current values held in the model.
+///
 void SettingView::updateUIFromModel()
 {
     sliderGlobalVolume->setValue(itsSettingModel->getGlobalVolume());
     sliderSfxVolume->setValue(itsSettingModel->getSfxVolume());
 
-    // Met à jour la lettre affichée dans chaque case de texte
+    // Updates the letter displayed in each text box
     for (auto it = itsKeyLines.begin(); it != itsKeyLines.end(); ++it) {
         Qt::Key key = itsSettingModel->getKeyBind(it.key());
         QString keyString = QKeySequence(key).toString().toUpper();
@@ -158,6 +173,10 @@ void SettingView::updateUIFromModel()
     }
 }
 
+///
+/// \brief Overrides the paint event to draw the settings screen background.
+/// \param event The paint event triggered by the Qt framework.
+///
 void SettingView::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);
     QPainter painter(this);

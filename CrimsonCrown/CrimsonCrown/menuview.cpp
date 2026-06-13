@@ -1,12 +1,14 @@
+// File Name: menuview.cpp
+// Group: A11
+// Description: View class responsible for rendering the main menu interface, including title, background, and navigation buttons.
+
 #include "menuview.h"
 #include "config.h"
 
 ///
-/// \brief MenuView::MenuView
-/// \details Constructor for the main menu view.
-/// Coordinates a compact, left-aligned layout system, applies a custom dark
-/// arcade stylesheet (CSS) onto UI buttons, and configures the centralized title.
-/// \param parent Pointer to the parent QWidget container (the MainWindow).
+/// \brief Constructor for the main menu view.
+/// \details Coordinates a compact, left-aligned layout system, applies a custom dark arcade stylesheet (CSS) onto UI buttons, and configures the centralized title.
+/// \param parent Pointer to the parent QWidget container.
 ///
 MenuView::MenuView(QWidget *parent)
     : QWidget(parent) {
@@ -15,7 +17,6 @@ MenuView::MenuView(QWidget *parent)
     mainLayout->setContentsMargins(LAYOUT_MARGIN, LAYOUT_MARGIN,
                                    LAYOUT_MARGIN, LAYOUT_MARGIN);
     mainLayout->setSpacing(50);
-
 
     // ---------------- LEFT SIDE: BUTTONS ----------------
     QVBoxLayout *leftLayout = new QVBoxLayout();
@@ -46,6 +47,7 @@ MenuView::MenuView(QWidget *parent)
         "   background-color: #E30000;"
         "   border-color: white;"
         "}";
+
     QPushButton *playBtn = new QPushButton(LABEL_PLAY);
     playBtn->setFixedSize(220, BUTTON_HEIGHT);
     playBtn->setStyleSheet(buttonStyle);
@@ -77,13 +79,11 @@ MenuView::MenuView(QWidget *parent)
 
     leftLayout->addStretch(1);
     mainLayout->addLayout(leftLayout);
-
 }
 
 ///
-/// \brief MenuView::paintEvent
-/// \details Reimplementation of Qt's paint event to draw the menu backdrop
-/// \param event Pointer
+/// \brief Reimplementation of Qt's paint event to draw the menu backdrop.
+/// \param event The paint event triggered by the Qt framework.
 ///
 void MenuView::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);

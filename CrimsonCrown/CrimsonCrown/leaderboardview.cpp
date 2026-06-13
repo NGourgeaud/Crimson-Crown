@@ -1,9 +1,18 @@
+// File Name: leaderboardview.cpp
+// Group: A11
+// Description: View class rendering the leaderboard UI, displaying top scores in a formatted Qt table.
+
 #include "leaderboardview.h"
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QHeaderView>
 #include <QPainter>
 
+///
+/// \brief Constructs the Leaderboard UI, setting up the table widget and formatting the loaded scores.
+/// \param parent The parent QWidget.
+/// \param scores The list of top ScoreEntry objects to display.
+///
 LeaderboardView::LeaderboardView(QWidget *parent, const QList<ScoreEntry>& scores)
     : QWidget(parent)
 {
@@ -21,17 +30,17 @@ LeaderboardView::LeaderboardView(QWidget *parent, const QList<ScoreEntry>& score
     // BOARD CONFIGURATION
     table = new QTableWidget(10, 3, this);
 
-    QTableWidgetItem* headerRang = new QTableWidgetItem("Rang");
-    headerRang->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-    table->setHorizontalHeaderItem(0, headerRang);
+    QTableWidgetItem* headerRank = new QTableWidgetItem("Rang");
+    headerRank->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    table->setHorizontalHeaderItem(0, headerRank);
 
     QTableWidgetItem* headerScore = new QTableWidgetItem("Meilleur score");
     headerScore->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     table->setHorizontalHeaderItem(1, headerScore);
 
-    QTableWidgetItem* headerNom = new QTableWidgetItem("Nom");
-    headerNom->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    table->setHorizontalHeaderItem(2, headerNom);
+    QTableWidgetItem* headerName = new QTableWidgetItem("Nom");
+    headerName->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    table->setHorizontalHeaderItem(2, headerName);
 
     table->verticalHeader()->setVisible(false);
     table->setShowGrid(false);
@@ -48,7 +57,7 @@ LeaderboardView::LeaderboardView(QWidget *parent, const QList<ScoreEntry>& score
     table->setStyleSheet(
         "QHeaderView::section { "
         "   background-color: transparent; "
-        "   color: #333333; " // À passer en blanc (#FFFFFF) si ton fond est très sombre
+        "   color: #333333; " // Change to white (#FFFFFF) if your background is very dark
         "   font-family: Alagard; "
         "   font-size: 24px; "
         "   font-weight: bold; "
@@ -130,7 +139,10 @@ LeaderboardView::LeaderboardView(QWidget *parent, const QList<ScoreEntry>& score
     connect(backButton, &QPushButton::clicked, this, &LeaderboardView::backRequested);
 }
 
-
+///
+/// \brief Handles the background rendering event for the Leaderboard screen.
+/// \param event The paint event triggered by the Qt framework.
+///
 void LeaderboardView::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);

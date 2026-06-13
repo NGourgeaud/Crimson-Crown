@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTimer>
+#include <cmath>
 #include "gamemodel.h"
 #include "gameview.h"
 

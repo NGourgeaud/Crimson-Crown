@@ -1,12 +1,20 @@
+// File Name: gameview.cpp
+// Group: A11
+// Description: Main rendering engine for the game, managing the camera tracking, HUD, menus, and drawing all entities.
+
 #include "gameview.h"
 #include <QVBoxLayout>
 #include <QLabel>
-#include <QPushButton>
+#include <QPushbutton>
 
+///
+/// \brief Initializes the game view, allocates memory for specific sub-views, and sets up UI overlays.
+/// \param model Pointer to the core GameModel containing the game state.
+/// \param parent The parent QWidget.
+///
 GameView::GameView(GameModel *model, QWidget *parent)
     : QWidget(parent), itsModel(model), isCameraInitialized(false)
 {
-
     itsRoomView = new RoomView();
     itsObstacleView = new ObstacleView();
     itsBossView = new BossView;
@@ -17,13 +25,10 @@ GameView::GameView(GameModel *model, QWidget *parent)
     itsItemView = new ItemView;
 
     heartTexture = QPixmap(":/coeur.png");
-    
 
     if (itsModel->getItsPlayer() != nullptr) {
         itsPlayerView = new PlayerView(nullptr, itsModel->getItsPlayer());
-
         itsPlayerView->setItsTexture(itsModel->getItsPlayer()->getItsName());
-
     } else {
         itsPlayerView = nullptr;
     }
@@ -32,11 +37,10 @@ GameView::GameView(GameModel *model, QWidget *parent)
     // PAUSE MENU (Hidden by default)
     // ==========================================
     pauseMenu = new QFrame(this);
-
     pauseMenu->setFixedSize(300, 350);
     pauseMenu->setStyleSheet("QFrame { background-color: rgba(20, 20, 20, 220); border: 2px solid #555555; border-radius: 10px; }");
 
-    // --- LE LAYOUT INTERNE DU MENU (Inchangé) ---
+    // --- INTERNAL MENU LAYOUT ---
     QVBoxLayout *pauseLayout = new QVBoxLayout(pauseMenu);
     pauseLayout->setContentsMargins(30, 30, 30, 30);
     pauseLayout->setSpacing(20);
@@ -68,7 +72,8 @@ GameView::GameView(GameModel *model, QWidget *parent)
     connect(resumeBtn, &QPushButton::clicked, this, [this]() { emit keyPressed(Qt::Key_Escape); });
     pauseLayout->addWidget(resumeBtn);
 
-    QPushButton *quitBtn = new QPushButton("QUIITER");
+    // Fixed typo: "QUIITER" -> "QUITTER"
+    QPushButton *quitBtn = new QPushButton("QUITTER");
     quitBtn->setStyleSheet(btnStyle);
     connect(quitBtn, &QPushButton::clicked, this, &GameView::quitRequested);
     pauseLayout->addWidget(quitBtn);
@@ -82,24 +87,51 @@ GameView::GameView(GameModel *model, QWidget *parent)
     overlayLayout->addWidget(shopMenu, 0, Qt::AlignCenter);
 }
 
+///
+/// \brief Forces the widget to acquire focus when shown to capture keyboard events properly.
+/// \param event The show event.
+///
 void GameView::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
     this->setFocus();
 }
 
+///
+/// \brief Destructor ensuring all dynamically allocated views are cleanly freed to prevent memory leaks.
+///
 GameView::~GameView()
 {
+    // Fixed Memory Leak: Added missing deletes for all views allocated in the constructor
     delete itsRoomView;
     delete itsObstacleView;
+    delete itsBossView;
+    delete itsProjectileView;
+    delete itsEnemyView;
+    delete itsChestView;
+    delete itsHitZoneView;
+    delete itsItemView;
     if (itsPlayerView != nullptr) {
         delete itsPlayerView;
     }
 }
 
+///
+/// \brief Captures key presses and routes them to the controller, ignoring auto-repeat signals.
+/// \param event The keyboard event.
+///
 void GameView::keyPressEvent(QKeyEvent *event) { if (!event->isAutoRepeat()) emit keyPressed(event->key()); }
+
+///
+/// \brief Captures key releases and routes them to the controller, ignoring auto-repeat signals.
+/// \param event The keyboard event.
+///
 void GameView::keyReleaseEvent(QKeyEvent *event) { if (!event->isAutoRepeat()) emit keyReleased(event->key()); }
 
+///
+/// \brief Registers an attack hit zone to be briefly rendered on screen for visual feedback.
+/// \param hitZone The geometry and details of the attack area.
+///
 void GameView::drawAttackArea(HitZoneModel hitZone)
 {
     itsAttackAreas.append(hitZone);
@@ -110,6 +142,10 @@ void GameView::drawAttackArea(HitZoneModel hitZone)
     });
 }
 
+///
+/// \brief The main rendering loop. Handles camera tracking, drawing the dungeon, entities, and the HUD.
+/// \param event The paint event triggered by the Qt framework.
+///
 void GameView::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
@@ -126,7 +162,7 @@ void GameView::paintEvent(QPaintEvent *event)
     QPointF cameraTarget = playerCenter;
 
     for (RoomModel* room : itsModel->getAllRooms()) {
-        QRectF roomRect = room->getBounds(); // CORRECTION HERE
+        QRectF roomRect = room->getBounds();
 
         if (roomRect.contains(playerCenter)) {
             qreal minX = roomRect.left() + (this->width() / 2.0);
@@ -157,6 +193,7 @@ void GameView::paintEvent(QPaintEvent *event)
 
     painter.save();
     painter.translate(cameraOffset);
+
     // 1. DRAW DUNGEON
     for (RoomModel* room : itsModel->getAllRooms()) {
         painter.save();
@@ -166,12 +203,12 @@ void GameView::paintEvent(QPaintEvent *event)
     }
 
     // ==========================================
-    // 🚪 BARRICADES INTELLIGENTES (COMBAT & BOSS)
+    // 🚪 SMART BARRICADES (COMBAT & BOSS)
     // ==========================================
     for (RoomModel* room : itsModel->getAllRooms()) {
 
-        // 1. La salle a-t-elle besoin de barricades ?
-        // (Oui, si le combat est en cours OU si c'est le Boss et que le donjon n'est pas fini)
+        // 1. Does the room need barricades?
+        // (Yes, if combat is ongoing OR if it's the Boss and the dungeon isn't cleared yet)
         bool needsBarricades = room->getIsLocked();
         if (room->getType() == RoomType::Boss && !itsModel->areAllCombatRoomsCleared()) {
             needsBarricades = true;
@@ -180,30 +217,30 @@ void GameView::paintEvent(QPaintEvent *event)
         if (needsBarricades) {
             QRectF rBounds = room->getBounds();
             painter.save();
-            painter.setBrush(QColor(139, 69, 19)); // Couleur Bois Massif
+            painter.setBrush(QColor(139, 69, 19)); // Solid Wood Color
             painter.setPen(QPen(Qt::black, 3));
 
-            // 2. On scanne toutes les autres pièces pour trouver où sont les connexions
+            // 2. Scan all other rooms to find where the connections are
             for (RoomModel* other : itsModel->getAllRooms()) {
                 if (other == room) continue;
                 QRectF oBounds = other->getBounds();
 
-                // Si l'autre pièce touche notre salle (avec une tolérance de 5 pixels)
+                // If the other room touches our current room (with a 5-pixel tolerance)
                 if (rBounds.adjusted(-5, -5, 5, 5).intersects(oBounds)) {
 
-                    // Connexion au NORD (L'autre pièce est au-dessus)
+                    // NORTH connection (The other room is above)
                     if (oBounds.bottom() <= rBounds.top() + 5) {
                         painter.drawRect(rBounds.center().x() - 75, rBounds.top(), 150, 20);
                     }
-                    // Connexion au SUD (L'autre pièce est en-dessous)
+                    // SOUTH connection (The other room is below)
                     else if (oBounds.top() >= rBounds.bottom() - 5) {
                         painter.drawRect(rBounds.center().x() - 75, rBounds.bottom() - 20, 150, 20);
                     }
-                    // Connexion à l'OUEST (L'autre pièce est à gauche)
+                    // WEST connection (The other room is to the left)
                     else if (oBounds.right() <= rBounds.left() + 5) {
                         painter.drawRect(rBounds.left(), rBounds.center().y() - 75, 20, 150);
                     }
-                    // Connexion à l'EST (L'autre pièce est à droite)
+                    // EAST connection (The other room is to the right)
                     else if (oBounds.left() >= rBounds.right() - 5) {
                         painter.drawRect(rBounds.right() - 20, rBounds.center().y() - 75, 20, 150);
                     }
@@ -213,19 +250,18 @@ void GameView::paintEvent(QPaintEvent *event)
         }
     }
 
-    // --- DESSIN DU COFFRE EASTER EGG ---
-    // Le coffre doit être au centre de la salle de loot (qui commence à x=1250, y=2075 et fait 600x600).
-    // Centre = (1250 + 600/2, 2075 + 600/2) = (1550, 2375).
-    // Si ton coffre fait 100x100 pixels, il faut le décaler de la moitié (50, 50).
-    // Coordonnées de départ : (1500, 2325).
+    // --- EASTER EGG CHEST DRAWING ---
+    // The chest must be in the center of the loot room (starting at x=1250, y=2075, size 600x600).
+    // Center = (1250 + 600/2, 2075 + 600/2) = (1550, 2375).
+    // If the chest is 100x100 pixels, offset it by half (50, 50).
+    // Starting coordinates: (1500, 2325).
     itsChestView->setBounds(1500, 2325, 100, 100);
 
-    // On dessine le coffre en mode "fermé" (vrai) tant que le joueur n'a pas la clef.
-    // (Puisque dans ton code GameModel::updateLogic(), on supprime la clef quand le coffre s'ouvre)
+    // Draw the chest in "closed" mode (true) as long as the player doesn't have the key.
     bool isClosed = itsModel->getItsPlayer()->getHasSecretKey();
     itsChestView->draw(painter, isClosed);
 
-    // --- DESSIN DES COEURS DE SOIN (NIVEAU 2) ---
+    // --- HEALING HEARTS DRAWING (LEVEL 2) ---
     if (!itsModel->getItsItems().empty()){
         for (ItemModel * item : itsModel->getItsItems()){
             itsItemView->draw(&painter, item);
@@ -253,17 +289,16 @@ void GameView::paintEvent(QPaintEvent *event)
         itsPlayerView->draw(&painter);
     }
 
-    // 4 DRAW ATTACK AREAS
+    // 4. DRAW ATTACK AREAS
     if (!itsAttackAreas.empty()){
         for (HitZoneModel hitzone : itsAttackAreas){
             itsHitZoneView->draw(&painter, &hitzone);
         }
     }
 
-    // draw projectile
+    // 5. DRAW PROJECTILES
     if (!itsModel->getItsProjeciles().empty()){
         for (ProjectileModel * projectile : itsModel->getItsProjeciles()){
-
             itsProjectileView->setItsTexture(projectile->getItsType());
             itsProjectileView->draw(&painter, projectile);
         }
@@ -272,19 +307,19 @@ void GameView::paintEvent(QPaintEvent *event)
     painter.restore(); // End of camera-managed area
 
     // ==========================================
-    // GAME INTERFACE (STATIC HUD) - THE SCORE!
+    // GAME INTERFACE (STATIC HUD)
     // ==========================================
     painter.setFont(QFont("Arial", 14, QFont::Bold));
     int boxWidth = 160;
     int boxHeight = 40;
     int spacing = 20;
 
-    // Calcul pour centrer parfaitement 3 boîtes en haut de l'écran (Vie, Score, Or)
+    // Math to perfectly center 3 boxes at the top of the screen (Health, Score, Gold)
     int totalWidth = (3 * boxWidth) + (2 * spacing);
     int startX = (this->width() - totalWidth) / 2;
     int topY = 15;
 
-    // --- LEVEL ---
+    // --- LEVEL TEXT ---
     if (itsModel != nullptr) {
         painter.setPen(Qt::white);
         painter.setFont(QFont("Arial", 16, QFont::Bold));
@@ -292,7 +327,7 @@ void GameView::paintEvent(QPaintEvent *event)
         painter.drawText(20, 40, levelText);
     }
 
-    // --- 1. HEALTH BOX (Rouge) ---
+    // --- 1. HEALTH BOX (Red) ---
     PlayerModel* player = itsModel->getItsPlayer();
     int currentHP = 0, maxHP = 40;
     if (player != nullptr) {
@@ -309,7 +344,7 @@ void GameView::paintEvent(QPaintEvent *event)
     painter.setFont(QFont("Arial", 14, QFont::Bold));
     painter.drawText(hpRect, Qt::AlignCenter, QString("♥ %1 / %2").arg(currentHP).arg(maxHP));
 
-    // --- 2. SCORE BOX  ---
+    // --- 2. SCORE BOX (Grey) ---
     QRect scoreRect(startX + boxWidth + spacing, topY, boxWidth, boxHeight);
     painter.setBrush(QColor(40, 40, 40));
     painter.setPen(Qt::NoPen);
@@ -317,7 +352,7 @@ void GameView::paintEvent(QPaintEvent *event)
     painter.setPen(QColor(255, 215, 0));
     painter.drawText(scoreRect, Qt::AlignCenter, QString("SCORE : %1").arg(itsModel->getItsScore()));
 
-    // --- 3. GOLD BOX  ---
+    // --- 3. GOLD BOX (Yellow) ---
     QRect goldRect(startX + 2 * (boxWidth + spacing), topY, boxWidth, boxHeight);
     painter.setBrush(QColor(239, 191, 4));
     painter.setPen(Qt::NoPen);
@@ -325,16 +360,14 @@ void GameView::paintEvent(QPaintEvent *event)
     painter.setPen(Qt::white);
     painter.drawText(goldRect, Qt::AlignCenter, QString("OR : %1").arg(itsModel->getGoldAmount()));
 
-
     // --- 4. REMAINING ENEMIES ---
     painter.setPen(Qt::white);
     painter.setFont(QFont("Alagard", 18));
     int enemiesRemaining = itsModel->getItsEnemies().size();
-
     painter.drawText(20, this->height() - 45, QString("Ennemis restants : %1").arg(enemiesRemaining));
 
     // ==========================================
-    //  5. COOLDOWN BAR
+    // 5. COOLDOWN BARS
     // ==========================================
     if (player != nullptr) {
         int c1Max = 1, c2Max = 1;
@@ -370,7 +403,6 @@ void GameView::paintEvent(QPaintEvent *event)
 
         int totalWidth = (2 * barWidth) + spacing;
         int hudX = this->width() - totalWidth - marginRight;
-
         int hudY = this->height() - 45;
 
         // ------------------------------------------
@@ -429,6 +461,10 @@ void GameView::paintEvent(QPaintEvent *event)
     }
 }
 
+///
+/// \brief Toggles the visibility of the pause menu overlay.
+/// \param visible Boolean to show or hide the menu.
+///
 void GameView::setPauseMenuVisible(bool visible)
 {
     if (visible) {
@@ -440,6 +476,9 @@ void GameView::setPauseMenuVisible(bool visible)
     }
 }
 
+///
+/// \brief Constructs the in-game shop menu interface and its layout.
+///
 void GameView::setupShopMenu() {
     shopMenu = new QFrame(this);
     shopMenu->setFixedSize(400, 450);
@@ -457,11 +496,11 @@ void GameView::setupShopMenu() {
     shopGoldLabel->setStyleSheet("color: white; border: none; background: transparent; font-size: 18px;");
     layout->addWidget(shopGoldLabel);
 
-    // Style des boutons
+    // Button style
     QString btnStyle = "QPushButton { background-color: #111; color: white; border: 1px solid #555; padding: 10px; }"
                        "QPushButton:hover { background-color: #333; border-color: #FFD700; }";
 
-    btnHP = new QPushButton(); // On laisse le texte vide pour l'instant
+    btnHP = new QPushButton(); // Text left empty for dynamic pricing
     btnHP->setStyleSheet(btnStyle);
     connect(btnHP, &QPushButton::clicked, this, [this]() { emit buyUpgradeRequested("HP"); });
     layout->addWidget(btnHP);
@@ -484,6 +523,10 @@ void GameView::setupShopMenu() {
     shopMenu->hide();
 }
 
+///
+/// \brief Toggles the visibility of the shop menu and dynamically updates upgrade prices.
+/// \param visible Boolean to show or hide the shop.
+///
 void GameView::setShopMenuVisible(bool visible)
 {
     if (shopMenu == nullptr || shopGoldLabel == nullptr) return;
@@ -508,6 +551,10 @@ void GameView::setShopMenuVisible(bool visible)
     }
 }
 
+///
+/// \brief Updates the gold counter text displayed in the shop menu.
+/// \param amount The current amount of gold the player has.
+///
 void GameView::updateShopGold(int amount) {
     shopGoldLabel->setText(QString("Or disponible : %1").arg(amount));
 }
