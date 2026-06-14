@@ -11,6 +11,7 @@
 ///
 ObstacleView::ObstacleView()
 {
+    barrelTexture = QPixmap(":/obstacle-tonneau.png");
 }
 
 ///
@@ -22,7 +23,11 @@ void ObstacleView::draw(QPainter &painter, const ObstacleModel *model)
 {
     QRect rect = model->getHitBox();
 
-    // Draws the obstacle with a solid wood color
-    painter.setBrush(QBrush(QColor(139, 69, 19)));
-    painter.drawRect(rect);
+    if (!barrelTexture.isNull()) {
+        painter.drawPixmap(rect, barrelTexture);
+    }
+    else {
+        painter.setBrush(QBrush(QColor(139, 69, 19)));
+        painter.drawRect(rect);
+    }
 }

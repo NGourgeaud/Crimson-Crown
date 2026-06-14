@@ -323,6 +323,10 @@ void GameModel::loadLevel(int levelId)
         allRooms.append(new RoomModel(RoomType::Boss, 1750, 3050, 1100, 650));
         allRooms.append(new RoomModel(RoomType::Exit, 2225, 3700, 150, 400));
 
+        // Adding pre-placed hearts in the visible loot rooms
+        itsItems.append(new ItemModel(QPointF(3550, 1325), HEART));
+        itsItems.append(new ItemModel(QPointF(-700, 4475), HEART));
+
         // Modifying difficulty variables
         minEnemy = 6;
         maxEnemy = 8;
@@ -591,6 +595,7 @@ void GameModel::updateLogic()
 
             if (itsPlayer->getHitBox().intersects(secretBonusZone)) {
                 itsPlayer->increaseDamage(0.10); // Permanent +10% damage!
+                itsScore += 100;                 // Grant 100 points for discovering the secret room
                 isLevel3BonusCollected = true;
 
                 // Triggers the golden screen pop-up
