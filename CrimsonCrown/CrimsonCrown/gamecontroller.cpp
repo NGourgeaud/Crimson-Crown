@@ -136,9 +136,6 @@ void GameController::onKeyPressed(int key)
     else if (key == keyBind::keyDown) {
         itsModel->getItsPlayer()->setMovementDown(true);
     }
-    else if (key == Qt::Key_T) {
-        itsModel->cheatKillEnemies(); // Debug/Cheat key to instantly clear the room
-    }
     else if (key == keyBind::keyAttaque1) {
         itsModel->getItsPlayer()->setAttack1(true);
     }

@@ -69,9 +69,6 @@ public:
     /// \brief Retrieves the list of active standard enemies.
     const QList<EnemyModel*>& getItsEnemies() const;
 
-    /// \brief Developer cheat to clear all enemies in the room.
-    void cheatKillEnemies();
-
     /// \brief Handles collision logic for standard enemies.
     void collisionEnemy(EnemyModel * enemy);
 
