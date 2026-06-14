@@ -10,7 +10,7 @@ build_linux:
   image: stateoftheartio/qt6:6.6-gcc-aqt # On utilise un conteneur Linux avec Qt6
   script:
     - echo "Début de la compilation Linux..."
-    - qmake-qt5 CrimsonCrown.pro -spec linux-g++ CONFIG+=release
+    - qmake CrimsonCrown.pro -spec linux-g++ CONFIG+=release
     - make
     - mkdir CrimsonCrown_Linux
     - cp CrimsonCrown CrimsonCrown_Linux/
@@ -20,3 +20,37 @@ build_linux:
       - CrimsonCrown_Linux/ # Sauvegarde de l'AppImage
     expire_in: 1 week
 
+# ==========================================
+# 🪟 JOB WINDOWS
+# ==========================================
+build_windows:
+  stage: build
+  tags:
+    - saas-windows-medium-amd64 # On demande un serveur Windows à GitLab
+  script:
+    - echo "Début de la compilation Windows..."
+    # Sur les serveurs Windows standards, Qt compile souvent avec les outils Microsoft (MSVC)
+    - qmake CrimsonCrown.pro -spec win32-msvc CONFIG+=release 
+    - nmake
+    - windeployqt release/CrimsonCrown.exe
+  artifacts:
+    paths:
+      - release/ # Sauvegarde du dossier contenant le .exe et les .dll
+    expire_in: 1 week
+
+# ==========================================
+# 🍏 JOB MAC (macOS)
+# ==========================================
+build_mac:
+  stage: build
+  tags:
+    - saas-macos-medium-m1 # On demande un serveur Mac M1 à GitLab
+  script:
+    - echo "Début de la compilation macOS..."
+    - qmake CrimsonCrown.pro -spec macx-clang CONFIG+=release
+    - make
+    - macdeployqt CrimsonCrown.app -dmg
+  artifacts:
+    paths:
+      - CrimsonCrown.dmg # Sauvegarde de l'installeur Mac
+    expire_in: 1 week
