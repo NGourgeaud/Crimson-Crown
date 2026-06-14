@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    CrimsonCrown
+    CrimsonCrown \
+    tests \
+    tests
 
