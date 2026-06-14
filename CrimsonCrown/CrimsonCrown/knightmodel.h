@@ -13,6 +13,8 @@
 class KnightModel : public QObject, public EnemyModel
 {
     Q_OBJECT
+    friend class TestEntity;
+
 private:
     QTimer * itsCoolDownTimer;
     bool canAttack;
