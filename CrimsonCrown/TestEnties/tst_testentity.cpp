@@ -39,8 +39,6 @@ private slots:
     void test_knight_handleAI();
 
     // Tests pour le leaderbord
-    void initTestCase();
-    void cleanupTestCase();
     void testEmptyBoard();
     void testAddSingleScore();
     void testSortingScores();
@@ -96,6 +94,9 @@ void TestEntity::init()
     game->loadLevel(1);
     testEnemy1 = new LancerModel(25, 2, 0, 0, 1.0, 5);
     testEnemy2 = new LancerModel(25, 2, 0, 0, 1.0, 5);
+
+    menu = new MenuView();
+    charSelect = new CharSelectView();
 }
 
 void TestEntity::cleanup()
@@ -115,6 +116,11 @@ void TestEntity::cleanup()
     delete testEnemy1;
     delete testEnemy2;
     delete game;
+
+    delete menu;
+    delete charSelect;
+    menu = nullptr;
+    charSelect = nullptr;
 }
 
 // ==========================================
@@ -235,22 +241,6 @@ void TestEntity::test_knight_handleAI()
     QPointF closeHeroPos(knight->getHitBox().center());
     readyToAttack = knight->handleAI(closeHeroPos);
     QCOMPARE(readyToAttack, true);
-}
-
-void TestEntity::initTestCase() {
-    if (QFile::exists(realFilePath)) {
-        QFile::rename(realFilePath, backupFilePath);
-    }
-}
-
-void TestEntity::cleanupTestCase() {
-    if (QFile::exists(realFilePath)) {
-        QFile::remove(realFilePath);
-    }
-    if (QFile::exists(backupFilePath)) {
-        QFile::rename(backupFilePath, realFilePath);
-    }
-    qDebug() << "Tests termines. Vraie sauvegarde restauree avec succes !";
 }
 
 void TestEntity::testEmptyBoard() {
@@ -475,6 +465,6 @@ void TestEntity::test_smart_sliding_obstacle()
     QVERIFY(testEnemy1->getHitBox().bottom() <= globalObsRect.top());
 }
 
-QTEST_APPLESS_MAIN(TestEntity)
+QTEST_MAIN(TestEntity)
 
 #include "tst_testentity.moc"
