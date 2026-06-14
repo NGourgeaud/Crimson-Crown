@@ -21,7 +21,8 @@ SOURCES +=  tst_testentity.cpp \
     ../CrimsonCrown/lancermodel.cpp \
     ../CrimsonCrown/lordmodel.cpp \
     ../CrimsonCrown/projectilemodel.cpp \
-    ../CrimsonCrown/hitzonemodel.cpp
+    ../CrimsonCrown/hitzonemodel.cpp \
+    ../CrimsonCrown/charselectview.cpp
 
 HEADERS += \
     ../CrimsonCrown/archermodel.h \
@@ -34,6 +35,7 @@ HEADERS += \
     ../CrimsonCrown/lancermodel.h \
     ../CrimsonCrown/lordmodel.h \
     ../CrimsonCrown/projectilemodel.h \
-    ../CrimsonCrown/hitzonemodel.h
+    ../CrimsonCrown/hitzonemodel.h \
+    ../CrimsonCrown/charselectview.h
 
 INCLUDEPATH += ../CrimsonCrown
