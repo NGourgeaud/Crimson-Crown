@@ -4,5 +4,6 @@ SUBDIRS += \
     CrimsonCrown \
     tests \
     tests \
+    tests \
     TestEnties
 
