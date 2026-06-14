@@ -11,6 +11,7 @@
 
 class EnemyModel : public EntityModel
 {
+    friend class TestEntity;
 protected:
     float itsAttackCooldown;
     int itsAttackDamage;
