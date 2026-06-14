@@ -9,3 +9,18 @@ INCLUDEPATH += ../CrimsonCrown
 
 SOURCES += tst_testleaderboard.cpp \
            ../CrimsonCrown/leaderboardmodel.cpp
+
+# Headers de l'interface
+HEADERS += \
+    ../CrimsonCrown/menuview.h \
+    ../CrimsonCrown/charselectview.h \
+    ../CrimsonCrown/entitymodel.h
+
+# On teste uniquement tst_menus.cpp
+SOURCES += \
+    tst_testmenus.cpp \
+    ../CrimsonCrown/menuview.cpp \
+    ../CrimsonCrown/charselectview.cpp
+
+    tst_testleaderboard.cpp \
+    ../CrimsonCrown/leaderboardmodel.cpp

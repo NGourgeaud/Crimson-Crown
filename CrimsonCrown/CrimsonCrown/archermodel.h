@@ -12,6 +12,7 @@
 class ArcherModel : public QObject, public EnemyModel
 {
     Q_OBJECT
+    friend class TestEntity;
 
 public:
     ///

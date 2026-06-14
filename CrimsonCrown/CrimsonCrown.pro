@@ -2,5 +2,8 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     CrimsonCrown \
-    tests
+    tests \
+    tests \
+    tests \
+    TestEnties
 
