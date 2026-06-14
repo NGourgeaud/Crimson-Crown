@@ -12,6 +12,7 @@
 class KingModel : public QObject, public BossModel
 {
     Q_OBJECT
+
 public:
     ///
     /// \brief Initializes the King boss with specific stats.
