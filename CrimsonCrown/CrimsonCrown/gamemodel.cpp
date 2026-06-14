@@ -750,40 +750,47 @@ void GameModel::collisionEnemy(EnemyModel * enemy)
             if (teamCollision.width() > teamCollision.height()) {
                 if(enemy->getHitBox().center().y() < otherRect.center().y()){
                     newPos.setY(otherRect.top() - enemy->getHitBox().height());
+                    isCollision = true;
                 }
                 else{
                     newPos.setY(otherRect.bottom());
+                    isCollision = true;
                 }
             }
             // CASE 2: Side collision (Horizontal push)
             else if (teamCollision.height() > teamCollision.width()) {
                 if(enemy->getHitBox().center().x() < otherRect.center().x()){
                     newPos.setX(otherRect.left() - enemy->getHitBox().width());
+                    isCollision = true;
                 }
                 else{
                     newPos.setX(otherRect.right());
+                    isCollision = true;
                 }
             }
             // CASE 3: Corner collision
             else {
                 if(enemy->getHitBox().center().y() < otherRect.center().y()){
                     newPos.setY(otherRect.top() - enemy->getHitBox().height());
+                    isCollision = true;
                 }
                 else{
                     newPos.setY(otherRect.bottom());
+                    isCollision = true;
                 }
 
                 if(enemy->getHitBox().center().x() < otherRect.center().x()){
                     newPos.setX(otherRect.left() - enemy->getHitBox().width());
+                    isCollision = true;
                 }
                 else{
                     newPos.setX(otherRect.right());
+                    isCollision = true;
                 }
             }
 
             // We apply the repulsion so they don't overlap
             enemy->move(newPos);
-            isCollision = true;
         }
     }
 
@@ -793,16 +800,20 @@ void GameModel::collisionEnemy(EnemyModel * enemy)
 
     if (newPosMap.x() < roomBounds.left()) {
         newPosMap.setX(roomBounds.left());
+        isCollision = true;
     }
     else if (newPosMap.x() + enemy->getHitBox().width() > roomBounds.right()) {
         newPosMap.setX(roomBounds.right() - enemy->getHitBox().width());
+        isCollision = true;
     }
 
     if (newPosMap.y() < roomBounds.top()) {
         newPosMap.setY(roomBounds.top());
+        isCollision = true;
     }
     else if (newPosMap.y() + enemy->getHitBox().height() > roomBounds.bottom()) {
         newPosMap.setY(roomBounds.bottom() - enemy->getHitBox().height());
+        isCollision = true;
     }
     enemy->move(newPosMap);
 
@@ -828,17 +839,21 @@ void GameModel::collisionEnemy(EnemyModel * enemy)
                     // Repulsion against the wall
                     if(enemy->getHitBox().center().y() < globalObsRect.center().y()){
                         newPos.setY(globalObsRect.top() - enemy->getHitBox().height());
+                        isCollision = true;
                     }
                     else{
                         newPos.setY(globalObsRect.bottom());
+                        isCollision = true;
                     }
 
                     // --- SMART SLIDING (NO RESTRICTION + FRICTION) ---
                     // The enemy ALWAYS slides towards the player's X position
                     if (itsPlayer->getHitBox().center().x() > enemy->getHitBox().center().x()) {
                         newPos.setX(newPos.x() + (enemy->getitsSpeed())); // Slides right
+                        isCollision = true;
                     } else {
                         newPos.setX(newPos.x() - (enemy->getitsSpeed())); // Slides left
+                        isCollision = true;
                     }
                 }
                 // CASE 2: Side collision (Vertical Wall)
@@ -846,17 +861,21 @@ void GameModel::collisionEnemy(EnemyModel * enemy)
                     // Repulsion against the wall
                     if(enemy->getHitBox().center().x() < globalObsRect.center().x()){
                         newPos.setX(globalObsRect.left() - enemy->getHitBox().width());
+                        isCollision = true;
                     }
                     else{
                         newPos.setX(globalObsRect.right());
+                        isCollision = true;
                     }
 
                     // --- SMART SLIDING (NO RESTRICTION + FRICTION) ---
                     // The enemy ALWAYS slides towards the player's Y position
                     if (itsPlayer->getHitBox().center().y() > enemy->getHitBox().center().y()) {
                         newPos.setY(newPos.y() + (enemy->getitsSpeed())); // Slides down
+                        isCollision = true;
                     } else {
                         newPos.setY(newPos.y() - (enemy->getitsSpeed())); // Slides up
+                        isCollision = true;
                     }
                 }
                 // CASE 3: Corner collision (width == height)
@@ -864,16 +883,20 @@ void GameModel::collisionEnemy(EnemyModel * enemy)
                     // Simple diagonal repulsion
                     if(enemy->getHitBox().center().y() < globalObsRect.center().y()){
                         newPos.setY(globalObsRect.top() - enemy->getHitBox().height());
+                        isCollision = true;
                     }
                     else{
                         newPos.setY(globalObsRect.bottom());
+                        isCollision = true;
                     }
 
                     if(enemy->getHitBox().center().x() < globalObsRect.center().x()){
                         newPos.setX(globalObsRect.left() - enemy->getHitBox().width());
+                        isCollision = true;
                     }
                     else{
                         newPos.setX(globalObsRect.right());
+                        isCollision = true;
                     }
                 }
 
@@ -914,40 +937,47 @@ void GameModel::collisionBoss(BossModel * enemy)
             if (teamCollision.width() > teamCollision.height()) {
                 if(enemy->getHitBox().center().y() < otherRect.center().y()){
                     newPos.setY(otherRect.top() - enemy->getHitBox().height());
+                    isCollision = true;
                 }
                 else{
                     newPos.setY(otherRect.bottom());
+                    isCollision = true;
                 }
             }
             // CASE 2: Side collision (Horizontal push)
             else if (teamCollision.height() > teamCollision.width()) {
                 if(enemy->getHitBox().center().x() < otherRect.center().x()){
                     newPos.setX(otherRect.left() - enemy->getHitBox().width());
+                    isCollision = true;
                 }
                 else{
                     newPos.setX(otherRect.right());
+                    isCollision = true;
                 }
             }
             // CASE 3: Corner collision
             else {
                 if(enemy->getHitBox().center().y() < otherRect.center().y()){
                     newPos.setY(otherRect.top() - enemy->getHitBox().height());
+                    isCollision = true;
                 }
                 else{
                     newPos.setY(otherRect.bottom());
+                    isCollision = true;
                 }
 
                 if(enemy->getHitBox().center().x() < otherRect.center().x()){
                     newPos.setX(otherRect.left() - enemy->getHitBox().width());
+                    isCollision = true;
                 }
                 else{
                     newPos.setX(otherRect.right());
+                    isCollision = true;
                 }
             }
 
             // We apply the repulsion so they don't overlap
             enemy->move(newPos);
-            isCollision = true;
         }
     }
 
@@ -957,16 +987,20 @@ void GameModel::collisionBoss(BossModel * enemy)
 
     if (newPosMap.x() < roomBounds.left()) {
         newPosMap.setX(roomBounds.left());
+        isCollision = true;
     }
     else if (newPosMap.x() + enemy->getHitBox().width() > roomBounds.right()) {
         newPosMap.setX(roomBounds.right() - enemy->getHitBox().width());
+        isCollision = true;
     }
 
     if (newPosMap.y() < roomBounds.top()) {
         newPosMap.setY(roomBounds.top());
+        isCollision = true;
     }
     else if (newPosMap.y() + enemy->getHitBox().height() > roomBounds.bottom()) {
         newPosMap.setY(roomBounds.bottom() - enemy->getHitBox().height());
+        isCollision = true;
     }
     enemy->move(newPosMap);
 
@@ -990,53 +1024,64 @@ void GameModel::collisionBoss(BossModel * enemy)
                 if (zoneCollision.width() > zoneCollision.height()) {
                     if(enemy->getHitBox().center().y() < globalObsRect.center().y()){
                         newPos.setY(globalObsRect.top() - enemy->getHitBox().height());
+                        isCollision = true;
                     }
                     else{
                         newPos.setY(globalObsRect.bottom());
+                        isCollision = true;
                     }
 
                     // --- SMART SLIDING ---
                     if (itsPlayer->getHitBox().center().x() > enemy->getHitBox().center().x()) {
                         newPos.setX(newPos.x() + (enemy->getItsSpeed()));
+                        isCollision = true;
                     } else {
                         newPos.setX(newPos.x() - (enemy->getItsSpeed()));
+                        isCollision = true;
                     }
                 }
                 // CASE 2: Side collision (Vertical Wall)
                 else if (zoneCollision.height() > zoneCollision.width()) {
                     if(enemy->getHitBox().center().x() < globalObsRect.center().x()){
                         newPos.setX(globalObsRect.left() - enemy->getHitBox().width());
+                        isCollision = true;
                     }
                     else{
                         newPos.setX(globalObsRect.right());
+                        isCollision = true;
                     }
 
                     // --- SMART SLIDING ---
                     if (itsPlayer->getHitBox().center().y() > enemy->getHitBox().center().y()) {
                         newPos.setY(newPos.y() + (enemy->getItsSpeed()));
+                        isCollision = true;
                     } else {
                         newPos.setY(newPos.y() - (enemy->getItsSpeed()));
+                        isCollision = true;
                     }
                 }
                 // CASE 3: Corner collision
                 else {
                     if(enemy->getHitBox().center().y() < globalObsRect.center().y()){
                         newPos.setY(globalObsRect.top() - enemy->getHitBox().height());
+                        isCollision = true;
                     }
                     else{
                         newPos.setY(globalObsRect.bottom());
+                        isCollision = true;
                     }
 
                     if(enemy->getHitBox().center().x() < globalObsRect.center().x()){
                         newPos.setX(globalObsRect.left() - enemy->getHitBox().width());
+                        isCollision = true;
                     }
                     else{
                         newPos.setX(globalObsRect.right());
+                        isCollision = true;
                     }
                 }
 
                 enemy->move(newPos);
-                isCollision = true;
             }
         }
     }

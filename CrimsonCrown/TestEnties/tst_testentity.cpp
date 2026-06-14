@@ -92,6 +92,9 @@ void TestEntity::init()
     game = new GameModel();
     game->resetGame(HeroType::Assassin);
     game->loadLevel(1);
+
+    game->updateLogic();
+
     testEnemy1 = new LancerModel(25, 2, 0, 0, 1.0, 5);
     testEnemy2 = new LancerModel(25, 2, 0, 0, 1.0, 5);
 
@@ -417,21 +420,30 @@ void TestEntity::test_collision_mur_limite()
 
 void TestEntity::test_collision_entre_ennemis()
 {
-    // On place deux ennemis exactement au même endroit (Cas extrême de chevauchement)
+    // On demande au jeu de spawner de vrais ennemis dans sa liste officielle
+    game->spawnEnemies(false);
+
+    // On s'assure que le générateur a bien créé au moins 2 ennemis
+    QVERIFY(game->getItsEnemies().size() >= 2);
+
+    // On récupère les deux premiers ennemis de la liste interne
+    EnemyModel* e1 = game->getItsEnemies().at(0);
+    EnemyModel* e2 = game->getItsEnemies().at(1);
+
+    // On les place exactement au même endroit
     QPointF conflitPos(300, 300);
-    testEnemy1->move(conflitPos);
-    testEnemy2->move(conflitPos);
+    e1->move(conflitPos);
+    e2->move(conflitPos);
 
     // Exécution
-    game->collisionEnemy(testEnemy1);
+    // Cette fois, e1 va chercher dans la liste, trouver e2, et appliquer la collision
+    game->collisionEnemy(e1);
 
     // Vérification
-    // Après collision, testEnemy1 DOIT avoir bougé pour ne plus chevaucher testEnemy2
-    QRectF box1 = testEnemy1->getHitBox();
-    QRectF box2 = testEnemy2->getHitBox();
+    QRectF box1 = e1->getHitBox();
+    QRectF box2 = e2->getHitBox();
 
-    // QVERIFY évalue une condition booléenne
-    // On vérifie que les deux boites ne s'intersectent plus (ou au maximum sur les bords)
+    // e1 a dû être violemment repoussé par l'algorithme : l'intersection doit être fausse
     QVERIFY(box1.intersects(box2) == false);
 }
 
