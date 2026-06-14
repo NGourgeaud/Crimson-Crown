@@ -10,7 +10,7 @@ build_linux:
   image: stateoftheartio/qt6:6.6-gcc-aqt # On utilise un conteneur Linux avec Qt6
   script:
     - echo "Début de la compilation Linux..."
-    - qmake6 CrimsonCrown.pro -spec linux-g++ CONFIG+=release
+    - qmake-qt5 CrimsonCrown.pro -spec linux-g++ CONFIG+=release
     - make
     - mkdir CrimsonCrown_Linux
     - cp CrimsonCrown CrimsonCrown_Linux/
