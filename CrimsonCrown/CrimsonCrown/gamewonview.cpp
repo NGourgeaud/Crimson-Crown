@@ -1,16 +1,26 @@
+// File Name: gamewonview.cpp
+// Group: A11
+// Description: View class responsible for rendering the victory screen, displaying the final score and the victorious hero's sprite.
+
 #include "gamewonview.h"
 
+///
+/// \brief Constructs the victory UI, displaying the final score, the winning hero sprite, and a return button.
+/// \param score The final score to display.
+/// \param hero The type of hero to determine which victorious sprite to load.
+/// \param parent The parent QWidget.
+///
 GameWonView::GameWonView(int score, HeroType hero, QWidget *parent)
     : QWidget(parent) {
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN, LAYOUT_MARGIN);
 
-    // 1. Espacement fixe en pixels pour caler les pieds sur le pont
-    // Ajuste cette valeur (ex: 380) pour caler le personnage parfaitement
+    // 1. Fixed pixel spacing to align the feet on the bridge
+    // Adjust this value (e.g., 380) to perfectly position the character
     mainLayout->addSpacing(380);
 
-    // 2. CHOIX DYNAMIQUE DU PERSONNAGE (VICTOIRE)
+    // 2. DYNAMIC CHARACTER SELECTION (VICTORY SPRITE)
     QString imagePath;
     switch (hero) {
     case HeroType::Assassin: imagePath = ":/assassin-win.png"; break;
@@ -23,7 +33,7 @@ GameWonView::GameWonView(int score, HeroType hero, QWidget *parent)
     QPixmap spriteVictoire(imagePath);
     characterImage->setPixmap(spriteVictoire.scaled(160, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     characterImage->setStyleSheet("background: transparent;");
-    mainLayout->addWidget(characterImage, 0, Qt::AlignHCenter); // Conserve le centrage automatique !
+    mainLayout->addWidget(characterImage, 0, Qt::AlignHCenter); // Maintains automatic centering!
 
     mainLayout->addSpacing(20);
 
@@ -66,10 +76,15 @@ GameWonView::GameWonView(int score, HeroType hero, QWidget *parent)
     mainLayout->addLayout(bottomLayout);
 }
 
+///
+/// \brief Handles the background rendering event for the victory screen.
+/// \param event The paint event triggered by the Qt framework.
+///
 void GameWonView::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);
     QPainter painter(this);
     QPixmap background(":/ecran_victoire");
+
     if (!background.isNull()) {
         painter.drawPixmap(0, 0, this->width(), this->height(), background);
     } else {

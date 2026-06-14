@@ -1,11 +1,19 @@
+// File Name: projectileview.cpp
+// Group: A11
+// Description: View class handling the rendering of projectiles, including dynamic rotation based on trajectory.
+
 #include "projectileview.h"
 #include "QPainter"
 
+///
+/// \brief Default constructor for ProjectileView.
+///
 ProjectileView::ProjectileView() {}
 
 ///
-/// \brief EnemyView::draw
-/// \param painter
+/// \brief Renders the projectile on the screen with the correct rotation and texture.
+/// \param painter Pointer to the QPainter object used for drawing.
+/// \param model Pointer to the ProjectileModel to render.
 ///
 void ProjectileView::draw(QPainter * painter, ProjectileModel * model)
 {
@@ -22,30 +30,30 @@ void ProjectileView::draw(QPainter * painter, ProjectileModel * model)
         return;
     }
 
-    // 1. On récupère la hitbox et l'angle de direction
+    // 1. Retrieve the hitbox and the direction angle
     QRectF hitbox = model->getItsHitbox();
     qreal angle = model->getItsDiretion().angle();
 
-    // 2. On sauvegarde l'état actuel du pinceau
+    // 2. Save the current state of the painter
     painter->save();
 
-    // 3. On déplace le point de pivot au centre exact de la flèche
+    // 3. Move the pivot point to the exact center of the projectile
     painter->translate(hitbox.center());
 
-    // 4. On fait pivoter le pinceau (QLineF donne un angle anti-horaire, donc on inverse avec le signe -)
+    // 4. Rotate the painter (QLineF gives a counter-clockwise angle, so we invert it with a minus sign)
     painter->rotate(-angle);
 
-    // 5. On dessine l'image en la centrant sur notre nouveau point de pivot (0,0)
+    // 5. Draw the image centered on our new pivot point (0,0)
     QRectF targetRect(-hitbox.width() / 2.0, -hitbox.height() / 2.0, hitbox.width(), hitbox.height());
     painter->drawPixmap(targetRect.toRect(), itsTexture);
 
-    // 6. On restaure le pinceau à son état normal pour le reste du jeu
+    // 6. Restore the painter to its normal state for the rest of the game
     painter->restore();
 }
 
 ///
-/// \brief EnemyView::setItsTexture
-/// \param type
+/// \brief Loads the appropriate texture based on the projectile type.
+/// \param type The ProjectileType indicating which sprite to load.
 ///
 void ProjectileView::setItsTexture(ProjectileType type)
 {
@@ -55,6 +63,9 @@ void ProjectileView::setItsTexture(ProjectileType type)
         break;
     case KNIFE:
         itsTexture = QPixmap(":/knife.png");
+        break;
+    case RADIUS:
+        itsTexture = QPixmap(":/rayon.png");
         break;
     default:
         break;

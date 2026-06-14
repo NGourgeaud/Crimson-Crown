@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,11 +13,11 @@ SOURCES += \
     archermodel.cpp \
     assassinmodel.cpp \
     blacksmithmodel.cpp \
-    blacksmithview.cpp \
     bossmodel.cpp \
     bossview.cpp \
     charselectcontroller.cpp \
     charselectview.cpp \
+    clergymodel.cpp \
     collectibleview.cpp \
     enemymodel.cpp \
     enemyview.cpp \
@@ -28,10 +28,17 @@ SOURCES += \
     gameoverview.cpp \
     gamewoncontroller.cpp \
     gamewonview.cpp \
+    goldmodel.cpp \
     hitzonemodel.cpp \
     hitzoneview.cpp \
     huntermodel.cpp \
+    itemmodel.cpp \
+    itemview.cpp \
+    kingmodel.cpp \
     knightmodel.cpp \
+    leaderboardcontroller.cpp \
+    leaderboardmodel.cpp \
+    leaderboardview.cpp \
     lordmodel.cpp \
     gameview.cpp \
     main.cpp \
@@ -56,11 +63,11 @@ HEADERS += \
     archermodel.h \
     assassinmodel.h \
     blacksmithmodel.h \
-    blacksmithview.h \
     bossmodel.h \
     bossview.h \
     charselectcontroller.h \
     charselectview.h \
+    clergymodel.h \
     collectibleview.h \
     config.h \
     enemymodel.h \
@@ -72,10 +79,17 @@ HEADERS += \
     gameoverview.h \
     gamewoncontroller.h \
     gamewonview.h \
+    goldmodel.h \
     hitzonemodel.h \
     hitzoneview.h \
     huntermodel.h \
+    itemmodel.h \
+    itemview.h \
+    kingmodel.h \
     knightmodel.h \
+    leaderboardcontroller.h \
+    leaderboardmodel.h \
+    leaderboardview.h \
     lordmodel.h \
     gameview.h \
     mainwindow.h \
@@ -107,3 +121,11 @@ DISTFILES +=
 macx:QMAKE_CXXFLAGS += -Wno-error=implicit-function-declaration
 
 macx:QMAKE_CFLAGS += -Wno-error=implicit-function-declaration
+
+# --- CONFIGURATION DES ICÔNES NATIFS ---
+
+# Pour le fichier .app et le Dock sur Mac
+macx: ICON = logo.icns
+
+# Pour le fichier .exe sur Windows
+# win32: RC_ICONS = logo.ico

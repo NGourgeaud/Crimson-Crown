@@ -1,3 +1,7 @@
+// File Name: collectibleview.h
+// Group: A11
+// Description: Header file defining the visual rendering component for interactive items like chests.
+
 #ifndef COLLECTIBLEVIEW_H
 #define COLLECTIBLEVIEW_H
 
@@ -9,15 +13,28 @@ class CollectibleView
 {
 private:
     QPixmap chestTexture;
-    QRectF bounds; // La hitbox du coffre sur la carte
+    QRectF bounds;
 
 public:
+    ///
+    /// \brief Initializes the view and loads textures.
+    ///
     CollectibleView();
 
-    // Pour définir où se trouve le coffre et quelle taille il fait
+    ///
+    /// \brief Defines the boundaries for rendering the collectible.
+    /// \param x The X coordinate.
+    /// \param y The Y coordinate.
+    /// \param width The width.
+    /// \param height The height.
+    ///
     void setBounds(qreal x, qreal y, qreal width, qreal height);
 
-    // Le dessin (on passe 'hasKey' pour savoir si le coffre est fermé ou ouvert)
+    ///
+    /// \brief Renders the collectible, adjusting opacity if opened.
+    /// \param painter Reference to the QPainter.
+    /// \param isChestClosed Boolean indicating the chest's state.
+    ///
     void draw(QPainter &painter, bool isChestClosed);
 };
 
