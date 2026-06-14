@@ -14,7 +14,7 @@ class ObstacleView
 
 private:
 
-    // QPixmap itsSpriteSheet;
+    QPixmap barrelTexture;
 
 public:
     ///
