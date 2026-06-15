@@ -695,34 +695,6 @@ void GameModel::updateLogic()
 }
 
 ///
-/// \brief Developer cheat code to instantly clear all enemies in the active room.
-///
-void GameModel::cheatKillEnemies()
-{
-    if (!itsPlayer) return;
-    RoomModel* activeRoom = nullptr;
-    for (RoomModel* room : std::as_const(allRooms)) {
-        if (room->getBounds().contains(itsPlayer->getHitBox().center())) {
-            activeRoom = room;
-            break;
-        }
-    }
-    if (!activeRoom) return;
-
-    // Kill the standard enemies
-    for (int i = itsEnemies.size() - 1; i >= 0; --i) {
-        if (activeRoom->getBounds().intersects(itsEnemies[i]->getHitBox())) {
-            itsEnemies[i]->takeDamage(999999);
-        }
-    }
-
-    // Kill the boss
-    if (itsBoss != nullptr && activeRoom->getBounds().intersects(itsBoss->getHitBox())) {
-        itsBoss->takeDamage(9999999);
-    }
-}
-
-///
 /// \brief Handles movement logic, wall sliding, and collision detection for standard enemies.
 /// \param enemy Pointer to the EnemyModel currently being processed.
 ///
