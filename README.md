@@ -1,51 +1,47 @@
-# First Level Heading
+# 👑 Crimson Crown
 
-Paragraph.
+**Crimson Crown** est un jeu d'action en 2D développé en C++ avec le framework Qt. Le joueur incarne un héros (Assassin, Forgeron, etc.) devant survivre face à des vagues d'ennemis possédant leur propre intelligence artificielle, tout en naviguant dans des salles générées avec un système physique de collisions complet.
 
-## Second Level Heading
-
-Paragraph.
-
-- bullet
-+ other bullet
-* another bullet
-    * child bullet
-
-1. ordered
-2. next ordered
-
-### Third Level Heading
-
-Some *italic* and **bold** text and `inline code`.
-
-An empty line starts a new paragraph.
-
-Use two spaces at the end  
-to force a line break.
-
-A horizontal ruler follows:
+Ce projet a été réalisé dans le cadre de la première année de BUT Informatique à l'IUT de La Rochelle (Année 2025-2026).
 
 ---
 
-Add links inline like [this link to the Qt homepage](https://www.qt.io),
-or with a reference like [this other link to the Qt homepage][1].
+## 🚀 Fonctionnalités Principales
 
-    Add code blocks with
-    four spaces at the front.
+* **Architecture MVC :** Séparation stricte entre la logique métier (`GameModel`, `PlayerModel`, `EnemyModel`), les vues (`MenuView`, `CharSelectView`) et les contrôleurs.
+* **Moteur Physique & Collisions :** Système de "Smart Sliding" permettant aux entités de glisser le long des obstacles sans rester bloquées, et gestion précise des hitboxes (joueur, ennemis, boss, murs).
+* **Intelligence Artificielle :** Comportements distincts selon le type d'ennemi :
+    * *Lancer / Knight :* Poursuite agressive au corps-à-corps.
+    * *Archer :* Maintien à distance, fuite si le joueur s'approche trop, et attaques à distance.
+* **Système de Sauvegarde :** Classement local des meilleurs scores (`LeaderboardModel`) sauvegardé dynamiquement à la fin de chaque partie.
 
-> A blockquote
-> starts with >
->
-> and has the same paragraph rules as normal text.
+---
 
-First Level Heading in Alternate Style
-======================================
+## 🛠️ Prérequis techniques
 
-Paragraph.
+Pour compiler et exécuter ce projet localement, vous aurez besoin de :
+* **Qt Creator** (avec Qt 6.x)
+* **Compilateur C++** supportant C++17 ou supérieur (MinGW sous Windows, GCC sous Linux, ou Clang sous macOS).
+**OU**
+**Télécharger l'exécutables disponible sur teams**
+---
 
-Second Level Heading in Alternate Style
----------------------------------------
+## 🕹️ Installation et Compilation
 
-Paragraph.
+1.  **Cloner le dépôt :**
+    ```bash
+    git clone https://forge.iut-larochelle.fr/2025-2026-but-info1-super_sae/td_a/tp_a1/a11/crimson-crown/
+    cd crimson-crown/CrimsonCrown
+    ```
 
-[1]: https://www.qt.io
+2.  **Via l'interface Qt Creator :**
+    * Ouvrez le fichier `CrimsonCrown.pro`.
+    * Configurez votre kit (mode *Release* recommandé pour les performances).
+    * Cliquez sur le marteau pour compiler, puis sur le bouton "Play" pour lancer le jeu.
+
+---
+
+## 👥 Auteurs
+
+**Groupe A11**
+**Arthur Cesbron, Antoine Morin, Quentin Pelissier, Nicolas Gourgeaud** 
