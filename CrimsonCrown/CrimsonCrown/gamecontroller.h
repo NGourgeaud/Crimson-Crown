@@ -39,6 +39,14 @@ public:
     ///
     void destroyView();
 
+    /// \brief Handles raw keyboard press events.
+    void onKeyPressed(int key);
+
+    /// \brief Handles raw keyboard release events.
+    void onKeyReleased(int key);
+
+    bool getIsPaused() const { return isPaused; }
+
 signals:
     /// \brief Emitted to request a return to the main menu.
     void menuRequested();
@@ -64,12 +72,6 @@ private slots:
 
     /// \brief Main clock tick updating the game at 60 FPS.
     void onTick();
-
-    /// \brief Handles raw keyboard press events.
-    void onKeyPressed(int key);
-
-    /// \brief Handles raw keyboard release events.
-    void onKeyReleased(int key);
 
     /// \brief Toggles the game pause state.
     void togglePause();
