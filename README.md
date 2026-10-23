@@ -30,14 +30,16 @@ Pour compiler et exécuter ce projet localement, vous aurez besoin de :
 
 1.  **Cloner le dépôt :**
     ```bash
-    git clone https://forge.iut-larochelle.fr/2025-2026-but-info1-super_sae/td_a/tp_a1/a11/crimson-crown/
-    cd crimson-crown/CrimsonCrown
+    git clone https://github.com/NGourgeaud/Crimson-Crown.git
     ```
 
 2.  **Via l'interface Qt Creator :**
     * Ouvrez le fichier `CrimsonCrown.pro`.
-    * Configurez votre kit (mode *Release* recommandé pour les performances).
+    * Configurez votre kit.
     * Cliquez sur le marteau pour compiler, puis sur le bouton "Play" pour lancer le jeu.
+
+Note: 
+   Le jeu est compilé et prêt a être lançé dans la branche main dans le fichier `CrimsonCrown-exe` ou l'exécutable est présent.
 
 ---
 
